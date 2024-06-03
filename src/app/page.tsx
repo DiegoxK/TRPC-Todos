@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CreatePost } from "@/app/_components/create-post";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
+import TodoList from "./_components/todo-list";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -41,6 +42,7 @@ export default async function Home() {
         <div className="flex flex-col items-center gap-2">
           <p className="text-2xl text-white">
             {hello ? hello.greeting : "Loading tRPC query..."}
+            <TodoList />
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4">
