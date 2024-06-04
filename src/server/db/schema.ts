@@ -8,6 +8,7 @@ import {
   text,
   timestamp,
   varchar,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -37,6 +38,12 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.name),
   }),
 );
+
+export const todos = createTable("todos", {
+  id: serial("id").primaryKey(),
+  content: varchar("content", { length: 256 }),
+  done: boolean("done").notNull().default(false),
+});
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
