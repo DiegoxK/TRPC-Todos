@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
   boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -40,7 +41,7 @@ export const posts = createTable(
 );
 
 export const todos = createTable("todos", {
-  id: serial("id").primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   content: varchar("content", { length: 256 }),
   done: boolean("done").notNull().default(false),
 });
