@@ -1,9 +1,5 @@
 import { postRouter } from "@/server/api/routers/post";
-import {
-  createCallerFactory,
-  createTRPCRouter,
-  publicProcedure,
-} from "@/server/api/trpc";
+import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { todoRouter } from "./routers/todo";
 
 /**
