@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["trpc todo_*"],
+  tablesFilter: ["trpc-todo_*"],
 } satisfies Config;
