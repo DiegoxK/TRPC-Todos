@@ -1,8 +1,6 @@
 "use client";
 import type { todos } from "@/server/db/schema";
 import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 type Todo = typeof todos.$inferSelect;
 
@@ -16,8 +14,8 @@ export default function TodoList({ initialTodos }: TodoListProps) {
   });
 
   const setDone = api.todo.setDone.useMutation({
-    onSettled: () => {
-      refetch();
+    onSettled: async () => {
+      await refetch();
     },
   });
 
