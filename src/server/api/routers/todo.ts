@@ -10,7 +10,7 @@ export const todoRouter = createTRPCRouter({
   setDone: publicProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         done: z.boolean(),
       }),
     )
