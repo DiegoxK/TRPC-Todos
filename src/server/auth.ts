@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
+import EmailProvider from "next-auth/providers/email";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
@@ -34,7 +35,7 @@ declare module "next-auth" {
   // interface User {
   //   // ...other properties
   //   // role: UserRole;
-  // }
+  // }.
 }
 
 /**
@@ -43,14 +44,40 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  pages: {
-    signIn: "/auth/signin",
-    // signOut: "/auth/signout",
-    // error: "/auth/error", // Error code passed in query string as ?error=
-    // verifyRequest: "/auth/verify-request", // (used for check email message)
-    // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
-  },
+  // pages: {
+  //   signIn: "/auth/signin",
+  //   signOut: "/auth/signout",
+  //   error: "/auth/error", // Error code passed in query string as ?error=
+  //   verifyRequest: "/auth/verify-request", // (used for check email message)
+  // },
   callbacks: {
+    signIn: async ({ user, account }) => {
+      if (account) {
+        const accountProvider = account.provider;
+
+        // If the user is signing in with Discord, allow them to sign in
+        if (accountProvider === "discord") {
+          return true;
+        }
+
+        /**  If the user is signing in with email, check if the email exists in the User schema
+         *@see https://next-auth.js.org/providers/email#sending-magic-links-to-existing-users
+         */
+        if (accountProvider === "email") {
+          const userEmail = user.email;
+          if (userEmail) {
+            const userExist = await db.query.users.findFirst({
+              where: (table, funcs) => funcs.eq(table.email, userEmail),
+            });
+            if (userExist) {
+              return true; //if the email exists in the User schema, email them a magic login link
+            }
+            return "/auth/register?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
+          }
+        }
+      }
+      return false; // Return false to display a default error message
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
@@ -69,6 +96,17 @@ export const authOptions: NextAuthOptions = {
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: {
+        host: env.EMAIL_SERVER_HOST,
+        port: env.EMAIL_SERVER_PORT,
+        auth: {
+          user: env.EMAIL_SERVER_USER,
+          pass: env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: env.EMAIL_FROM,
     }),
     /**
      * ...add more providers here.
