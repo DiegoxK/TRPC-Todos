@@ -14,13 +14,7 @@ import {
   Font,
 } from "@react-email/components";
 
-export function Verification({
-  url,
-  picture,
-}: {
-  url: string;
-  picture?: string | null;
-}) {
+export function Verification({ url }: { url: string }) {
   return (
     <Html lang="en">
       <Head>
@@ -60,27 +54,21 @@ export function Verification({
                 </strong>
               </Link>
             </Text>
-            {picture && (
-              <Section className="text-center">
-                <Img
-                  className="mx-auto rounded-full"
-                  src={picture}
-                  width="64"
-                  height="64"
-                />
-              </Section>
-            )}
-
             <Text className="text-center">
               Use the magic link above to <span>sign in</span> to your account.
             </Text>
             <Hr className="!border-primary my-7 w-full" />
             <section className="text-accent-foreground mx-8 mb-6">
-              <Text className="text-foreground">Need help?</Text>
+              <Text className="text-foreground">
+                <strong>Need help?</strong>
+              </Text>
               <Text>
                 If you didn&apos;t request this email, please ignore it. If you
                 haveany questions or need further assistance, feel free to
-                contact our support team at <span>support@todos.com.</span>
+                contact our support team at{" "}
+                <Link href="mailto:support@todos.com">
+                  <span>support@todos.com.</span>
+                </Link>
               </Text>
               <Text className="!my-0">
                 Thank you, <span>The To-do team.</span>
