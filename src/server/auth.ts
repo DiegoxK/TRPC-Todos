@@ -17,7 +17,10 @@ import {
   verificationTokens,
 } from "@/server/db/schema";
 
-import { sendVerificationRequest } from "@/lib/email-config";
+import {
+  sendVerificationRequest,
+  generateVerificationToken,
+} from "@/lib/email-config";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -46,12 +49,12 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  // pages: {
-  //   signIn: "/auth/signin",
-  //   signOut: "/auth/signout",
-  //   error: "/auth/error", // Error code passed in query string as ?error=
-  //   verifyRequest: "/auth/verify-request", // (used for check email message)
-  // },
+  pages: {
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
+    error: "/auth/error", // Error code passed in query string as ?error=
+    verifyRequest: "/auth/verify-request", // (used for check email message)
+  },
   callbacks: {
     signIn: async ({ user, account }) => {
       if (account) {
@@ -74,7 +77,6 @@ export const authOptions: NextAuthOptions = {
             if (userExist) {
               return true; //if the email exists in the User schema, email them a magic login link
             }
-            // return true;
             return "/auth/register?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
         }
@@ -110,7 +112,9 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: env.EMAIL_FROM,
+      maxAge: 15 * 60, // 15 minutes
       sendVerificationRequest,
+      generateVerificationToken,
     }),
     /**
      * ...add more providers here.

@@ -5,23 +5,22 @@ import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import { Verification } from "@/components/email/verification";
 
-export async function sendVerificationRequest(
+export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
-) {
-  const { identifier, url, provider } = params;
-  const { host } = new URL(url);
+) => {
+  const { identifier, url, provider, token } = params;
 
   const transport = createTransport(provider.server);
 
-  const emailHtml = render(<Verification url={url} />);
-  const emailText = render(<Verification url={url} />, {
+  const emailHtml = render(<Verification url={token} />);
+  const emailText = render(<Verification url={token} />, {
     plainText: true,
   });
 
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
-    subject: `Sign in to ${host}`,
+    subject: "Sign in to todos!",
     html: emailHtml,
     text: emailText,
   });
@@ -30,4 +29,9 @@ export async function sendVerificationRequest(
   if (failed.length) {
     throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
   }
-}
+};
+
+export const generateVerificationToken = async () => {
+  const random = crypto.getRandomValues(new Uint8Array(8));
+  return Buffer.from(random).toString("hex").slice(0, 6);
+};
