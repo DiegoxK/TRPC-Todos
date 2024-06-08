@@ -1,8 +1,13 @@
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
+import { Poppins } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
+
+const poppinsFont = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "Todo App",
@@ -16,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={`${poppinsFont.className}`}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

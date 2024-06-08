@@ -6,16 +6,21 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   return (
-    <div>
-      <h1>Welcome!</h1>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="from-primary to-secondary bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent">
+        Todo App
+      </h1>
+      <p className="text-center text-lg">The best todo app in the world!</p>
       <p>
-        {session ? (
-          `Hello, ${session.user.email}!`
-        ) : (
-          <Link href="/api/auth/signin">Please sign in.</Link>
-        )}
+        To get started,{" "}
+        <Link
+          className="text-primary hover:text-secondary"
+          href="/api/auth/signin"
+        >
+          please sign in
+        </Link>
+        .
       </p>
-      <SignOut />
-    </div>
+    </main>
   );
 }
