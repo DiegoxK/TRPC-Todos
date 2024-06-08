@@ -46,12 +46,12 @@ export function Verification({ url }: { url: string }) {
               }
             </Text>
             <Text className="text-center">
-              {"Here it is ->"} 🪄
-              <Link href={url}>
+              {"Here it is"} 🪄
+              <Text>
                 <strong>
-                  <span> Your magic link</span>
+                  <span> Your magic code: {url}</span>
                 </strong>
-              </Link>
+              </Text>
             </Text>
             <Text className="text-center">
               Use the magic link above to <span>sign in</span> to your account.
