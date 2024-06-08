@@ -11,12 +11,10 @@ export default async function Home() {
         Todo App
       </h1>
       <p className="text-center text-lg">The best todo app in the world!</p>
+      {session ? <SignOut /> : null}
       <p>
         To get started,{" "}
-        <Link
-          className="text-primary hover:text-secondary"
-          href="/api/auth/signin"
-        >
+        <Link className="text-primary hover:text-secondary" href="/auth/signin">
           please sign in
         </Link>
         .
