@@ -17,6 +17,8 @@ import {
   verificationTokens,
 } from "@/server/db/schema";
 
+import { sendVerificationRequest } from "@/lib/email-config";
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -72,6 +74,7 @@ export const authOptions: NextAuthOptions = {
             if (userExist) {
               return true; //if the email exists in the User schema, email them a magic login link
             }
+            // return true;
             return "/auth/register?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
         }
@@ -107,6 +110,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: env.EMAIL_FROM,
+      sendVerificationRequest,
     }),
     /**
      * ...add more providers here.
