@@ -18,10 +18,10 @@
     --muted-foreground: hsl(217.9 10.6% 64.9%);
     --accent: #18181c;
     --accent-foreground: #86869f;
-    --destructive: hsl(0 62.8% 30.6%);
+    --destructive: hsl(0, 100%, 73%);
     --destructive-foreground: hsl(210 20% 98%);
     --border: #18181c;
-    --input: #18181c;
+    --input: #86869f;
     --ring: #916bff;
     --radius: 0.5rem;
   }
