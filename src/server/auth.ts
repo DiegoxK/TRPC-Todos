@@ -21,6 +21,7 @@ import {
   sendVerificationRequest,
   generateVerificationToken,
 } from "@/lib/email-config";
+import { cookies } from "next/headers";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -75,7 +76,12 @@ export const authOptions: NextAuthOptions = {
               where: (table, funcs) => funcs.eq(table.email, userEmail),
             });
             if (userExist) {
-              return true; //if the email exists in the User schema, email them a magic login link
+              cookies().set({
+                name: "otp-email",
+                value: userEmail,
+                maxAge: 10 * 60,
+              });
+              return true; //if the email exists in the User schema, email them a magic code link
             }
             return "/auth/register?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
@@ -112,7 +118,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: env.EMAIL_FROM,
-      maxAge: 15 * 60, // 15 minutes
+      maxAge: 10 * 60, // 10 minutes
       sendVerificationRequest,
       generateVerificationToken,
     }),
