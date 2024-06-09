@@ -18,11 +18,15 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/vectors";
 import { getBaseUrl } from "@/trpc/react";
 
+import { useState } from "react";
+
 const formSchema = z.object({
   email: z.string().email(),
 });
 
 export default function SigninForm() {
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,11 +35,12 @@ export default function SigninForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     await signIn("email", { email: values.email });
   }
 
   // TODO: Add error handling
-  // TODO: Add loading state
+  //TODO: Create Register page
   // TODO: If the user is logged in, redirect them to the home page
 
   return (
@@ -59,10 +64,11 @@ export default function SigninForm() {
             )}
           />
           <Button
+            disabled={loading}
             className="w-full bg-gradient-to-br from-primary to-secondary"
             type="submit"
           >
-            Submit
+            {loading ? <div className="loader"></div> : <span>Submit</span>}
           </Button>
         </form>
       </Form>
@@ -72,6 +78,7 @@ export default function SigninForm() {
         <Separator className="w-[115px] bg-white" />
       </div>
       <Button
+        disabled={loading}
         className="flex w-full items-center justify-between px-5 font-medium transition-colors hover:bg-secondary"
         size="lg"
         onClick={() =>
