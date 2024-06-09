@@ -1,15 +1,25 @@
-import { Link } from "lucide-react";
+import { Link as LinkIcon } from "lucide-react";
+import Link from "next/link";
 import SignUpForm from "./_components/signup-form";
 
 export default function SignUpPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="flex max-w-[600px] flex-col items-center gap-5">
-        <Link size={80} className="text-primary" />
+        <LinkIcon size={80} className="text-primary" />
         <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
           Sign Up!
         </h1>
         <SignUpForm />
+        <div className="flex gap-3">
+          <Link href="/" className="text-primary hover:text-secondary">
+            Home
+          </Link>
+          |
+          <Link href="/" className="text-primary hover:text-secondary">
+            Login
+          </Link>
+        </div>
       </div>
     </main>
   );
