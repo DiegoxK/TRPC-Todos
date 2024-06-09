@@ -15,7 +15,6 @@ export default function SignIn() {
           <p>
             Don&apos;t have an account?{" "}
             <Link
-              replace
               href="/auth/register"
               className="text-primary hover:text-secondary"
             >

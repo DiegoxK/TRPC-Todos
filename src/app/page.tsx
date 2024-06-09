@@ -17,11 +17,7 @@ export default async function Home() {
       {session ? <SignOut /> : null}
       <p>
         To get started,{" "}
-        <Link
-          replace
-          className="text-primary hover:text-secondary"
-          href="/auth/signin"
-        >
+        <Link className="text-primary hover:text-secondary" href="/auth/signin">
           please sign in
         </Link>
         .
