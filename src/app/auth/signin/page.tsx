@@ -23,7 +23,7 @@ export default async function SignIn() {
           <p>
             Don&apos;t have an account?{" "}
             <Link
-              href="/auth/register"
+              href="/auth/signup"
               className="text-primary hover:text-secondary"
             >
               Register
