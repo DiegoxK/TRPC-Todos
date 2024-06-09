@@ -42,7 +42,7 @@ export function InputOTPForm({ email }: { email: string }) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const callbackUrl = encodeURIComponent(`${getBaseUrl()}/auth/signin`);
+    const callbackUrl = encodeURIComponent(`${getBaseUrl()}`);
     const token = encodeURIComponent(data.pin);
     const emailEncoded = encodeURIComponent(email);
 
