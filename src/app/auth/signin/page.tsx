@@ -19,17 +19,15 @@ export default async function SignIn() {
           Welcome Back!
         </h1>
         <SigninForm />
-        <div>
-          <p>
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/auth/signup"
-              className="text-primary hover:text-secondary"
-            >
-              Register
-            </Link>
-          </p>
-        </div>
+        <p>
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/auth/signup"
+            className="text-primary hover:text-secondary"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </main>
   );
