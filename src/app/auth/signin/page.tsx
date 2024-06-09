@@ -1,8 +1,16 @@
 import { KeyRound } from "lucide-react";
 import SigninForm from "./_components/signin-form";
 import Link from "next/link";
+import { getServerAuthSession } from "@/server/auth";
+import { redirect } from "next/navigation";
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session = await getServerAuthSession();
+
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="flex max-w-[600px] flex-col items-center gap-5">

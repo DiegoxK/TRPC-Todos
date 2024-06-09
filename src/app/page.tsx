@@ -15,13 +15,18 @@ export default async function Home() {
       <p className="text-center text-lg">The best todo app in the world!</p>
       {session ? session.user.email : null}
       {session ? <SignOut /> : null}
-      <p>
-        To get started,{" "}
-        <Link className="text-primary hover:text-secondary" href="/auth/signin">
-          please sign in
-        </Link>
-        .
-      </p>
+      {session ? null : (
+        <p>
+          To get started,{" "}
+          <Link
+            className="text-primary hover:text-secondary"
+            href="/auth/signin"
+          >
+            please sign in
+          </Link>
+          .
+        </p>
+      )}
     </main>
   );
 }
