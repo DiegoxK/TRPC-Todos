@@ -19,25 +19,43 @@ import { Discord } from "@/components/vectors";
 import { api, getBaseUrl } from "@/trpc/react";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
 });
 
 export default function SignUpForm() {
+  const router = useRouter();
+  const params = useSearchParams();
+
   const [loading, setLoading] = useState(false);
-  const createUser = api.user.createUser.useMutation();
+  const [error, setError] = useState<string | undefined>();
+
+  const { mutate: createUser } = api.user.createUser.useMutation({
+    onSuccess: () => {
+      router.push("/auth/signin");
+    },
+    onError: (error) => {
+      // TODO: Show error with toaster
+      console.log(error.message);
+      setError(error.message);
+      setLoading(false);
+    },
+  });
+
+  const email = params.get("email");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: email ?? "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    await createUser.mutateAsync({
+    createUser({
       email: values.email,
     });
   }
@@ -71,6 +89,7 @@ export default function SignUpForm() {
           </Button>
         </form>
       </Form>
+      {error && <p>{error}</p>}
       <div className="flex w-full items-center justify-center gap-4">
         <Separator className="w-[115px] bg-white" />
         <p>OR</p>
