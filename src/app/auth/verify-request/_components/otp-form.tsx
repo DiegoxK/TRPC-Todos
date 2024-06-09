@@ -25,6 +25,8 @@ import {
 import { useRouter } from "next/navigation";
 import { getBaseUrl } from "@/trpc/react";
 
+import { useState } from "react";
+
 const FormSchema = z.object({
   pin: z.string().toLowerCase().min(6, {
     message: "Your one-time password must be 6 characters.",
@@ -32,6 +34,8 @@ const FormSchema = z.object({
 });
 
 export function InputOTPForm({ email }: { email: string }) {
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -42,6 +46,8 @@ export function InputOTPForm({ email }: { email: string }) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true);
+
     const callbackUrl = encodeURIComponent(`${getBaseUrl()}`);
     const token = encodeURIComponent(data.pin);
     const emailEncoded = encodeURIComponent(email);
@@ -85,8 +91,8 @@ export function InputOTPForm({ email }: { email: string }) {
           )}
         />
 
-        <Button className="w-full" type="submit">
-          Submit
+        <Button disabled={loading} className="w-full" type="submit">
+          {loading ? <div className="loader"></div> : <span>Submit</span>}
         </Button>
       </form>
     </Form>
