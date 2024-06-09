@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/vectors";
-import { getBaseUrl } from "@/trpc/react";
+import { api, getBaseUrl } from "@/trpc/react";
 
 import { useState } from "react";
 
@@ -26,6 +26,7 @@ const formSchema = z.object({
 
 export default function SignUpForm() {
   const [loading, setLoading] = useState(false);
+  const createUser = api.user.createUser.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,12 +37,10 @@ export default function SignUpForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    await signIn("email", { email: values.email });
+    await createUser.mutateAsync({
+      email: values.email,
+    });
   }
-
-  // TODO: Add error handling
-  //TODO: Create Register page
-  // TODO: If the user is logged in, redirect them to the home page
 
   return (
     <>
@@ -55,7 +54,7 @@ export default function SignUpForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sign in with your email address</FormLabel>
+                <FormLabel>Register with your email address</FormLabel>
                 <FormControl>
                   <Input placeholder="example@todos.com" {...field} />
                 </FormControl>
