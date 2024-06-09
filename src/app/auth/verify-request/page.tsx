@@ -4,8 +4,15 @@ import { redirect } from "next/navigation";
 import { InputOTPForm } from "./_components/otp-form";
 
 import { Fingerprint } from "lucide-react";
+import { getServerAuthSession } from "@/server/auth";
 
-export default function VerificationPage() {
+export default async function VerificationPage() {
+  const session = await getServerAuthSession();
+
+  if (session) {
+    redirect("/");
+  }
+
   const email = cookies().get("otp-email")?.value;
 
   if (!email) {
