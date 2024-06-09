@@ -1,6 +1,7 @@
 import { Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import SignUpForm from "./_components/signup-form";
+import { Suspense } from "react";
 
 export default function SignUpPage() {
   return (
@@ -10,7 +11,10 @@ export default function SignUpPage() {
         <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
           Sign Up!
         </h1>
-        <SignUpForm />
+        {/* TODO: Add loading fallback */}
+        <Suspense>
+          <SignUpForm />
+        </Suspense>
         <div className="flex gap-3">
           <Link href="/" className="text-primary hover:text-secondary">
             Home
