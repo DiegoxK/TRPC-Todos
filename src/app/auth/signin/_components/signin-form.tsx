@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/vectors";
+import { getBaseUrl } from "@/trpc/react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -75,7 +76,7 @@ export default function SigninForm() {
         size="lg"
         onClick={() =>
           signIn("discord", {
-            callbackUrl: "/",
+            callbackUrl: getBaseUrl(),
           })
         }
       >
