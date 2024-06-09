@@ -2,18 +2,20 @@ import type { SendVerificationRequestParams } from "next-auth/providers/email";
 
 import { createTransport } from "nodemailer";
 
-import { render } from "@react-email/render";
+import { renderAsync } from "@react-email/render";
 import { Verification } from "@/components/email/verification";
 
 export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
 ) => {
-  const { identifier, url, provider, token } = params;
+  const { identifier, provider, token } = params;
 
   const transport = createTransport(provider.server);
 
-  const emailHtml = render(<Verification url={token} />);
-  const emailText = render(<Verification url={token} />, {
+  const emailHtml = await renderAsync(<Verification token={token} />, {
+    pretty: true,
+  });
+  const emailText = await renderAsync(<Verification token={token} />, {
     plainText: true,
   });
 
