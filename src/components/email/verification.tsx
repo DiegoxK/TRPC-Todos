@@ -30,8 +30,8 @@ export function Verification({ url }: { url: string }) {
       </Head>
       <Preview>Sign in to your account</Preview>
       <Tailwind>
-        <Body className="bg-background text-foreground dark mx-auto my-auto px-2 font-sans">
-          <Container className="bg-accent border-primary [&_span]:text-primary my-10 max-w-[465px] rounded border">
+        <Body className="dark mx-auto my-auto bg-background px-2 font-sans text-foreground">
+          <Container className="my-10 max-w-[465px] rounded border border-primary bg-accent [&_span]:text-primary">
             <Section className="mb-2 mt-10">
               <Heading as="h1" className="text-center text-3xl font-extrabold">
                 To<span className="text-primary">do.</span>
@@ -40,24 +40,20 @@ export function Verification({ url }: { url: string }) {
             <Heading as="h2" className="text-center">
               Join <span>The dark side</span> with my <span>Todo App</span>
             </Heading>
-            <Text className="text-accent-foreground mx-8 text-center">
+            <Text className="mx-8 text-center text-accent-foreground">
               {
                 "Hello and welcome back to the best application you'll ever see!?!?."
               }
             </Text>
+            <Text className="text-center">{"Here it is"} 🪄!</Text>
             <Text className="text-center">
-              {"Here it is"} 🪄
-              <Text>
-                <strong>
-                  <span> Your magic code: {url}</span>
-                </strong>
-              </Text>
+              <strong className="text-3xl uppercase">{url}</strong>
             </Text>
             <Text className="text-center">
-              Use the magic link above to <span>sign in</span> to your account.
+              Use the magic code above to <span>sign in</span> to your account.
             </Text>
-            <Hr className="!border-primary my-7 w-full" />
-            <section className="text-accent-foreground mx-8 mb-6">
+            <Hr className="my-7 w-full !border-primary" />
+            <section className="mx-8 mb-6 text-accent-foreground">
               <Text className="text-foreground">
                 <strong>Need help?</strong>
               </Text>
