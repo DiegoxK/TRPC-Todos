@@ -5,8 +5,6 @@ import Link from "next/link";
 export default async function Home() {
   const session = await getServerAuthSession();
 
-  // TODO: if there is a session, remove all verification codes of this user from db
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
