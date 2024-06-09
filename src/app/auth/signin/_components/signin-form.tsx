@@ -39,10 +39,6 @@ export default function SigninForm() {
     await signIn("email", { email: values.email });
   }
 
-  // TODO: Add error handling
-  //TODO: Create Register page
-  // TODO: If the user is logged in, redirect them to the home page
-
   return (
     <>
       <Form {...form}>
