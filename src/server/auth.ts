@@ -17,10 +17,13 @@ import {
   verificationTokens,
 } from "@/server/db/schema";
 
+type user = typeof users.$inferSelect;
+
 import {
   sendVerificationRequest,
   generateVerificationToken,
 } from "@/lib/email-config";
+
 import { cookies } from "next/headers";
 
 /**
@@ -31,11 +34,7 @@ import { cookies } from "next/headers";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+    user: user & DefaultSession["user"];
   }
 
   // interface User {
@@ -83,7 +82,7 @@ export const authOptions: NextAuthOptions = {
               });
               return true; //if the email exists in the User schema, email them a magic code link
             }
-            return "/auth/register?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
+            return "/auth/signup?=email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
         }
       }
