@@ -1,6 +1,6 @@
 import { getServerAuthSession } from "@/server/auth";
 import Link from "next/link";
-import SignOut from "../_components/sign-out";
+import SignOut from "../../_components/sign-out";
 
 export default async function Home() {
   const session = await getServerAuthSession();
