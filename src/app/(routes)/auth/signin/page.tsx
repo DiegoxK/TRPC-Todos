@@ -3,6 +3,7 @@ import SigninForm from "./_components/signin-form";
 import Link from "next/link";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export default async function SignIn() {
   const session = await getServerAuthSession();
@@ -18,7 +19,10 @@ export default async function SignIn() {
         <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
           Welcome Back!
         </h1>
-        <SigninForm />
+        {/* TODO: Add fallback */}
+        <Suspense>
+          <SigninForm />
+        </Suspense>
         <p>
           Don&apos;t have an account?{" "}
           <Link
