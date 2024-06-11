@@ -20,7 +20,10 @@ export default function SignUpPage() {
             Home
           </Link>
           |
-          <Link href="/" className="text-primary hover:text-secondary">
+          <Link
+            href="/auth/signin"
+            className="text-primary hover:text-secondary"
+          >
             Login
           </Link>
         </div>

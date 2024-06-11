@@ -18,7 +18,10 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/vectors";
 import { getBaseUrl } from "@/trpc/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -26,6 +29,27 @@ const formSchema = z.object({
 
 export default function SigninForm() {
   const [loading, setLoading] = useState(false);
+
+  const params = useSearchParams();
+  const router = useRouter();
+
+  const { toast } = useToast();
+
+  const error = params.get("error");
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        className: "[&_#toast-title]:text-destructive",
+        variant: "destructive",
+        title: "An error occurred while signing in",
+        description:
+          "Please try again, or contact support if the issue persists.",
+        duration: 10000,
+      });
+      router.replace("/auth/signin");
+    }
+  }, [error, toast, router]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

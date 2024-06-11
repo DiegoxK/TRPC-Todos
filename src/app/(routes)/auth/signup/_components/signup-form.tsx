@@ -18,8 +18,9 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/vectors";
 import { api, getBaseUrl } from "@/trpc/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -30,21 +31,39 @@ export default function SignUpForm() {
   const params = useSearchParams();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | undefined>();
+
+  const { toast } = useToast();
 
   const { mutate: createUser } = api.user.createUser.useMutation({
     onSuccess: () => {
       router.push("/auth/signin");
     },
     onError: (error) => {
-      // TODO: Show error with toaster
-      console.log(error.message);
-      setError(error.message);
+      // TODO: Check if the type of error is actually `UserAlreadyExistsError`
+      toast({
+        className: "[&_#toast-title]:text-destructive",
+        variant: "destructive",
+        title: error.message,
+        description: "Please sign in with this email address.",
+        duration: 5000,
+      });
+
       setLoading(false);
     },
   });
 
   const email = params.get("email");
+
+  useEffect(() => {
+    if (email) {
+      toast({
+        className: "[&_#toast-title]:text-primary",
+        title: "This email is not registered yet!",
+        description: "Please register with this email address to continue.",
+        duration: 5000,
+      });
+    }
+  }, [email, toast]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,7 +108,6 @@ export default function SignUpForm() {
           </Button>
         </form>
       </Form>
-      {error && <p>{error}</p>}
       <div className="flex w-full items-center justify-center gap-4">
         <Separator className="w-[115px] bg-white" />
         <p>OR</p>
