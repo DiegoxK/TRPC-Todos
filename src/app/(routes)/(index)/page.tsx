@@ -5,6 +5,8 @@ import SignOut from "../../_components/sign-out";
 export default async function Home() {
   const session = await getServerAuthSession();
 
+  // TODO: Check if the user has an username, if not redirect to /setup, else redirect to /dashboard
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
