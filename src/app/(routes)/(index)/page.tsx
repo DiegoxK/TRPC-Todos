@@ -8,9 +8,7 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   if (session) {
-    const hasUserName = await api.user.hasUserName({
-      email: session.user.email,
-    });
+    const hasUserName = session.user.name;
 
     if (!hasUserName) {
       redirect("/setup");
