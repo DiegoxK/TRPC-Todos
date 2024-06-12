@@ -5,7 +5,6 @@ import {
   Home,
   type LucideIcon,
   SlidersHorizontal,
-  Unplug,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -22,15 +21,10 @@ export default function Sidebar() {
       icon: BookCheck,
       href: "/todos",
     },
-    {
-      label: "Settings",
-      icon: SlidersHorizontal,
-      href: "/settings",
-    },
   ];
 
   return (
-    <section className="flex h-screen max-h-screen w-3/12 flex-col bg-accent p-4 shadow-md">
+    <section className="flex h-screen max-h-screen w-3/12 flex-col bg-accent p-6 shadow-md">
       <p className="text-3xl font-semibold">
         To<span className="text-primary">do.</span>
       </p>
@@ -43,8 +37,8 @@ export default function Sidebar() {
             </NavLink>
           ))}
         </div>
-        <NavLink href="/logout" Icon={Unplug}>
-          Logout
+        <NavLink href="/settings" Icon={SlidersHorizontal}>
+          Settings
         </NavLink>
       </nav>
     </section>
