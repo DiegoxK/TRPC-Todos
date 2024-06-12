@@ -79,6 +79,7 @@ export const authOptions: NextAuthOptions = {
                 name: "otp-email",
                 value: userEmail,
                 maxAge: 10 * 60,
+                sameSite: "strict",
               });
               return true; //if the email exists in the User schema, email them a magic code link
             }
