@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { type RefObject, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { cropImage } from "@/lib/utils";
 import { UserRoundPlus } from "lucide-react";
