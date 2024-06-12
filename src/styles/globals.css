@@ -8,13 +8,13 @@
     --foreground: #f9fafb;
     --card: hsl(224 71.4% 4.1%);
     --card-foreground: hsl(210 20% 98%);
-    --popover: hsl(224 71.4% 4.1%);
+    --popover: #121215;
     --popover-foreground: hsl(210 20% 98%);
     --primary: #916bff;
     --primary-foreground: hsl(210 20% 98%);
     --secondary: #a855f7;
     --secondary-foreground: hsl(210 20% 98%);
-    --muted: hsl(215 27.9% 16.9%);
+    --muted: #86869f;
     --muted-foreground: hsl(217.9 10.6% 64.9%);
     --accent: #18181c;
     --accent-foreground: #86869f;
@@ -73,7 +73,6 @@
   backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
   position: relative;
   overflow: hidden;
-  cursor: pointer;
 }
 
 .glassy-container::before {
