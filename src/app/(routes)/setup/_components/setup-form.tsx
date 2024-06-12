@@ -4,6 +4,9 @@ import "react-image-crop/dist/ReactCrop.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
+import { uploadFiles } from "@/utils/uploadthing";
+
 import { z } from "zod";
 
 import {
@@ -28,10 +31,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserRoundPlus } from "lucide-react";
 import FileField from "./file-field";
+import { api } from "@/trpc/react";
 
 const formSchema = z.object({
   username: z
@@ -45,12 +49,20 @@ const formSchema = z.object({
   img: z.instanceof(Blob).optional(),
 });
 
-export default function SetupForm() {
-  // TODO: Add image cropping modal and then upload the image to the uploadthing api
-
+export default function SetupForm({ email }: { email: string }) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+
+  const { mutate: updateUser } = api.user.updateUser.useMutation({
+    onSuccess: () => {
+      setLoading(false);
+      router.push("/dashboard");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,15 +71,47 @@ export default function SetupForm() {
     },
   });
 
-  useEffect(() => {
-    console.log("render");
-  });
+  const uploadImage = async (username: string, userImg: Blob) => {
+    try {
+      const file = new File([userImg], `${username}-picture.jpg`, {
+        type: "image/jpg",
+      });
+      const files = [file];
+
+      const res = await uploadFiles("imageUploader", {
+        files,
+      });
+
+      const imageInfo = res[0];
+
+      if (imageInfo) {
+        return imageInfo.url;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    return undefined;
+  };
 
   //Cropped image
   const [croppedImage, setCroppedImage] = useState<string>();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    setLoading(true);
+
+    let profileUrl: string | undefined;
+
+    if (values.img) {
+      profileUrl = await uploadImage(values.username, values.img);
+      console.log(profileUrl);
+    }
+
+    updateUser({
+      email,
+      name: values.username,
+      img: profileUrl,
+    });
   }
 
   return (
@@ -103,7 +147,7 @@ export default function SetupForm() {
           <Dialog>
             <FormLabel>Profile picture</FormLabel>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full">
+              <Button disabled={loading} variant="outline" className="w-full">
                 Select Image
               </Button>
             </DialogTrigger>
