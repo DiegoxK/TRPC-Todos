@@ -68,3 +68,26 @@
     background: #fff;
   }
 }
+
+.glassy-container {
+  backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.glassy-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%; /* Start outside the container */
+  width: 65%; /* Extend beyond the container */
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4); /* White with some opacity */
+  transform: skewX(-45deg); /* Skew to create a diagonal line */
+  transition: left 0.3s ease-in-out; /* Smooth movement */
+}
+
+.glassy-container:hover::before {
+  left: 125%; /* Move the line across the container */
+}
