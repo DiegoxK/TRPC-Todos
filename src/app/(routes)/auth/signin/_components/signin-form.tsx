@@ -75,7 +75,7 @@ export default function SigninForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sign in with your email address</FormLabel>
+                <FormLabel>Log in with your email address</FormLabel>
                 <FormControl>
                   <Input placeholder="example@todos.com" {...field} />
                 </FormControl>
