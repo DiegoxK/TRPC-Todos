@@ -6,8 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import ReactCrop, { type Crop } from "react-image-crop";
-
 import {
   Dialog,
   DialogContent,
@@ -30,10 +28,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { cropImage } from "@/lib/utils";
 import { UserRoundPlus } from "lucide-react";
+import FileField from "./file-field";
 
 const formSchema = z.object({
   username: z
@@ -61,27 +59,12 @@ export default function SetupForm() {
     },
   });
 
-  //Image State
-  const [selectedImage, setSelectedImage] = useState<string>();
-  const [croppedImage, setCroppedImage] = useState<string>();
-  const [crop, setCrop] = useState<Crop>({
-    unit: "px",
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
+  useEffect(() => {
+    console.log("render");
   });
 
-  const showCropped = (blob: Blob) => {
-    if (croppedImage) {
-      URL.revokeObjectURL(croppedImage);
-    }
-
-    const url = URL.createObjectURL(blob);
-    setCroppedImage(url);
-  };
-
-  const imgRef = useRef<HTMLImageElement>(null);
+  //Cropped image
+  const [croppedImage, setCroppedImage] = useState<string>();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -131,58 +114,10 @@ export default function SetupForm() {
                   You can select a profile picture to use for your account!
                 </DialogDescription>
                 <ScrollArea className="max-h-[74vh] rounded-lg pr-4">
-                  <FormField
+                  <FileField<z.infer<typeof formSchema>>
                     control={form.control}
                     name="img"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Select a file</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            multiple={false}
-                            onChange={(e) => {
-                              const file = e.target.files![0];
-                              if (file) {
-                                setSelectedImage(URL.createObjectURL(file));
-                                setCrop((prev) => ({
-                                  ...prev,
-                                  x: 0,
-                                  y: 0,
-                                  width: 0,
-                                  height: 0,
-                                }));
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <ReactCrop
-                          className="min-w-full border-4 border-accent"
-                          aspect={1}
-                          ruleOfThirds={true}
-                          crop={crop}
-                          onChange={(c) => setCrop(c)}
-                          onDragEnd={async () => {
-                            const blob = await cropImage(imgRef, crop);
-                            if (blob) {
-                              field.onChange(blob);
-                              showCropped(blob);
-                            } else {
-                              setCroppedImage(undefined);
-                            }
-                          }}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            className="min-w-full"
-                            alt="Selected Image"
-                            ref={imgRef}
-                            src={selectedImage}
-                          />
-                        </ReactCrop>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    setCroppedImage={setCroppedImage}
                   />
                 </ScrollArea>
               </DialogHeader>
