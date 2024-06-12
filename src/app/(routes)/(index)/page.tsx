@@ -1,11 +1,23 @@
 import { getServerAuthSession } from "@/server/auth";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import SignOut from "../../_components/sign-out";
+import { api } from "@/trpc/server";
 
 export default async function Home() {
   const session = await getServerAuthSession();
 
-  // TODO: Check if the user has an username, if not redirect to /setup, else redirect to /dashboard
+  if (session) {
+    const hasUserName = await api.user.hasUserName({
+      email: session.user.email,
+    });
+
+    if (!hasUserName) {
+      redirect("/setup");
+    } else if (hasUserName) {
+      redirect("/dashboard");
+    }
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
