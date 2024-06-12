@@ -9,7 +9,7 @@ export default function SignUpPage() {
       <div className="flex max-w-[600px] flex-col items-center gap-5">
         <LinkIcon size={80} className="text-primary" />
         <h1 className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
-          Sign Up!
+          Register!
         </h1>
         {/* TODO: Add loading fallback */}
         <Suspense>
