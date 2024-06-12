@@ -14,12 +14,12 @@ export default function Sidebar() {
     {
       label: "Home",
       icon: Home,
-      href: "/home",
+      href: "/dashboard",
     },
     {
       label: "Todos",
       icon: BookCheck,
-      href: "/todos",
+      href: "/dashboard/todos",
     },
   ];
 
@@ -37,7 +37,7 @@ export default function Sidebar() {
             </NavLink>
           ))}
         </div>
-        <NavLink href="/settings" Icon={SlidersHorizontal}>
+        <NavLink href="/dashboard/settings" Icon={SlidersHorizontal}>
           Settings
         </NavLink>
       </nav>
