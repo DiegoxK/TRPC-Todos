@@ -12,7 +12,7 @@ const config = {
         hostname: "utfs.io",
       },
       {
-        hostname: "discordapp.com",
+        hostname: "cdn.discordapp.com",
       },
     ],
   },
