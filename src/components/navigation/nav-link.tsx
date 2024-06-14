@@ -27,9 +27,9 @@ export function NavLink({
   return (
     <Link
       className={cn(
-        "flex h-[44px] items-center pl-4 transition-colors hover:bg-background hover:text-primary",
+        "flex h-[44px] items-center rounded-sm pl-4 transition-colors hover:bg-accent hover:text-primary",
         isActive &&
-          "ml-0 bg-background pl-0 text-primary before:mr-4 before:h-full before:w-[4px] before:bg-primary before:content-['|']",
+          "ml-0 bg-accent pl-0 text-primary before:mr-4 before:h-full before:w-[4px] before:bg-primary before:content-['|']",
         className,
       )}
       onClick={toggleOpen !== undefined ? () => toggleOpen(false) : undefined}

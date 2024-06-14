@@ -20,10 +20,12 @@ export default async function Dashboard({
     return (
       <div className="flex">
         <Sidebar />
-        <section className="ml-[20rem] w-full">
+        <div className="ml-[20rem] w-full">
           <Header session={session} />
-          <main className="mt-[72px] px-8 py-6">{children}</main>
-        </section>
+          <main className="mt-[72px] min-h-[calc(100vh-72px)] bg-accent px-8 py-6">
+            {children}
+          </main>
+        </div>
       </div>
     );
   }
