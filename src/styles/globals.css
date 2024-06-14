@@ -70,7 +70,7 @@
 }
 
 .glassy-container {
-  backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
+  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
 }
@@ -82,7 +82,7 @@
   left: -100%; /* Start outside the container */
   width: 65%; /* Extend beyond the container */
   height: 100%;
-  background: rgba(255, 255, 255, 0.4); /* White with some opacity */
+  background: rgba(255, 255, 255, 0.4);
   transform: skewX(-45deg); /* Skew to create a diagonal line */
   transition: left 0.3s ease-in-out; /* Smooth movement */
 }
