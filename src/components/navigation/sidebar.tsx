@@ -19,7 +19,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <section className="fixed flex h-screen max-h-screen w-[20rem] flex-col bg-accent p-6 shadow-md">
+    <section className="fixed flex h-screen max-h-screen w-[20rem] flex-col bg-background p-6 shadow-md">
       <p className="text-3xl font-semibold">
         To<span className="text-primary">do.</span>
       </p>
