@@ -1,17 +1,11 @@
-import { Payment, columns } from "./_components/columns";
+import type { Todo } from "@/lib/definitions";
+import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
+import { api } from "@/trpc/server";
 
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    // ...
-  ];
+async function getData(): Promise<Todo[]> {
+  const todos = await api.todo.getTodos();
+  return todos;
 }
 
 export default async function TodosPage() {
