@@ -18,13 +18,13 @@ export default async function Dashboard({
     }
 
     return (
-      <main className="flex">
+      <div className="flex">
         <Sidebar />
-        <section className="w-full">
+        <section className="ml-[20rem] w-full">
           <Header session={session} />
-          {children}
+          <main className="mt-[72px] px-8 py-6">{children}</main>
         </section>
-      </main>
+      </div>
     );
   }
 
