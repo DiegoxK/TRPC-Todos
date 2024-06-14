@@ -11,6 +11,11 @@ export default async function SetupAccount() {
     return redirect("/auth/signin");
   }
 
+  if (session.user.name) {
+    // If the user has already setup their account, redirect them to the dashboard
+    return redirect("/dashboard");
+  }
+
   // This page should allow the user to setup their username and profile picture if they don't have one
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
