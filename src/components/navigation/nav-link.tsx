@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 interface NavLinkProps {
   icon: ReactNode;
   href: string;
+  subRoutes?: string[];
   className?: string;
   children: React.ReactNode;
   toggleOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,14 +17,24 @@ interface NavLinkProps {
 export function NavLink({
   icon,
   href,
+  subRoutes,
   className,
   children,
   toggleOpen,
   ...props
 }: NavLinkProps): JSX.Element | null {
-  const pathname = usePathname();
-  const isActive = pathname === href;
+  const path = usePathname();
+  const pathname = path.replace("/dashboard", "");
 
+  let isActive = false;
+
+  if (subRoutes) {
+    isActive = subRoutes.some((subRoute) => pathname.startsWith(subRoute));
+  }
+
+  if (!isActive) {
+    isActive = pathname === href;
+  }
   return (
     <Link
       className={cn(
@@ -33,7 +44,7 @@ export function NavLink({
         className,
       )}
       onClick={toggleOpen !== undefined ? () => toggleOpen(false) : undefined}
-      href={href}
+      href={`/dashboard${href}`}
       {...props}
     >
       <span className="mb-[1px] mr-2">{icon}</span>

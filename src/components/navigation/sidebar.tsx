@@ -9,12 +9,13 @@ export default function Sidebar() {
     {
       label: "Home",
       icon: <Home className="text-primary" size={20} />,
-      href: "/dashboard",
+      subRoutes: ["/project"],
+      href: "",
     },
     {
       label: "Todos",
       icon: <BookCheck className="text-primary" size={20} />,
-      href: "/dashboard/todos",
+      href: "/todos",
     },
   ];
 
@@ -27,13 +28,18 @@ export default function Sidebar() {
       <nav className="flex grow flex-col justify-between">
         <div className="space-y-2">
           {links.map((link) => (
-            <NavLink key={link.href} href={link.href} icon={link.icon}>
+            <NavLink
+              key={link.href}
+              subRoutes={link.subRoutes}
+              href={link.href}
+              icon={link.icon}
+            >
               {link.label}
             </NavLink>
           ))}
         </div>
         <NavLink
-          href="/dashboard/settings"
+          href="/settings"
           icon={<SlidersHorizontal className="text-primary" size={20} />}
         >
           Settings
