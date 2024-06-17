@@ -8,10 +8,16 @@ import {
   text,
   timestamp,
   varchar,
-  boolean,
   uuid,
+  pgEnum,
+  uniqueIndex,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+
+export const UserRole = pgEnum("userRole", ["ADMIN", "USER"]);
+export const Status = pgEnum("status", ["TODO", "IN_PROGRESS", "DONE"]);
+export const Priority = pgEnum("priority", ["LOW", "MEDIUM", "HIGH"]);
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -40,25 +46,69 @@ export const posts = createTable(
   }),
 );
 
-export const todos = createTable("todos", {
+export const projects = createTable("project", {
   id: uuid("id").primaryKey().defaultRandom(),
-  content: varchar("content", { length: 256 }),
-  done: boolean("done").notNull().default(false),
+  name: varchar("name", { length: 256 }).notNull(),
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
 
-export const users = createTable("user", {
-  id: varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => sql`gen_random_uuid()`),
-  name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
-  emailVerified: timestamp("emailVerified", {
-    mode: "date",
-    withTimezone: true,
-  }).default(sql`CURRENT_TIMESTAMP`),
-  image: varchar("image", { length: 255 }),
-});
+export const todos = createTable(
+  "todos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    parentTodoId: uuid("parentTodoId"),
+    projectId: uuid("projectId")
+      .notNull()
+      .references(() => projects.id),
+    content: varchar("content", { length: 256 }),
+    createdById: varchar("createdById", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    priority: Priority("priority").default("MEDIUM").notNull(),
+    status: Status("status").default("TODO").notNull(),
+    due: timestamp("due", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      parentReference: foreignKey({
+        columns: [table.parentTodoId],
+        foreignColumns: [table.id],
+        name: "parentTodoId_fk",
+      }),
+    };
+  },
+);
+
+export const users = createTable(
+  "user",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => sql`gen_random_uuid()`),
+    name: varchar("name", { length: 255 }),
+    email: varchar("email", { length: 255 }).notNull(),
+    emailVerified: timestamp("emailVerified", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`CURRENT_TIMESTAMP`),
+    image: varchar("image", { length: 255 }),
+    userRole: UserRole("userRole").default("USER").notNull(),
+  },
+  (table) => {
+    return {
+      emailIndex: uniqueIndex("email_idx").on(table.email),
+    };
+  },
+);
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
