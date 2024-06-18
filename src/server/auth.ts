@@ -51,39 +51,41 @@ export const authOptions: NextAuthOptions = {
     verifyRequest: "/auth/verify-request", // (used for check email message)
   },
   callbacks: {
-    // signIn: async ({ user, account, credentials, email, profile }) => {
-    //   if (account) {
-    //     const accountProvider = account.provider;
+    signIn: async ({ user, account }) => {
+      if (account) {
+        const accountProvider = account.provider;
 
-    //     // If the user is signing in with Discord, allow them to sign in
-    //     if (accountProvider === "discord") {
-    //       return true;
-    //     }
+        // If the user is signing in with Discord, allow them to sign in
+        if (accountProvider === "discord") {
+          return true;
+        }
 
-    //     /**  If the user is signing in with email, check if the email exists in the User schema
-    //      *@see https://next-auth.js.org/providers/email#sending-magic-links-to-existing-users
-    //      */
-    //     if (accountProvider === "email") {
-    //       const userEmail = user.email;
-    //       if (userEmail) {
-    //         const userExist = await db.query.users.findFirst({
-    //           where: (table, funcs) => funcs.eq(table.email, userEmail),
-    //         });
-    //         if (userExist) {
-    //           cookies().set({
-    //             name: "otp-email",
-    //             value: userEmail,
-    //             maxAge: 10 * 60,
-    //             sameSite: "lax",
-    //           });
-    //           return true; //if the email exists in the User schema, email them a magic code link
-    //         }
-    //         return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
-    //       }
-    //     }
-    //   }
-    //   return false; // Return false to display a default error message
-    // },
+        /**  If the user is signing in with email, check if the email exists in the User schema
+         *@see https://next-auth.js.org/providers/email#sending-magic-links-to-existing-users
+         */
+        if (accountProvider === "email") {
+          const userEmail = user.email;
+          if (userEmail) {
+            const userExist = await db.query.users.findFirst({
+              where: (table, funcs) => funcs.eq(table.email, userEmail),
+            });
+            if (userExist) {
+              cookies().set({
+                name: "otp-email",
+                value: userEmail,
+                maxAge: 10 * 60,
+                sameSite: "lax",
+              });
+              return true; //if the email exists in the User schema, email them a magic code link
+            }
+            return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
+          }
+          return false;
+        }
+        return false;
+      }
+      return false; // Return false to display a default error message
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
