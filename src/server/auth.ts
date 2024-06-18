@@ -80,9 +80,7 @@ export const authOptions: NextAuthOptions = {
             }
             return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
-          return false;
         }
-        return false;
       }
       return false; // Return false to display a default error message
     },
