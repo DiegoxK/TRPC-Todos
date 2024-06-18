@@ -36,11 +36,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: user & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }.
 }
 
 /**
@@ -56,7 +51,13 @@ export const authOptions: NextAuthOptions = {
     verifyRequest: "/auth/verify-request", // (used for check email message)
   },
   callbacks: {
-    signIn: async ({ user, account }) => {
+    signIn: async ({ user, account, credentials, email, profile }) => {
+      console.log("User: ", user);
+      console.log("Account: ", account);
+      console.log("Credentials: ", credentials);
+      console.log("Email: ", email);
+      console.log("Profile: ", profile);
+
       if (account) {
         const accountProvider = account.provider;
 
@@ -75,15 +76,17 @@ export const authOptions: NextAuthOptions = {
               where: (table, funcs) => funcs.eq(table.email, userEmail),
             });
             if (userExist) {
+              console.log("tamo aqui");
               cookies().set({
                 name: "otp-email",
                 value: userEmail,
                 maxAge: 10 * 60,
-                sameSite: "strict",
+                sameSite: "lax",
               });
               return true; //if the email exists in the User schema, email them a magic code link
             }
-            return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
+            const encodedEmail = encodeURIComponent(userEmail);
+            return "/auth/signup?email=" + encodedEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
         }
       }

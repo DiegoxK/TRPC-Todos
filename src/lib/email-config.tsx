@@ -5,6 +5,11 @@ import { createTransport } from "nodemailer";
 import { renderAsync } from "@react-email/render";
 import { Verification } from "@/components/email/verification";
 
+export const generateVerificationToken = async () => {
+  const random = crypto.getRandomValues(new Uint8Array(8));
+  return Buffer.from(random).toString("hex").slice(0, 6);
+};
+
 export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
 ) => {
@@ -31,9 +36,4 @@ export const sendVerificationRequest = async (
   if (failed.length) {
     throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
   }
-};
-
-export const generateVerificationToken = async () => {
-  const random = crypto.getRandomValues(new Uint8Array(8));
-  return Buffer.from(random).toString("hex").slice(0, 6);
 };
