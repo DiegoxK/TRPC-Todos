@@ -22,7 +22,7 @@ export default async function Dashboard({
         <Sidebar />
         <div className="w-full md:ml-[20rem]">
           <Header session={session} />
-          <main className="mt-[72px] min-h-[calc(100vh-72px)] bg-accent px-8 py-6">
+          <main className="mt-[124px] min-h-[calc(100vh-124px)] bg-accent px-8 py-6">
             {children}
           </main>
         </div>

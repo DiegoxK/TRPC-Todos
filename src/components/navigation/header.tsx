@@ -1,6 +1,7 @@
 import type { Session } from "next-auth";
 import UserButton from "@/components/ui/user-button";
 import MobileSideNav from "@/components/navigation/mobile-sidenav";
+import BreadcrumbNavigation from "@/components/navigation/breadcrumb-navigation";
 
 interface HeaderProps {
   session: Session;
@@ -10,9 +11,9 @@ export default function Header({ session }: HeaderProps) {
   return (
     <div className="fixed w-full md:w-[calc(100%-20rem)]">
       <header className="flex items-center justify-between bg-background px-7 py-4">
-        <h1 className="flex items-center gap-2 text-xl font-medium text-primary">
+        <h1 className="text-xl font-medium text-primary">
           <MobileSideNav />
-          <div className="hidden md:flex">
+          <div className="hidden items-center gap-2 md:flex">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt="Bacavailando"
@@ -24,8 +25,7 @@ export default function Header({ session }: HeaderProps) {
         </h1>
         <UserButton session={session} />
       </header>
-      {/* TODO: Add breadcrumbs  here*/}
-      asdasd
+      <BreadcrumbNavigation />
     </div>
   );
 }
