@@ -57,6 +57,12 @@ export const projects = createTable("project", {
     .notNull(),
 });
 
+export const projectsRelations = relations(projects, ({ many }) => {
+  return {
+    todos: many(todos),
+  };
+});
+
 export const todos = createTable(
   "todos",
   {
@@ -86,6 +92,21 @@ export const todos = createTable(
     };
   },
 );
+
+export const todosRelations = relations(todos, ({ one }) => ({
+  project: one(projects, {
+    fields: [todos.projectId],
+    references: [projects.id],
+  }),
+  created_by: one(users, {
+    fields: [todos.createdById],
+    references: [users.id],
+  }),
+  parentTodo: one(todos, {
+    fields: [todos.parentTodoId],
+    references: [todos.id],
+  }),
+}));
 
 export const users = createTable(
   "user",
