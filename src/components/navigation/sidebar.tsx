@@ -1,50 +1,9 @@
-import { Separator } from "@/components/ui/separator";
-
-import { BookCheck, Home, SlidersHorizontal } from "lucide-react";
-
-import { NavLink } from "@/components/navigation/nav-link";
+import Navigation from "./navigation";
 
 export default function Sidebar() {
-  const links = [
-    {
-      label: "Home",
-      icon: <Home className="text-primary" size={20} />,
-      subRoutes: ["/project"],
-      href: "",
-    },
-    {
-      label: "Todos",
-      icon: <BookCheck className="text-primary" size={20} />,
-      href: "/todos",
-    },
-  ];
-
   return (
-    <section className="fixed flex h-screen max-h-screen w-[20rem] flex-col bg-background p-6 shadow-md">
-      <p className="text-3xl font-semibold">
-        To<span className="text-primary">do.</span>
-      </p>
-      <Separator className="my-7 bg-white" />
-      <nav className="flex grow flex-col justify-between">
-        <div className="space-y-2">
-          {links.map((link) => (
-            <NavLink
-              key={link.href}
-              subRoutes={link.subRoutes}
-              href={link.href}
-              icon={link.icon}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </div>
-        <NavLink
-          href="/settings"
-          icon={<SlidersHorizontal className="text-primary" size={20} />}
-        >
-          Settings
-        </NavLink>
-      </nav>
+    <section className="fixed hidden h-screen max-h-screen flex-col bg-background p-6 shadow-md md:flex md:w-[20rem]">
+      <Navigation />
     </section>
   );
 }
