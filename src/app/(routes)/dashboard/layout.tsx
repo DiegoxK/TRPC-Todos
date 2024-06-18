@@ -20,7 +20,7 @@ export default async function Dashboard({
     return (
       <div className="flex">
         <Sidebar />
-        <div className="ml-[20rem] w-full">
+        <div className="w-full md:ml-[20rem]">
           <Header session={session} />
           <main className="mt-[72px] min-h-[calc(100vh-72px)] bg-accent px-8 py-6">
             {children}

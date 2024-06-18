@@ -1,5 +1,6 @@
 import type { Session } from "next-auth";
-import UserButton from "../ui/user-button";
+import UserButton from "@/components/ui/user-button";
+import MobileSideNav from "@/components/navigation/mobile-sidenav";
 
 interface HeaderProps {
   session: Session;
@@ -7,17 +8,19 @@ interface HeaderProps {
 
 export default function Header({ session }: HeaderProps) {
   return (
-    <div className="fixed w-[calc(100%-20rem)] ">
+    <div className="fixed w-full md:w-[calc(100%-20rem)]">
       <header className="flex items-center justify-between bg-background px-7 py-4">
         <h1 className="flex items-center gap-2 text-xl font-medium text-primary">
-          {/* Add button to retract the sidebar */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt="Bacavailando"
-            src="https://media.tenor.com/9egJp0qwy_UAAAAi/polish-cow-polish.gif"
-            width={36}
-          />
-          Bacavailando
+          <MobileSideNav />
+          <div className="hidden md:flex">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt="Bacavailando"
+              src="https://media.tenor.com/9egJp0qwy_UAAAAi/polish-cow-polish.gif"
+              width={36}
+            />
+            Bacavailando
+          </div>
         </h1>
         <UserButton session={session} />
       </header>
