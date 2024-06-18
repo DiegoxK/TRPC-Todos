@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
                 sameSite: "lax",
               });
               console.log(cookies().get("otp-email"));
-              return '"/auth/verify-request"'; //if the email exists in the User schema, email them a magic code link
+              return "/api/auth/signin/email"; //if the email exists in the User schema, email them a magic code link
             }
             return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
