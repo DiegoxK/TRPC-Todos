@@ -85,8 +85,7 @@ export const authOptions: NextAuthOptions = {
               });
               return true; //if the email exists in the User schema, email them a magic code link
             }
-            const encodedEmail = encodeURIComponent(userEmail);
-            return "/auth/signup?email=" + encodedEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
+            return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
         }
       }
