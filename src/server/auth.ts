@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
-    // error: "/auth/error", // Error code passed in query string as ?error=
+    error: "/auth/error", // Error code passed in query string as ?error=
     verifyRequest: "/auth/verify-request", // (used for check email message)
   },
   callbacks: {
@@ -83,8 +83,8 @@ export const authOptions: NextAuthOptions = {
                 maxAge: 10 * 60,
                 sameSite: "lax",
               });
-              console.log(cookies().get("otp-email"));
-              return "/api/auth/signin/email"; //if the email exists in the User schema, email them a magic code link
+              console.log("Cookie: ", cookies().get("otp-email"));
+              return true; //if the email exists in the User schema, email them a magic code link
             }
             return "/auth/signup?email=" + userEmail; //if the email does not exist in the User schema, redirect them to the registration page with the email pre-filled in the form
           }
