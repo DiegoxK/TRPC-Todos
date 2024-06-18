@@ -27,6 +27,8 @@ const UserButton = ({ session }: UserButtonProps) => {
 
   const router = useRouter();
 
+  // TODO: Use shadcn ui avatar component
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
