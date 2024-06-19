@@ -12,6 +12,22 @@ export const projectRouter = createTRPCRouter({
     });
   }),
   getProject: protectedProcedure
+    .input(z.object({ projectSlug: z.string() }))
+    .query(({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return ctx.db.query.projects.findFirst({
+        where: and(
+          eq(projects.createdById, userId),
+          eq(projects.nameSlug, input.projectSlug),
+        ),
+        with: {
+          todos: true,
+        },
+      });
+    }),
+
+  getProjectName: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .query(({ ctx, input }) => {
       const userId = ctx.session.user.id;
@@ -21,8 +37,8 @@ export const projectRouter = createTRPCRouter({
           eq(projects.createdById, userId),
           eq(projects.id, input.projectId),
         ),
-        with: {
-          todos: true,
+        columns: {
+          name: true,
         },
       });
     }),
