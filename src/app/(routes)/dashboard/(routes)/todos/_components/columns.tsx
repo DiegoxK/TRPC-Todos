@@ -5,11 +5,11 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Todo>[] = [
   {
-    accessorKey: "content",
-    header: "Content",
+    accessorKey: "task",
+    header: "Task",
   },
   {
-    accessorKey: "done",
-    header: "Done",
+    accessorKey: "status",
+    header: "Status",
   },
 ];
