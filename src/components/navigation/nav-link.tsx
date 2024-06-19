@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 interface NavLinkProps {
   icon: ReactNode;
   href: string;
-  subRoutes?: string[];
+
   className?: string;
   children: React.ReactNode;
   toggleOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +17,7 @@ interface NavLinkProps {
 export function NavLink({
   icon,
   href,
-  subRoutes,
+
   className,
   children,
   toggleOpen,
@@ -26,20 +26,16 @@ export function NavLink({
   const path = usePathname();
   const pathname = path.replace("/dashboard", "");
 
-  let isActive = false;
+  const isActive = (href: string) => {
+    if (href === "") return pathname === "";
+    return pathname.startsWith(href);
+  };
 
-  if (subRoutes) {
-    isActive = subRoutes.some((subRoute) => pathname.startsWith(subRoute));
-  }
-
-  if (!isActive) {
-    isActive = pathname === href;
-  }
   return (
     <Link
       className={cn(
         "flex h-[44px] items-center rounded-sm pl-4 transition-colors hover:bg-accent hover:text-primary",
-        isActive &&
+        isActive(href) &&
           "ml-0 bg-accent pl-0 text-primary before:mr-4 before:h-full before:w-[4px] before:bg-primary before:content-['|']",
         className,
       )}

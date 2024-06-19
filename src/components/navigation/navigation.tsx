@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 
-import { BookCheck, Home, SlidersHorizontal } from "lucide-react";
+import { BookCheck, FolderKanban, Home, SlidersHorizontal } from "lucide-react";
 
 import { NavLink } from "@/components/navigation/nav-link";
 
@@ -9,8 +9,12 @@ export default function Navigation() {
     {
       label: "Home",
       icon: <Home className="text-primary" size={20} />,
-      subRoutes: ["/project"],
       href: "",
+    },
+    {
+      label: "Projects",
+      icon: <FolderKanban className="text-primary" size={20} />,
+      href: "/projects",
     },
     {
       label: "Todos",
@@ -30,12 +34,7 @@ export default function Navigation() {
       <nav className="flex grow flex-col justify-between">
         <div className="space-y-2">
           {links.map((link) => (
-            <NavLink
-              key={link.href}
-              subRoutes={link.subRoutes}
-              href={link.href}
-              icon={link.icon}
-            >
+            <NavLink key={link.href} href={link.href} icon={link.icon}>
               {link.label}
             </NavLink>
           ))}
