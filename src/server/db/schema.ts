@@ -4,7 +4,6 @@ import {
   integer,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
   varchar,
@@ -27,35 +26,27 @@ export const Priority = pgEnum("priority", ["LOW", "MEDIUM", "HIGH"]);
  */
 export const createTable = pgTableCreator((name) => `trpc-todo_${name}`);
 
-export const posts = createTable(
-  "post",
+export const projects = createTable(
+  "project",
   {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
+    id: uuid("id").primaryKey().defaultRandom(),
+
+    // TODO: Limit the number of characters a project name could have
+    name: varchar("name", { length: 256 }).notNull(),
+    nameSlug: varchar("nameSlug", { length: 256 }).notNull(),
+
+    description: text("description"),
     createdById: varchar("createdById", { length: 255 })
       .notNull()
       .references(() => users.id),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
   },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
+  (table) => ({
+    nameIndex: index("name_idx").on(table.name),
   }),
 );
-
-export const projects = createTable("project", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 256 }).notNull(),
-  createdById: varchar("createdById", { length: 255 })
-    .notNull()
-    .references(() => users.id),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
 
 export const projectsRelations = relations(projects, ({ many }) => {
   return {
@@ -71,7 +62,12 @@ export const todos = createTable(
     projectId: uuid("projectId")
       .notNull()
       .references(() => projects.id),
-    content: varchar("content", { length: 256 }),
+
+    // TODO: Limit the number of characters a task name could have
+    task: varchar("task", { length: 256 }).notNull(),
+    taskSlug: varchar("taskSlug", { length: 256 }).notNull(),
+
+    description: text("description"),
     createdById: varchar("createdById", { length: 255 })
       .notNull()
       .references(() => users.id),
@@ -84,6 +80,7 @@ export const todos = createTable(
   },
   (table) => {
     return {
+      taskIndex: index("task_idx").on(table.taskSlug),
       parentReference: foreignKey({
         columns: [table.parentTodoId],
         foreignColumns: [table.id],
