@@ -26,20 +26,4 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
-
-  getProjectName: protectedProcedure
-    .input(z.object({ projectId: z.string() }))
-    .query(({ ctx, input }) => {
-      const userId = ctx.session.user.id;
-
-      return ctx.db.query.projects.findFirst({
-        where: and(
-          eq(projects.createdById, userId),
-          eq(projects.id, input.projectId),
-        ),
-        columns: {
-          name: true,
-        },
-      });
-    }),
 });
