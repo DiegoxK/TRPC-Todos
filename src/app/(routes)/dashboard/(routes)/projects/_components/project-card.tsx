@@ -11,11 +11,11 @@ import {
 import Link from "next/link";
 
 export const ProjectCard = ({
-  projectId,
+  projectSlug,
   title,
   description,
 }: {
-  projectId: string;
+  projectSlug: string;
   title: string;
   description: string;
 }) => {
@@ -23,7 +23,7 @@ export const ProjectCard = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href={`/dashboard/project/${projectId}`}>
+          <Link href={`/dashboard/projects/${projectSlug}`}>
             <Button
               variant="ghost"
               size="margin"

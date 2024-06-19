@@ -3,15 +3,15 @@ import { api } from "@/trpc/server";
 
 interface ProjectPageProps {
   params: {
-    projectId: string;
+    projectSlug: string;
   };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const { projectId } = params;
+  const { projectSlug } = params;
 
   const project = await api.project.getProject({
-    projectId,
+    projectSlug,
   });
 
   return (
@@ -22,7 +22,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <div className="mt-4 grid grid-cols-4 gap-4">
         {project?.todos.map((todo) => (
           <div key={todo.id}>
-            <h2 className="text-lg font-medium">{todo.content}</h2>
+            <h2 className="text-lg font-medium">{todo.task}</h2>
             {/* <p className="text-sm">{todo.description}</p> */}
           </div>
         ))}
