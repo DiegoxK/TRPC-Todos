@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export default function Header({ session }: HeaderProps) {
   return (
-    <div className="fixed w-full md:w-[calc(100%-20rem)]">
+    <div className="fixed z-[1] w-full md:w-[calc(100%-20rem)]">
       <header className="flex items-center justify-between bg-background px-7 py-4">
         <h1 className="text-xl font-medium text-primary">
           <MobileSideNav />
