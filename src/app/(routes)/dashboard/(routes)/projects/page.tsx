@@ -11,19 +11,12 @@ export default async function Content() {
       <p className="text-sm">A list of your projects</p>
       <Separator className="mb-6 mt-5 bg-zinc-700" />
       <div className="mt-4 grid grid-cols-4 gap-4">
-        {[
-          ...projects,
-          ...projects,
-          ...projects,
-          ...projects,
-          ...projects,
-          ...projects,
-        ].map((project) => (
+        {projects.map((project) => (
           <ProjectCard
             key={project.id}
             projectSlug={project.nameSlug}
             title={project.name}
-            description="Project description uwu"
+            description={project.description}
           />
         ))}
       </div>
