@@ -1,8 +1,7 @@
 "use client";
 
-import type { Todo } from "@/lib/definitions";
-import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import type { CustomColumnDef, Todo } from "@/lib/definitions";
+import { Bolt, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,12 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { statuses } from "./data";
 
-export const columns: ColumnDef<Todo>[] = [
+export const columns: CustomColumnDef<Todo, unknown>[] = [
   {
     id: "select",
+    headClassName: "w-[40px]",
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -74,6 +75,8 @@ export const columns: ColumnDef<Todo>[] = [
   },
   {
     id: "actions",
+    headClassName: "w-[80px]",
+    header: () => <Bolt className="ml-2" size={20} />,
     cell: ({ row }) => {
       const payment = row.original;
 
