@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
   flexRender,
@@ -27,8 +26,10 @@ import { DataTablePagination } from "./data-table-pagination";
 import { useState } from "react";
 import { DataTableToolbar } from "./data-table-toolbar";
 
+import type { CustomColumnDef } from "@/lib/definitions";
+
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: CustomColumnDef<TData, TValue>[];
   data: TData[];
 }
 
@@ -60,6 +61,12 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  table.getHeaderGroups().forEach((headerGroup) => {
+    headerGroup.headers.forEach((header) => {
+      console.log(header.column.columnDef);
+    });
+  });
+
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -69,8 +76,11 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const headClassName = (
+                    header.column.columnDef as CustomColumnDef<unknown, unknown>
+                  ).headClassName;
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className={headClassName} key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
