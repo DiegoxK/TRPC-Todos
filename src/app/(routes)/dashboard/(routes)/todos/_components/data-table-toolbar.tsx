@@ -1,14 +1,14 @@
-"use client";
-
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { Cross2Icon } from "@radix-ui/react-icons";
 import type { Table } from "@tanstack/react-table";
@@ -19,7 +19,8 @@ import { Input } from "@/components/ui/input";
 import { priorities, statuses } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { api } from "@/trpc/react";
-import { RotateCcw } from "lucide-react";
+import { DiamondPlus, RotateCcw } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface WithId {
   id: string;
@@ -27,15 +28,18 @@ interface WithId {
 
 interface DataTableToolbarProps<TData extends WithId> {
   table: Table<TData>;
+  setIsAdding: Dispatch<SetStateAction<boolean>>;
 }
 
 export function DataTableToolbar<TData extends WithId>({
   table,
+  setIsAdding,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const isSorted = table.getState().sorting.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter tasks..."
@@ -62,26 +66,52 @@ export function DataTableToolbar<TData extends WithId>({
         {isFiltered && (
           <Button
             variant="outline"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters();
+            }}
             className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-500 hover:outline-amber-500 lg:px-3"
           >
             <RotateCcw size={15} className="mr-2" />
             Reset filters
           </Button>
         )}
-        {/* TODO: Add delete button if there are selected rows */}
-        {/* {table.getFilteredSelectedRowModel().rows.length} */}
-        {table.getFilteredSelectedRowModel().rows.length > 0 && (
-          <DeleteDalog table={table} />
+        {isSorted && (
+          <Button
+            variant="outline"
+            onClick={() => {
+              table.resetSorting();
+            }}
+            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-500 hover:outline-amber-500 lg:px-3"
+          >
+            <RotateCcw size={15} className="mr-2" />
+            Reset sorting
+          </Button>
         )}
       </div>
+      {table.getFilteredSelectedRowModel().rows.length > 0 && (
+        <DeleteDalog table={table} />
+      )}
+      <Button
+        variant="outline"
+        className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-green-400 hover:outline-green-400 lg:px-3"
+        onClick={() => {
+          setIsAdding((prev) => !prev);
+        }}
+      >
+        <DiamondPlus className="mr-1 h-4 w-4" />
+        Add Task
+      </Button>
     </div>
   );
 }
 
+interface DeleteDalogProps<TData extends WithId> {
+  table: Table<TData>;
+}
+
 const DeleteDalog = <TData extends WithId>({
   table,
-}: DataTableToolbarProps<TData>) => {
+}: DeleteDalogProps<TData>) => {
   const { mutate: deleteTodos } = api.todo.deleteTodos.useMutation({
     onSuccess: () => {
       table.getFilteredSelectedRowModel().rows.forEach((row) => {
@@ -94,40 +124,44 @@ const DeleteDalog = <TData extends WithId>({
   });
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
         <Button
           variant="outline"
           className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-destructive hover:outline-destructive lg:px-3"
         >
           <Cross2Icon className="mr-1 h-4 w-4" />
-          Delete
+          Delete {table.getFilteredSelectedRowModel().rows.length} tasks
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete the
-            selected tasks.
-          </DialogDescription>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                const todosIds = table
-                  .getFilteredSelectedRowModel()
-                  .rows.map((row) => row.original.id);
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete{" "}
+            {table.getFilteredSelectedRowModel().rows.length} tasks.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                className="bg-background"
+                onClick={() => {
+                  const todosIds = table
+                    .getFilteredSelectedRowModel()
+                    .rows.map((row) => row.original.id);
 
-                deleteTodos({ ids: todosIds });
-              }}
-              variant="outlineDestructive"
-              type="submit"
-            >
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+                  deleteTodos({ ids: todosIds });
+                }}
+                variant="outlineDestructive"
+                type="submit"
+              >
+                Delete tasks
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogHeader>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
