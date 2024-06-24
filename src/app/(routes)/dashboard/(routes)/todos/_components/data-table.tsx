@@ -28,12 +28,16 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 import type { CustomColumnDef } from "@/lib/definitions";
 
-interface DataTableProps<TData, TValue> {
+interface WithId {
+  id: string;
+}
+
+interface DataTableProps<TData extends WithId, TValue> {
   columns: CustomColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends WithId, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -59,12 +63,6 @@ export function DataTable<TData, TValue>({
       columnFilters,
       rowSelection,
     },
-  });
-
-  table.getHeaderGroups().forEach((headerGroup) => {
-    headerGroup.headers.forEach((header) => {
-      console.log(header.column.columnDef);
-    });
   });
 
   return (
