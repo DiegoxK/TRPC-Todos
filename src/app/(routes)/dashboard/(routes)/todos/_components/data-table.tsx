@@ -28,6 +28,8 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 import type { CustomColumnDef } from "@/lib/definitions";
 
+import CreateTaskForm from "./create-task-form";
+
 interface WithId {
   id: string;
 }
@@ -44,6 +46,7 @@ export function DataTable<TData extends WithId, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+  const [isAdding, setIsAdding] = useState<boolean>(false);
 
   const table = useReactTable({
     data,
@@ -65,9 +68,18 @@ export function DataTable<TData extends WithId, TValue>({
     },
   });
 
+  const columnIds = columns.map((column) => {
+    if (column.id) {
+      return column.id;
+    }
+    return column.accessorKey;
+  });
+
+  console.log(columnIds);
+
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} setIsAdding={setIsAdding} />
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
@@ -92,6 +104,7 @@ export function DataTable<TData extends WithId, TValue>({
             ))}
           </TableHeader>
           <TableBody>
+            {isAdding && <CreateTaskForm columnIds={columnIds} />}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
