@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { Cross2Icon } from "@radix-ui/react-icons";
 import type { Table } from "@tanstack/react-table";
 
@@ -8,12 +18,17 @@ import { Input } from "@/components/ui/input";
 
 import { priorities, statuses } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { api } from "@/trpc/react";
 
-interface DataTableToolbarProps<TData> {
+interface WithId {
+  id: string;
+}
+
+interface DataTableToolbarProps<TData extends WithId> {
   table: Table<TData>;
 }
 
-export function DataTableToolbar<TData>({
+export function DataTableToolbar<TData extends WithId>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -53,7 +68,65 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
+        {/* TODO: Add delete button if there are selected rows */}
+        {/* {table.getFilteredSelectedRowModel().rows.length} */}
+        {table.getFilteredSelectedRowModel().rows.length > 0 && (
+          <DeleteDalog table={table} />
+        )}
       </div>
     </div>
   );
 }
+
+const DeleteDalog = <TData extends WithId>({
+  table,
+}: DataTableToolbarProps<TData>) => {
+  const { mutate: deleteTodos } = api.todo.deleteTodos.useMutation({
+    onSuccess: () => {
+      table.getFilteredSelectedRowModel().rows.forEach((row) => {
+        console.log(row.original.id);
+      });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="h-8 border-0 px-2 outline-dashed outline-1 outline-border transition-all hover:text-destructive hover:outline-destructive lg:px-3"
+        >
+          <Cross2Icon className="mr-1 h-4 w-4" />
+          Delete
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete the
+            selected tasks.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                const todosIds = table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((row) => row.original.id);
+
+                deleteTodos({ ids: todosIds });
+              }}
+              variant="outlineDestructive"
+              type="submit"
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
