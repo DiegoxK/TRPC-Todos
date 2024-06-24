@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { priorities, statuses } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { api } from "@/trpc/react";
+import { RotateCcw } from "lucide-react";
 
 interface WithId {
   id: string;
@@ -62,10 +63,10 @@ export function DataTableToolbar<TData extends WithId>({
           <Button
             variant="outline"
             onClick={() => table.resetColumnFilters()}
-            className="h-8 border-0 px-2 outline-dashed outline-1 outline-border hover:outline-primary lg:px-3"
+            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-500 hover:outline-amber-500 lg:px-3"
           >
-            Reset
-            <Cross2Icon className="ml-2 h-4 w-4" />
+            <RotateCcw size={15} className="mr-2" />
+            Reset filters
           </Button>
         )}
         {/* TODO: Add delete button if there are selected rows */}
@@ -97,7 +98,7 @@ const DeleteDalog = <TData extends WithId>({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="h-8 border-0 px-2 outline-dashed outline-1 outline-border transition-all hover:text-destructive hover:outline-destructive lg:px-3"
+          className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-destructive hover:outline-destructive lg:px-3"
         >
           <Cross2Icon className="mr-1 h-4 w-4" />
           Delete
