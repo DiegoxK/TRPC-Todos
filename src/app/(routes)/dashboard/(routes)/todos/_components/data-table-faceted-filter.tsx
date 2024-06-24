@@ -47,7 +47,7 @@ export function DataTableFacetedFilter<TData, TValue>({
           size="sm"
           className="h-8 border-dashed border-border text-accent-foreground"
         >
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
+          <PlusCircledIcon className="mr-1 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
             <>
