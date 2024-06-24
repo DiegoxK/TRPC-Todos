@@ -28,7 +28,12 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => {
+          table.toggleAllPageRowsSelected(!!value);
+          if (value === false) {
+            table.toggleAllRowsSelected(!!value);
+          }
+        }}
         aria-label="Select all"
       />
     ),
@@ -79,7 +84,6 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
     header: () => <Bolt className="ml-2" size={20} />,
     cell: ({ row }) => {
       const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
