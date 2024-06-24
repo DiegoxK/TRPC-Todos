@@ -45,19 +45,25 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          className="h-8 border-dashed border-border text-accent-foreground"
+          className="group h-8 border-dashed border-border text-accent-foreground"
         >
           <PlusCircledIcon className="mr-1 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge className="rounded-sm px-2 font-normal lg:hidden">
+              <Badge
+                variant="outlineDashed"
+                className="rounded-sm px-2 font-normal lg:hidden"
+              >
                 {selectedValues.size}
               </Badge>
-              <div className="hidden space-x-1 lg:flex">
+              <div className="hidden space-x-2 lg:flex">
                 {selectedValues.size > 2 ? (
-                  <Badge className="rounded-sm px-1 font-normal">
+                  <Badge
+                    variant="outlineDashed"
+                    className="rounded-sm px-1 font-normal"
+                  >
                     {selectedValues.size} selected
                   </Badge>
                 ) : (
@@ -66,6 +72,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     .map((option) => (
                       <Badge
                         key={option.value}
+                        variant="outlineDashed"
                         className="rounded-sm px-2 font-normal"
                       >
                         {option.label}
