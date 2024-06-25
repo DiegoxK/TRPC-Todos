@@ -3,6 +3,8 @@
 import {
   type SortingState,
   type ColumnFiltersState,
+  type ColumnSizingState,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -26,20 +28,16 @@ import { DataTablePagination } from "./data-table-pagination";
 import { useState } from "react";
 import { DataTableToolbar } from "./data-table-toolbar";
 
-import type { CustomColumnDef } from "@/lib/definitions";
-
 import CreateTaskForm from "./create-task-form";
+import { DataTableResizer } from "./data-table-resizer";
+import { cn } from "@/lib/utils";
 
-interface WithId {
-  id: string;
-}
-
-interface DataTableProps<TData extends WithId, TValue> {
-  columns: CustomColumnDef<TData, TValue>[];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData extends WithId, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -47,14 +45,18 @@ export function DataTable<TData extends WithId, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
   const table = useReactTable({
     data,
     columns,
     enableRowSelection: true,
+    enableColumnResizing: true,
+    columnResizeMode: "onChange",
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnSizingChange: setColumnSizing,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -63,6 +65,7 @@ export function DataTable<TData extends WithId, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
+      columnSizing,
       columnFilters,
       rowSelection,
     },
@@ -72,7 +75,6 @@ export function DataTable<TData extends WithId, TValue>({
     if (column.id) {
       return column.id;
     }
-    return column.accessorKey;
   });
 
   return (
@@ -83,22 +85,32 @@ export function DataTable<TData extends WithId, TValue>({
         setIsAdding={setIsAdding}
       />
       <div className="rounded-md border bg-background">
-        <Table>
+        <Table
+          className="table-fixed border-separate border-spacing-0"
+          style={{ minWidth: table.getTotalSize() }}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const headClassName = (
-                    header.column.columnDef as CustomColumnDef<unknown, unknown>
-                  ).headClassName;
                   return (
-                    <TableHead className={headClassName} key={header.id}>
+                    <TableHead
+                      className={cn(
+                        "relative",
+                        header.column.columnDef.meta?.className,
+                      )}
+                      key={header.id}
+                      style={{
+                        width: header.getSize(),
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext(),
                           )}
+                      <DataTableResizer header={header} />
                     </TableHead>
                   );
                 })}
@@ -116,7 +128,13 @@ export function DataTable<TData extends WithId, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      className={cn(
+                        "truncate",
+                        cell.column.columnDef.meta?.className,
+                      )}
+                      key={cell.id}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
