@@ -21,18 +21,15 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { api } from "@/trpc/react";
 import { DiamondPlus, RotateCcw } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
+import type { Todo } from "@/lib/definitions";
 
-interface WithId {
-  id: string;
-}
-
-interface DataTableToolbarProps<TData extends WithId> {
+interface DataTableToolbarProps<TData extends Todo> {
   table: Table<TData>;
   isAdding: boolean;
   setIsAdding: Dispatch<SetStateAction<boolean>>;
 }
 
-export function DataTableToolbar<TData extends WithId>({
+export function DataTableToolbar<TData extends Todo>({
   table,
   isAdding,
   setIsAdding,
@@ -121,11 +118,11 @@ const AddTrigger = ({ isAdding, onClick }: AddTriggerProps) => {
   );
 };
 
-interface DeleteDalogProps<TData extends WithId> {
+interface DeleteDalogProps<TData extends Todo> {
   table: Table<TData>;
 }
 
-const DeleteDalog = <TData extends WithId>({
+const DeleteDalog = <TData extends Todo>({
   table,
 }: DeleteDalogProps<TData>) => {
   const { mutate: deleteTodos } = api.todo.deleteTodos.useMutation({
