@@ -30,7 +30,7 @@ const UserButton = ({ session }: UserButtonProps) => {
   // TODO: Use shadcn ui avatar component
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
