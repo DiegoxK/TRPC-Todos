@@ -7,7 +7,7 @@ export default async function TodosPage() {
   const todos = await api.todo.getTodosWithProject();
 
   return (
-    <div className="bottom-2 space-y-4 rounded-md border border-zinc-700 p-4">
+    <div className="bottom-2 space-y-4 rounded-md border border-zinc-700 bg-accent p-4">
       <div>
         <h1 className="text-xl font-medium ">Todos</h1>
         <p className="text-sm">A list of all your todos</p>
