@@ -10,11 +10,18 @@ import { eq, getTableName } from "drizzle-orm";
 import { z } from "zod";
 
 export const todoRouter = createTRPCRouter({
-  getTodos: protectedProcedure.query(({ ctx }) => {
+  getTodosWithProject: protectedProcedure.query(({ ctx }) => {
     const userId = ctx.session.user.id;
 
     return ctx.db.query.todos.findMany({
       where: eq(todos.createdById, userId),
+      with: {
+        project: {
+          columns: {
+            name: true,
+          },
+        },
+      },
     });
   }),
 
