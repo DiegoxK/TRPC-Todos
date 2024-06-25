@@ -31,13 +31,14 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import CreateTaskForm from "./create-task-form";
 import { DataTableResizer } from "./data-table-resizer";
 import { cn } from "@/lib/utils";
+import type { Todo } from "@/lib/definitions";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends Todo, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -84,12 +85,12 @@ export function DataTable<TData, TValue>({
         isAdding={isAdding}
         setIsAdding={setIsAdding}
       />
-      <div className="rounded-md border bg-background">
+      <div className="border bg-background">
         <Table
           className="table-fixed border-separate border-spacing-0"
           style={{ minWidth: table.getTotalSize() }}
         >
-          <TableHeader>
+          <TableHeader className="sticky top-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
