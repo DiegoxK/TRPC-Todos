@@ -18,7 +18,7 @@ export default async function Dashboard({
     }
 
     return (
-      <div className="flex">
+      <>
         <Sidebar />
         <div className="w-full max-w-[calc(100%-20rem)] md:ml-[20rem]">
           <Header session={session} />
@@ -26,7 +26,7 @@ export default async function Dashboard({
             {children}
           </main>
         </div>
-      </div>
+      </>
     );
   }
 

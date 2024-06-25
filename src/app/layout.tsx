@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppinsFont.className}`}>
-      <body>
+      <body className="flex">
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster />
       </body>
