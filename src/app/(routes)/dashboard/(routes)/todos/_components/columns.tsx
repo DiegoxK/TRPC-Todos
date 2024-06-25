@@ -50,6 +50,32 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
   {
     accessorKey: "task",
     header: "Task",
+    cell: ({ row }) => {
+      const task = row.original.task;
+      if (task) {
+        return task.length > 14 ? `${task.slice(0, 14)}...` : task;
+      }
+    },
+  },
+  {
+    accessorKey: "project.name",
+    header: "Project",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => {
+      const description = row.original.description;
+      if (description) {
+        return description.length > 25
+          ? `${description.slice(0, 25)}...`
+          : description;
+      }
+    },
+  },
+  {
+    accessorKey: "priority",
+    header: "Priority",
   },
   {
     accessorKey: "status",
@@ -66,7 +92,7 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
+        <div className="flex items-center">
           {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
@@ -76,6 +102,16 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: "due",
+    header: "Due date",
+    cell: ({ row }) => {
+      const { due } = row.original;
+      if (due) {
+        return new Date(due).toLocaleDateString();
+      }
     },
   },
   {
