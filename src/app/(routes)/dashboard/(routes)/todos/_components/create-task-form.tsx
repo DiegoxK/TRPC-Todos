@@ -1,14 +1,17 @@
-"use client";
-
 import { Input } from "@/components/ui/input";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Send, SquareMinus } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface CreateTaskFormProps {
+  setIsAdding: Dispatch<SetStateAction<boolean>>;
   columnIds: (string | undefined)[];
 }
 
-export default function CreateTaskForm({ columnIds }: CreateTaskFormProps) {
+export default function CreateTaskForm({
+  setIsAdding,
+  columnIds,
+}: CreateTaskFormProps) {
   return (
     <TableRow className="bg-accent">
       {columnIds.map((columnId, index) => {
@@ -16,6 +19,7 @@ export default function CreateTaskForm({ columnIds }: CreateTaskFormProps) {
           return (
             <TableCell className="pl-[15px] pr-0" key={index}>
               <SquareMinus
+                onClick={() => setIsAdding(false)}
                 size={20}
                 className="cursor-pointer text-accent-foreground transition-colors hover:text-destructive"
               />
