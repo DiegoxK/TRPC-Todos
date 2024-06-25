@@ -1,6 +1,8 @@
 "use client";
 
-import type { CustomColumnDef, Todo } from "@/lib/definitions";
+import "@tanstack/react-table";
+
+import type { Todo } from "@/lib/definitions";
 import { Bolt, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,11 +19,22 @@ import {
 
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { statuses } from "./data";
+import type { ColumnDef, RowData } from "@tanstack/react-table";
 
-export const columns: CustomColumnDef<Todo, unknown>[] = [
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string;
+  }
+}
+
+export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "select",
-    headClassName: "w-[40px]",
+    size: 50,
+    enableResizing: false,
+    meta: {
+      className: "sticky z-[1] left-0 bg-background",
+    },
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -48,22 +61,32 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
     enableHiding: false,
   },
   {
+    id: "task",
+
     accessorKey: "task",
     header: "Task",
   },
   {
+    id: "project",
+
     accessorKey: "project.name",
     header: "Project",
   },
   {
+    id: "description",
+
     accessorKey: "description",
     header: "Description",
   },
   {
+    id: "priority",
+
     accessorKey: "priority",
     header: "Priority",
   },
   {
+    id: "status",
+
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
@@ -91,6 +114,11 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
     },
   },
   {
+    id: "due",
+    meta: {
+      className: "border-r-0",
+    },
+    size: 130,
     accessorKey: "due",
     header: "Due date",
     cell: ({ row }) => {
@@ -102,16 +130,20 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
   },
   {
     id: "actions",
-    headClassName: "w-[80px]",
-    header: () => <Bolt className="ml-2" size={20} />,
+    meta: {
+      className: "sticky border-l z-[1] right-0 bg-background",
+    },
+    size: 53,
+    enableResizing: false,
+    header: () => <Bolt size={20} />,
     cell: ({ row }) => {
       const payment = row.original;
       return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button className="block" size="icon" variant="ghost">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal size={16} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
