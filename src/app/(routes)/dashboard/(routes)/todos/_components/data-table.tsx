@@ -75,11 +75,13 @@ export function DataTable<TData extends WithId, TValue>({
     return column.accessorKey;
   });
 
-  console.log(columnIds);
-
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} setIsAdding={setIsAdding} />
+      <DataTableToolbar
+        table={table}
+        isAdding={isAdding}
+        setIsAdding={setIsAdding}
+      />
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
