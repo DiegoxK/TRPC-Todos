@@ -8,9 +8,8 @@ interface HeaderProps {
 }
 
 export default function Header({ session }: HeaderProps) {
-  // TODO: Use sticky for the header instead of fixed
   return (
-    <div className="fixed z-[2] w-full md:w-[calc(100%-20rem)]">
+    <div className="sticky top-0 z-[2] w-full md:w-[calc(100vw-20rem-3px)]">
       <header className="flex items-center justify-between bg-background px-7 py-4">
         <h1 className="text-xl font-medium text-primary">
           <MobileSideNav />
