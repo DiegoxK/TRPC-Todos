@@ -4,7 +4,7 @@ import { api } from "@/trpc/server";
 import { Separator } from "@/components/ui/separator";
 
 export default async function TodosPage() {
-  const todos = await api.todo.getTodos();
+  const todos = await api.todo.getTodosWithProject();
 
   return (
     <div className="bottom-2 space-y-4 rounded-md border border-zinc-700 p-4">
