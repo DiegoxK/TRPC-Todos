@@ -65,25 +65,13 @@ export function DataTableToolbar<TData extends WithId>({
             options={priorities}
           />
         )} */}
-        {isFiltered && (
-          <Button
-            variant="outline"
-            onClick={() => {
-              table.resetColumnFilters();
-            }}
-            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-500 hover:outline-amber-500 lg:px-3"
-          >
-            <RotateCcw size={15} className="mr-2" />
-            Reset filters
-          </Button>
-        )}
         {isSorted && (
           <Button
             variant="outline"
             onClick={() => {
               table.resetSorting();
             }}
-            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-500 hover:outline-amber-500 lg:px-3"
+            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-300 hover:outline-amber-300 lg:px-3"
           >
             <RotateCcw size={15} className="mr-2" />
             Reset sorting
