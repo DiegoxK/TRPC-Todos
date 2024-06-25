@@ -50,12 +50,6 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
   {
     accessorKey: "task",
     header: "Task",
-    cell: ({ row }) => {
-      const task = row.original.task;
-      if (task) {
-        return task.length > 14 ? `${task.slice(0, 14)}...` : task;
-      }
-    },
   },
   {
     accessorKey: "project.name",
@@ -64,14 +58,6 @@ export const columns: CustomColumnDef<Todo, unknown>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => {
-      const description = row.original.description;
-      if (description) {
-        return description.length > 25
-          ? `${description.slice(0, 25)}...`
-          : description;
-      }
-    },
   },
   {
     accessorKey: "priority",
