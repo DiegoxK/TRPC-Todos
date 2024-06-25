@@ -37,7 +37,6 @@ export function DataTableToolbar<TData extends WithId>({
   isAdding,
   setIsAdding,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
   const isSorted = table.getState().sorting.length > 0;
 
   return (
