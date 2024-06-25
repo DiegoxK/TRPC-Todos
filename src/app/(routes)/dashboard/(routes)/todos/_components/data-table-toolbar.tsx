@@ -28,11 +28,13 @@ interface WithId {
 
 interface DataTableToolbarProps<TData extends WithId> {
   table: Table<TData>;
+  isAdding: boolean;
   setIsAdding: Dispatch<SetStateAction<boolean>>;
 }
 
 export function DataTableToolbar<TData extends WithId>({
   table,
+  isAdding,
   setIsAdding,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -91,19 +93,46 @@ export function DataTableToolbar<TData extends WithId>({
       {table.getFilteredSelectedRowModel().rows.length > 0 && (
         <DeleteDalog table={table} />
       )}
-      <Button
-        variant="outline"
-        className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-green-400 hover:outline-green-400 lg:px-3"
+      <AddTrigger
         onClick={() => {
           setIsAdding((prev) => !prev);
         }}
-      >
-        <DiamondPlus className="mr-1 h-4 w-4" />
-        Add Task
-      </Button>
+        isAdding={isAdding}
+      />
     </div>
   );
 }
+
+interface AddTriggerProps {
+  isAdding: boolean;
+  onClick: () => void;
+}
+
+const AddTrigger = ({ isAdding, onClick }: AddTriggerProps) => {
+  if (isAdding) {
+    return (
+      <Button
+        variant="outline"
+        className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-pink-400 hover:outline-pink-400 lg:px-3"
+        onClick={onClick}
+      >
+        <DiamondPlus className="mr-1 h-4 w-4" />
+        Discard
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      variant="outline"
+      className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-green-400 hover:outline-green-400 lg:px-3"
+      onClick={onClick}
+    >
+      <DiamondPlus className="mr-1 h-4 w-4" />
+      Add Task
+    </Button>
+  );
+};
 
 interface DeleteDalogProps<TData extends WithId> {
   table: Table<TData>;
