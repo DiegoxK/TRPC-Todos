@@ -131,7 +131,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "actions",
     meta: {
-      className: "sticky border-l z-[1] right-0 bg-background",
+      className: "sticky border-l z-[1] border-r-0 right-0 bg-background",
     },
     size: 53,
     enableResizing: false,
@@ -140,8 +140,12 @@ export const columns: ColumnDef<Todo, unknown>[] = [
       const payment = row.original;
       return (
         <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button className="block" size="icon" variant="ghost">
+          <DropdownMenuTrigger className="" asChild>
+            <Button
+              className="block h-4 w-4 rounded-none"
+              size="icon"
+              variant="ghost"
+            >
               <span className="sr-only">Open menu</span>
               <MoreHorizontal size={16} />
             </Button>
