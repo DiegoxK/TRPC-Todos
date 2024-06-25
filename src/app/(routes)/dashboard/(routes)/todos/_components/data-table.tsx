@@ -106,7 +106,9 @@ export function DataTable<TData extends WithId, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {isAdding && <CreateTaskForm columnIds={columnIds} />}
+            {isAdding && (
+              <CreateTaskForm setIsAdding={setIsAdding} columnIds={columnIds} />
+            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
