@@ -20,7 +20,13 @@ import { priorities, statuses } from "./data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { api } from "@/trpc/react";
 import { DiamondPlus, RotateCcw } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+  useState,
+  useEffect,
+} from "react";
 import type { Todo } from "@/lib/definitions";
 
 interface DataTableToolbarProps<TData extends Todo> {
@@ -34,6 +40,19 @@ export function DataTableToolbar<TData extends Todo>({
   isAdding,
   setIsAdding,
 }: DataTableToolbarProps<TData>) {
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    const delayInputTimeoutId = setTimeout(() => {
+      table.getColumn("task")?.setFilterValue(inputValue);
+    }, 350);
+    return () => clearTimeout(delayInputTimeoutId);
+  }, [table, inputValue]);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
   const isSorted = table.getState().sorting.length > 0;
 
   return (
@@ -41,10 +60,8 @@ export function DataTableToolbar<TData extends Todo>({
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter tasks..."
-          value={(table.getColumn("task")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("task")?.setFilterValue(event.target.value)
-          }
+          value={inputValue}
+          onChange={handleInputChange}
           className="h-8 w-[150px] border-border lg:w-[250px]"
         />
         {table.getColumn("status") && (
