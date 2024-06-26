@@ -20,10 +20,15 @@ import {
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { statuses } from "./data";
 import type { ColumnDef, RowData } from "@tanstack/react-table";
+import { type ZodTypeAny } from "zod";
+
+import { z } from "zod";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className?: string;
+    validation?: ZodTypeAny;
+    default?: string;
   }
 }
 
@@ -62,18 +67,51 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   },
   {
     id: "task",
+    meta: {
+      default: "",
+      validation: z
+        .string()
+        .min(1, {
+          message: "Task can't be empty",
+        })
+        .max(20, {
+          message: "Task name must be at most 20 characters",
+        }),
+    },
     minSize: 70,
     accessorKey: "task",
     header: "Task",
   },
   {
     id: "project",
+    meta: {
+      default: "",
+      validation: z
+        .string()
+        .min(1, {
+          message: "Project can't be empty",
+        })
+        .max(20, {
+          message: "Project name must be at most 20 characters",
+        }),
+    },
     minSize: 80,
     accessorKey: "project.name",
     header: "Project",
   },
   {
     id: "description",
+    meta: {
+      default: "",
+      validation: z
+        .string()
+        .min(1, {
+          message: "Description can't be empty",
+        })
+        .max(400, {
+          message: "Description must be at most 400 characters",
+        }),
+    },
     size: 660,
     minSize: 120,
     accessorKey: "description",
@@ -81,12 +119,34 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   },
   {
     id: "priority",
+    meta: {
+      default: "MEDIUM",
+      validation: z
+        .string()
+        .min(1, {
+          message: "Priority can't be empty",
+        })
+        .max(12, {
+          message: "Priority must be at most 12 characters",
+        }),
+    },
     minSize: 90,
     accessorKey: "priority",
     header: "Priority",
   },
   {
     id: "status",
+    meta: {
+      default: "TODO",
+      validation: z
+        .string()
+        .min(1, {
+          message: "Status can't be empty",
+        })
+        .max(6, {
+          message: "Status must be at most 6 characters",
+        }),
+    },
     minSize: 110,
     accessorKey: "status",
     header: ({ column }) => (
@@ -118,6 +178,9 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "due",
     meta: {
       className: "border-r-0",
+      // new Date().toISOString()
+      // validation: z.string().datetime(),
+      validation: z.string(),
     },
     size: 130,
     accessorKey: "due",
