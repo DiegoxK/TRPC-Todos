@@ -7,7 +7,11 @@ import {
 import { todos } from "@/server/db/schema";
 
 import { eq, getTableName } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+
 import { z } from "zod";
+
+const createTodoSchema = createInsertSchema(todos);
 
 export const todoRouter = createTRPCRouter({
   getTodosWithProject: protectedProcedure.query(({ ctx }) => {
@@ -53,19 +57,29 @@ export const todoRouter = createTRPCRouter({
       // }
     }),
 
-  // setDone: publicProcedure
-  //   .input(
-  //     z.object({
-  //       id: z.string(),
-  //       done: z.boolean(),
-  //     }),
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     return await ctx.db
-  //       .update(todos)
-  //       .set({
-  //         done: input.done,
-  //       })
-  //       .where(eq(todos.id, input.id));
-  //   }),
+  createTodo: protectedProcedure
+    .input(createTodoSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      const project = await ctx.db.query.projects.findFirst({
+        where: (table, funcs) =>
+          funcs.and(
+            funcs.eq(table.id, input.projectId),
+            funcs.eq(table.createdById, userId),
+          ),
+        columns: {
+          id: true,
+        },
+      });
+
+      if (project) {
+        return ctx.db.insert(todos).values({
+          ...input,
+          createdById: userId,
+        });
+      }
+
+      throw new Error("Project not found");
+    }),
 });
