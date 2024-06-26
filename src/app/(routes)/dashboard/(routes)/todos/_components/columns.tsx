@@ -33,7 +33,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     size: 50,
     enableResizing: false,
     meta: {
-      className: "sticky z-[1] left-0 bg-background",
+      className: "sticky z-[1] left-0 top-0 bg-background",
     },
     header: ({ table }) => (
       <Checkbox
@@ -143,7 +143,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger className="" asChild>
             <Button
-              className="absolute bottom-[18px] right-5 block h-4 w-4 rounded-none"
+              className="absolute bottom-[18px] right-[18px] block h-4 w-4 rounded-none"
               size="icon"
               variant="ghost"
             >

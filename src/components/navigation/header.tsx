@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export default function Header({ session }: HeaderProps) {
   return (
-    <div className="sticky top-0 z-[2]">
+    <div className="sticky top-0 z-[3]">
       <header className="flex items-center justify-between bg-background px-7 py-4">
         <h1 className="text-xl font-medium text-primary">
           <MobileSideNav />
