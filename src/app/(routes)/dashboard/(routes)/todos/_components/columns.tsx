@@ -135,14 +135,14 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     },
     size: 53,
     enableResizing: false,
-    header: () => <Bolt size={20} />,
+    header: () => <Bolt className="absolute bottom-[14px] right-4" size={20} />,
     cell: ({ row }) => {
       const payment = row.original;
       return (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger className="" asChild>
             <Button
-              className="block h-4 w-4 rounded-none"
+              className="absolute bottom-[18px] right-5 block h-4 w-4 rounded-none"
               size="icon"
               variant="ghost"
             >
