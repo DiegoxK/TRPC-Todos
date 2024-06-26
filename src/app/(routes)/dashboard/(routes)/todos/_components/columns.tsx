@@ -74,7 +74,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   },
   {
     id: "description",
-
+    size: 300,
     accessorKey: "description",
     header: "Description",
   },

@@ -18,15 +18,15 @@ export default async function Dashboard({
     }
 
     return (
-      <>
+      <div className="flex">
         <Sidebar />
-        <div className="w-full max-w-[calc(100%-20rem)] md:ml-[20rem]">
+        <div className="flex w-full flex-col overflow-hidden">
           <Header session={session} />
-          <main className="min-h-[calc(100vh-124px)] bg-accent px-8 py-6">
+          <main className="max-w-[calc(100vw-20rem)] grow  bg-accent px-8 py-6">
             {children}
           </main>
         </div>
-      </>
+      </div>
     );
   }
 
