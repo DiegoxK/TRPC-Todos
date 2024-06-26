@@ -20,9 +20,9 @@ export default async function Dashboard({
     return (
       <div className="flex">
         <Sidebar />
-        <div className="flex w-full flex-col overflow-hidden">
+        <div className="flex w-full flex-col">
           <Header session={session} />
-          <main className="max-w-[calc(100vw-20rem)] grow  bg-accent px-8 py-6">
+          <main className="max-w-[calc(100vw-20rem-3px)] grow  bg-accent px-8 py-6">
             {children}
           </main>
         </div>
