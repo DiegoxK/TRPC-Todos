@@ -90,7 +90,7 @@ export function DataTable<TData extends Todo, TValue>({
           className="table-fixed border-separate border-spacing-0"
           style={{ minWidth: table.getTotalSize() }}
         >
-          <TableHeader className="sticky top-0">
+          <TableHeader className="sticky top-0 z-[2] bg-background">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
