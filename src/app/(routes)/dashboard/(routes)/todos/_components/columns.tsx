@@ -62,31 +62,32 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   },
   {
     id: "task",
-
+    minSize: 70,
     accessorKey: "task",
     header: "Task",
   },
   {
     id: "project",
-
+    minSize: 80,
     accessorKey: "project.name",
     header: "Project",
   },
   {
     id: "description",
-    size: 300,
+    size: 660,
+    minSize: 120,
     accessorKey: "description",
     header: "Description",
   },
   {
     id: "priority",
-
+    minSize: 90,
     accessorKey: "priority",
     header: "Priority",
   },
   {
     id: "status",
-
+    minSize: 110,
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
