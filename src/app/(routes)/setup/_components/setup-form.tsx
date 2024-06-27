@@ -73,8 +73,8 @@ export default function SetupForm({ email }: { email: string }) {
 
   const uploadImage = async (username: string, userImg: Blob) => {
     try {
-      const file = new File([userImg], `${username}-picture.jpg`, {
-        type: "image/jpg",
+      const file = new File([userImg], `${username}-picture.webp`, {
+        type: "image/webp",
       });
       const files = [file];
 
