@@ -24,17 +24,33 @@ import { type ZodTypeAny } from "zod";
 
 import { z } from "zod";
 
+type InputTypes = "text" | "number" | "date" | "select";
+
+export type CustomMeta = {
+  className?: string;
+  inputType?: string | string[];
+  validation?: ZodTypeAny;
+  default?: string;
+};
+
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    className?: string;
-    validation?: ZodTypeAny;
-    default?: string;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface ColumnMeta<TData extends RowData, TValue> extends CustomMeta {}
 }
+
+const selectInput = (type: InputTypes, values?: string[]) => {
+  if (type === "select") {
+    if (values && values.length > 0) {
+      return values;
+    }
+    throw new Error('The "select" input type requires a "values" prop');
+  }
+  return type;
+};
 
 export const columns: ColumnDef<Todo, unknown>[] = [
   {
-    id: "select",
+    id: "checkbox",
     size: 50,
     enableResizing: false,
     meta: {
@@ -69,6 +85,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "task",
     meta: {
       default: "",
+      inputType: selectInput("text"),
       validation: z
         .string()
         .min(1, {
@@ -86,6 +103,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "project",
     meta: {
       default: "",
+      inputType: selectInput("text"),
       validation: z
         .string()
         .min(1, {
@@ -103,6 +121,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "description",
     meta: {
       default: "",
+      inputType: selectInput("text"),
       validation: z
         .string()
         .min(1, {
@@ -121,6 +140,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "priority",
     meta: {
       default: "MEDIUM",
+      inputType: selectInput("select", ["LOW", "MEDIUM", "HIGH"]),
       validation: z
         .string()
         .min(1, {
@@ -138,6 +158,10 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "status",
     meta: {
       default: "TODO",
+      inputType: selectInput(
+        "select",
+        statuses.map((status) => status.value),
+      ),
       validation: z
         .string()
         .min(1, {
@@ -178,9 +202,8 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "due",
     meta: {
       className: "border-r-0",
-      // new Date().toISOString()
-      // validation: z.string().datetime(),
-      validation: z.string(),
+      inputType: "date",
+      validation: z.string().datetime(),
     },
     size: 130,
     accessorKey: "due",
