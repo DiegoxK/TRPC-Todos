@@ -203,9 +203,9 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     meta: {
       className: "border-r-0",
       inputType: "date",
-      validation: z.string().datetime(),
+      validation: z.date(),
     },
-    size: 130,
+    size: 270,
     accessorKey: "due",
     header: "Due date",
     cell: ({ row }) => {
