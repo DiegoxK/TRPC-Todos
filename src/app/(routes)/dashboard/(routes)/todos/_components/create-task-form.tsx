@@ -2,16 +2,11 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Send, SquareMinus } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormField } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
 import type { UseFormReturn } from "react-hook-form";
 import { type CustomMeta } from "./columns";
+import { InputDate, InputNumber, InputText } from "./input-types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Form = UseFormReturn<Record<string, any>, any, undefined>;
@@ -32,7 +27,7 @@ export default function CreateTaskForm({
   columnValues,
 }: CreateTaskFormProps) {
   return (
-    <TableRow className="bg-accent">
+    <TableRow className="sticky top-[48px] z-[2] bg-accent">
       {columnValues.map(({ id, inputType }, index) => {
         if (!id) {
           throw new Error(
@@ -43,7 +38,7 @@ export default function CreateTaskForm({
         if (id === "checkbox") {
           return (
             <TableCell
-              className="sticky left-0 top-0 z-[1] bg-accent pl-[15px] pr-0"
+              className="sticky left-0 top-[48px] bg-accent pl-[15px] pr-0"
               key={index}
             >
               <SquareMinus
@@ -58,7 +53,7 @@ export default function CreateTaskForm({
         if (id === "actions") {
           return (
             <TableCell
-              className="sticky right-0 z-[1] border-l border-r-0 bg-accent"
+              className="sticky right-0 top-[48px] border-l border-r-0 bg-accent"
               key={index}
             >
               <button type="submit">
@@ -77,32 +72,14 @@ export default function CreateTaskForm({
               control={form.control}
               name={id}
               render={({ field }) => {
-                if (typeof field.value === "number") {
-                  return (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="h-8 border-border"
-                          type="number"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
+                if (inputType === "number") {
+                  return <InputNumber field={field} />;
                 }
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        className="h-8 border-border"
-                        type="text"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
+                if (inputType === "date") {
+                  return <InputDate field={field} />;
+                }
+
+                return <InputText field={field} />;
               }}
             />
           </TableCell>
