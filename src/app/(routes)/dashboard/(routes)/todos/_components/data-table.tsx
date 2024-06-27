@@ -85,6 +85,7 @@ export function DataTable<TData extends Todo, TValue>({
       id: column.id,
       default: column.meta?.default,
       validation: column.meta?.validation,
+      inputType: column.meta?.inputType,
     };
   });
 
