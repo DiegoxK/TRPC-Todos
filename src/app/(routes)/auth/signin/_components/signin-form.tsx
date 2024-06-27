@@ -78,7 +78,11 @@ export default function SigninForm() {
               <FormItem>
                 <FormLabel>Log in with your email address</FormLabel>
                 <FormControl>
-                  <Input placeholder="example@todos.com" {...field} />
+                  <Input
+                    disabled={loading}
+                    placeholder="example@todos.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
