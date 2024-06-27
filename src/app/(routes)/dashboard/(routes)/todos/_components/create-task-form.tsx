@@ -2,8 +2,6 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Send, SquareMinus } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { type ZodTypeAny, z } from "zod";
-
 import {
   FormControl,
   FormField,
@@ -13,17 +11,19 @@ import {
 
 import { Input } from "@/components/ui/input";
 import type { UseFormReturn } from "react-hook-form";
+import { type CustomMeta } from "./columns";
 
-type form = UseFormReturn<Record<string, unknown>, unknown, undefined>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Form = UseFormReturn<Record<string, any>, any, undefined>;
+
+interface ColumnValues extends CustomMeta {
+  id?: string;
+}
 
 interface CreateTaskFormProps {
   setIsAdding: Dispatch<SetStateAction<boolean>>;
-  form: form;
-  columnValues: {
-    id: string | undefined;
-    default: string | undefined;
-    validation: ZodTypeAny | undefined;
-  }[];
+  form: Form;
+  columnValues: ColumnValues[];
 }
 
 export default function CreateTaskForm({
@@ -33,8 +33,14 @@ export default function CreateTaskForm({
 }: CreateTaskFormProps) {
   return (
     <TableRow className="bg-accent">
-      {columnValues.map(({ id }, index) => {
-        if (id === "select") {
+      {columnValues.map(({ id, inputType }, index) => {
+        if (!id) {
+          throw new Error(
+            "A column id is required in CreateTaskForm component",
+          );
+        }
+
+        if (id === "checkbox") {
           return (
             <TableCell
               className="sticky left-0 top-0 z-[1] bg-accent pl-[15px] pr-0"
@@ -48,6 +54,7 @@ export default function CreateTaskForm({
             </TableCell>
           );
         }
+
         if (id === "actions") {
           return (
             <TableCell
@@ -63,13 +70,28 @@ export default function CreateTaskForm({
             </TableCell>
           );
         }
-        if (id) {
-          return (
-            <TableCell key={index}>
-              <FormField
-                control={form.control}
-                name={id}
-                render={({ field }) => (
+
+        return (
+          <TableCell key={index}>
+            <FormField
+              control={form.control}
+              name={id}
+              render={({ field }) => {
+                if (typeof field.value === "number") {
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          className="h-8 border-border"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }
+                return (
                   <FormItem>
                     <FormControl>
                       <Input
@@ -80,12 +102,11 @@ export default function CreateTaskForm({
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
-            </TableCell>
-          );
-        }
-        return <TableCell key={index}>Na</TableCell>;
+                );
+              }}
+            />
+          </TableCell>
+        );
       })}
     </TableRow>
   );
