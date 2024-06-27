@@ -16,6 +16,8 @@ export default function BreadcrumbNavigation() {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((segment) => segment);
 
+  // TODO: Make breadcrumb responsive
+
   return (
     <div className="flex items-center gap-2 bg-[#202026] px-5 py-4">
       <Breadcrumb>
