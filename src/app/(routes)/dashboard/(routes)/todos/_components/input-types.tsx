@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import {
@@ -42,7 +42,7 @@ export const InputDate = ({ field }: InputProps) => {
             <Button
               variant={"outline"}
               className={cn(
-                "h-9 border-input pl-3 text-left font-normal",
+                "h-[37px] w-full border-input pl-3 text-left font-normal",
                 !field.value && "border-border text-muted-foreground",
               )}
             >
@@ -56,10 +56,10 @@ export const InputDate = ({ field }: InputProps) => {
           </FormControl>
         </PopoverTrigger>
         <PopoverContent
-          side="left"
-          sideOffset={10}
+          side="bottom"
+          align="end"
+          sideOffset={8}
           className="w-auto p-0"
-          align="start"
         >
           <Calendar
             mode="single"
@@ -91,20 +91,25 @@ export const InputCommand = ({
               variant="outline"
               role="combobox"
               className={cn(
-                " justify-between",
+                "flex h-9 justify-between",
                 !field.value && "text-muted-foreground",
               )}
             >
               {field.value
                 ? values.find((value) => value === field.value)
                 : "Select status"}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              <ChevronDown size={16} className="opacity-60" />
             </Button>
           </FormControl>
         </PopoverTrigger>
-        <PopoverContent className="py-0 ps-0">
+        <PopoverContent
+          className="w-36 p-0"
+          sideOffset={8}
+          side="bottom"
+          align="end"
+        >
           <Command>
-            <CommandInput placeholder="Search status..." />
+            <CommandInput className="capitalize" placeholder={field.name} />
             <CommandList>
               <CommandEmpty>No language found.</CommandEmpty>
               <CommandGroup>
@@ -115,8 +120,6 @@ export const InputCommand = ({
                     onSelect={() => {
                       setOpen(false);
                       field.onChange(value);
-                      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                      // form.setValue("typeDocBilling", value);
                     }}
                   >
                     <Check
@@ -143,7 +146,7 @@ export const InputText = ({ field }: InputProps) => {
     <FormItem>
       <FormControl>
         <Input
-          className={cn("h-8 border-input", !field.value && "border-border")}
+          className={cn("h-9 border-input", !field.value && "border-border")}
           type="text"
           {...field}
         />
