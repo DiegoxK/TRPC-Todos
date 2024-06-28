@@ -6,7 +6,7 @@ import { FormField } from "@/components/ui/form";
 
 import type { UseFormReturn } from "react-hook-form";
 import { type CustomMeta } from "./columns";
-import { InputDate, InputNumber, InputText } from "./input-types";
+import { InputCommand, InputDate, InputNumber, InputText } from "./input-types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Form = UseFormReturn<Record<string, any>, any, undefined>;
@@ -82,6 +82,9 @@ export default function CreateTaskForm({
                 }
                 if (inputType === "date") {
                   return <InputDate field={field} />;
+                }
+                if (inputType instanceof Array) {
+                  return <InputCommand field={field} values={inputType} />;
                 }
 
                 return <InputText field={field} />;
