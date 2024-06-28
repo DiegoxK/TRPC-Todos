@@ -113,6 +113,10 @@ export function DataTable<TData extends Todo, TValue>({
     defaultValues,
   });
 
+  const dismissForm = () => {
+    form.reset();
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
@@ -120,6 +124,7 @@ export function DataTable<TData extends Todo, TValue>({
   return (
     <div className="space-y-4">
       <DataTableToolbar
+        dismissForm={dismissForm}
         table={table}
         isAdding={isAdding}
         setIsAdding={setIsAdding}
@@ -162,6 +167,7 @@ export function DataTable<TData extends Todo, TValue>({
               <TableBody>
                 {isAdding && (
                   <CreateTaskForm
+                    dismissForm={dismissForm}
                     form={form}
                     setIsAdding={setIsAdding}
                     columnValues={columnValues}

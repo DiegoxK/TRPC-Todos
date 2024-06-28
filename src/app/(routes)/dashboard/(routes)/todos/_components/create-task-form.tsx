@@ -19,12 +19,14 @@ interface CreateTaskFormProps {
   setIsAdding: Dispatch<SetStateAction<boolean>>;
   form: Form;
   columnValues: ColumnValues[];
+  dismissForm: () => void;
 }
 
 export default function CreateTaskForm({
   setIsAdding,
   form,
   columnValues,
+  dismissForm,
 }: CreateTaskFormProps) {
   return (
     <TableRow className="sticky top-[48px] z-[2] bg-accent">
@@ -42,7 +44,10 @@ export default function CreateTaskForm({
               key={index}
             >
               <SquareMinus
-                onClick={() => setIsAdding(false)}
+                onClick={() => {
+                  setIsAdding(false);
+                  dismissForm();
+                }}
                 size={20}
                 className="cursor-pointer text-red-400 transition-colors hover:text-[#ff8674]"
               />

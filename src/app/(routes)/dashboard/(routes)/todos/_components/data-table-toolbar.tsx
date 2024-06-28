@@ -33,12 +33,14 @@ interface DataTableToolbarProps<TData extends Todo> {
   table: Table<TData>;
   isAdding: boolean;
   setIsAdding: Dispatch<SetStateAction<boolean>>;
+  dismissForm: () => void;
 }
 
 export function DataTableToolbar<TData extends Todo>({
   table,
   isAdding,
   setIsAdding,
+  dismissForm,
 }: DataTableToolbarProps<TData>) {
   const [inputValue, setInputValue] = useState("");
 
@@ -95,10 +97,15 @@ export function DataTableToolbar<TData extends Todo>({
         <DeleteDalog table={table} />
       )}
       <AddTrigger
-        onClick={() => {
-          setIsAdding((prev) => !prev);
-        }}
         isAdding={isAdding}
+        onClick={() => {
+          setIsAdding((prev) => {
+            if (prev) {
+              dismissForm();
+            }
+            return !prev;
+          });
+        }}
       />
     </div>
   );
