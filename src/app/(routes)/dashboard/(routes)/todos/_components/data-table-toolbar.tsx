@@ -86,7 +86,7 @@ export function DataTableToolbar<TData extends Todo>({
             onClick={() => {
               table.resetSorting();
             }}
-            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-300 hover:outline-amber-300 lg:px-3"
+            className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border hover:text-amber-300 hover:outline-amber-300 focus-visible:outline-dashed lg:px-3"
           >
             <RotateCcw size={15} className="mr-2" />
             Reset sorting
@@ -133,10 +133,10 @@ const AddTrigger = ({ isAdding, onClick }: AddTriggerProps) => {
   return (
     <Button
       variant="outline"
-      className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-green-400 hover:outline-green-400 lg:px-3"
+      className="h-8 border-0 px-2 text-accent-foreground outline-dashed outline-1 outline-border transition-all hover:text-green-400 hover:outline-green-400 focus-visible:outline-dashed lg:px-3"
       onClick={onClick}
     >
-      <DiamondPlus className="mr-1 h-4 w-4" />
+      <DiamondPlus className="mr-1 h-4 w-4 focus-visible:ring-offset-2" />
       Add Task
     </Button>
   );
