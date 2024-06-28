@@ -137,6 +137,23 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     header: "Description",
   },
   {
+    id: "due",
+    meta: {
+      inputType: "date",
+      validation: z.date(),
+    },
+    size: 200,
+    minSize: 200,
+    accessorKey: "due",
+    header: "Due date",
+    cell: ({ row }) => {
+      const { due } = row.original;
+      if (due) {
+        return new Date(due).toLocaleDateString();
+      }
+    },
+  },
+  {
     id: "priority",
     meta: {
       default: "MEDIUM",
@@ -157,6 +174,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "status",
     meta: {
+      className: "border-r-0",
       default: "TODO",
       inputType: selectInput(
         "select",
@@ -198,23 +216,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  {
-    id: "due",
-    meta: {
-      className: "border-r-0",
-      inputType: "date",
-      validation: z.date(),
-    },
-    size: 200,
-    accessorKey: "due",
-    header: "Due date",
-    cell: ({ row }) => {
-      const { due } = row.original;
-      if (due) {
-        return new Date(due).toLocaleDateString();
-      }
-    },
-  },
+
   {
     id: "actions",
     meta: {
