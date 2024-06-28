@@ -68,6 +68,7 @@ export function InputOTPForm({ email }: { email: string }) {
               <FormLabel>One-Time Password</FormLabel>
               <FormControl className="justify-center">
                 <InputOTP
+                  disabled={loading}
                   containerClassName="justify-center"
                   maxLength={6}
                   {...field}
