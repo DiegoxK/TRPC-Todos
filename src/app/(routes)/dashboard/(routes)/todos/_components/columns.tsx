@@ -150,7 +150,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
           message: "Priority must be at most 12 characters",
         }),
     },
-    minSize: 90,
+    minSize: 150,
     accessorKey: "priority",
     header: "Priority",
   },
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
           message: "Status must be at most 6 characters",
         }),
     },
-    minSize: 110,
+    minSize: 130,
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
@@ -205,7 +205,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
       inputType: "date",
       validation: z.date(),
     },
-    size: 270,
+    size: 200,
     accessorKey: "due",
     header: "Due date",
     cell: ({ row }) => {
