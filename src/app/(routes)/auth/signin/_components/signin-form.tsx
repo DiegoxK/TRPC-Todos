@@ -59,9 +59,10 @@ export default function SigninForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    await signIn("email", { email: values.email });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    signIn("email", { email: values.email });
   }
 
   return (
