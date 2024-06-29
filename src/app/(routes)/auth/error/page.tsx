@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { CircleSlash, ShieldAlert } from "lucide-react";
-import { signIn } from "next-auth/react";
-import { cookies } from "next/headers";
 import Link from "next/link";
 
 interface ErrorPageProps {
@@ -13,15 +11,8 @@ interface ErrorPageProps {
 export default function ErrorPage({ searchParams }: ErrorPageProps) {
   const { error } = searchParams;
 
-  const email = cookies().get("otp-email")?.value;
-
   if (error === "Verification") {
     return <VerificationError />;
-  }
-
-  if (error === "ECONNRESET") {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    signIn("email", { email });
   }
 
   return (
