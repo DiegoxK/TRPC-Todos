@@ -18,7 +18,7 @@ import type { ControllerRenderProps } from "react-hook-form";
 import { format } from "date-fns";
 import { CalendarIcon, Check, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -78,8 +78,8 @@ export const InputDate = ({ field }: InputProps) => {
 
 export const InputCommand = ({
   field,
-  values,
-}: InputProps & { values: string[] }) => {
+  hook,
+}: InputProps & { hook: () => any }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -92,12 +92,10 @@ export const InputCommand = ({
               role="combobox"
               className={cn(
                 "flex h-9 justify-between",
-                !field.value && "text-muted-foreground",
+                !field.value && "border-border text-muted-foreground",
               )}
             >
-              {field.value
-                ? values.find((value) => value === field.value)
-                : "Select status"}
+              {field.value ? field.value : "Search"}
               <ChevronDown size={16} className="opacity-60" />
             </Button>
           </FormControl>
@@ -111,33 +109,57 @@ export const InputCommand = ({
           <Command>
             <CommandInput className="capitalize" placeholder={field.name} />
             <CommandList>
-              <CommandEmpty>No language found.</CommandEmpty>
-              <CommandGroup>
-                {values.map((value) => (
-                  <CommandItem
-                    value={value}
-                    key={value}
-                    onSelect={() => {
-                      setOpen(false);
-                      field.onChange(value);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === field.value ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {value}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              <CommandValues field={field} hook={hook} setOpen={setOpen} />
             </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
       <FormMessage />
     </FormItem>
+  );
+};
+
+interface CommandValuesProps {
+  field: ControllerRenderProps<Record<string, any>, string>;
+  hook: () => any;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const CommandValues = ({ field, hook, setOpen }: CommandValuesProps) => {
+  const { data, isLoading } = hook();
+
+  if (isLoading)
+    return (
+      <CommandGroup>
+        <CommandItem className="flex items-center justify-center p-3">
+          <div className="loader" />
+        </CommandItem>
+      </CommandGroup>
+    );
+
+  const values = data.map((item) => item.name);
+
+  return (
+    <CommandGroup>
+      {values.map((value) => (
+        <CommandItem
+          value={value}
+          key={value}
+          onSelect={() => {
+            setOpen(false);
+            field.onChange(value);
+          }}
+        >
+          <Check
+            className={cn(
+              "mr-2 h-4 w-4",
+              value === field.value ? "opacity-100" : "opacity-0",
+            )}
+          />
+          {value}
+        </CommandItem>
+      ))}
+    </CommandGroup>
   );
 };
 

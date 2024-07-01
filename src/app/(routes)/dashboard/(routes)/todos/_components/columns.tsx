@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import "@tanstack/react-table";
@@ -23,12 +24,13 @@ import type { ColumnDef, RowData } from "@tanstack/react-table";
 import { type ZodTypeAny } from "zod";
 
 import { z } from "zod";
+import { api } from "@/trpc/react";
 
 type InputTypes = "text" | "number" | "date" | "select";
 
 export type CustomMeta = {
   className?: string;
-  inputType?: string | string[];
+  inputType?: string | string[] | (() => any);
   validation?: ZodTypeAny;
   default?: string;
 };
@@ -38,12 +40,14 @@ declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> extends CustomMeta {}
 }
 
-const selectInput = (type: InputTypes, values?: string[]) => {
+const getProjectNames = api.project.getProjectNames.useQuery;
+
+const selectInput = (type: InputTypes, hook?: () => any) => {
   if (type === "select") {
-    if (values && values.length > 0) {
-      return values;
+    if (hook) {
+      return hook;
     }
-    throw new Error('The "select" input type requires a "values" prop');
+    throw new Error('The "select" input type requires a "hook" function');
   }
   return type;
 };
@@ -103,7 +107,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "project",
     meta: {
       default: "",
-      inputType: selectInput("text"),
+      inputType: selectInput("select", getProjectNames),
       validation: z
         .string()
         .min(1, {
