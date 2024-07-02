@@ -111,14 +111,9 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     meta: {
       default: "",
       inputType: selectInput("select", getProjectNames),
-      validation: z
-        .string()
-        .min(1, {
-          message: "Project can't be empty",
-        })
-        .max(20, {
-          message: "Project name must be at most 20 characters",
-        }),
+      validation: z.string().uuid().min(1, {
+        message: "Project can't be empty",
+      }),
     },
     minSize: 80,
     accessorKey: "project.name",
