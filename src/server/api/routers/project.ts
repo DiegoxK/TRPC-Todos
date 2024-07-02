@@ -17,11 +17,15 @@ export const projectRouter = createTRPCRouter({
     const names = await ctx.db.query.projects.findMany({
       where: eq(projects.createdById, userId),
       columns: {
+        id: true,
         name: true,
       },
     });
 
-    return names.map((name) => name.name);
+    return names.map(({ id, name }) => ({
+      id,
+      label: name,
+    }));
   }),
   getProject: protectedProcedure
     .input(z.object({ projectSlug: z.string() }))
