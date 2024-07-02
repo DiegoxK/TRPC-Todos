@@ -1,11 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormDescription,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -16,7 +14,7 @@ import { cn } from "@/lib/utils";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import {
@@ -78,8 +76,8 @@ export const InputDate = ({ field }: InputProps) => {
 
 export const InputCommand = ({
   field,
-  hook,
-}: InputProps & { hook: () => any }) => {
+  values,
+}: InputProps & { values: string[] | (() => any) }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -109,7 +107,19 @@ export const InputCommand = ({
           <Command>
             <CommandInput className="capitalize" placeholder={field.name} />
             <CommandList>
-              <CommandValues field={field} hook={hook} setOpen={setOpen} />
+              {values instanceof Function ? (
+                <CommandValuesFromApi
+                  field={field}
+                  hook={values}
+                  setOpen={setOpen}
+                />
+              ) : (
+                <CommandValues
+                  field={field}
+                  values={values}
+                  setOpen={setOpen}
+                />
+              )}
             </CommandList>
           </Command>
         </PopoverContent>
@@ -119,14 +129,25 @@ export const InputCommand = ({
   );
 };
 
-interface CommandValuesProps {
+interface CommandValues {
   field: ControllerRenderProps<Record<string, any>, string>;
-  hook: () => any;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const CommandValues = ({ field, hook, setOpen }: CommandValuesProps) => {
-  const { data, isLoading } = hook();
+interface CommandValuesProps extends CommandValues {
+  values: string[];
+}
+
+interface CommandValuesFromApiProps extends CommandValues {
+  hook: () => any;
+}
+
+const CommandValuesFromApi = ({
+  field,
+  hook,
+  setOpen,
+}: CommandValuesFromApiProps) => {
+  const { data: values, isLoading } = hook();
 
   if (isLoading)
     return (
@@ -137,8 +158,31 @@ const CommandValues = ({ field, hook, setOpen }: CommandValuesProps) => {
       </CommandGroup>
     );
 
-  const values = data.map((item) => item.name);
+  return (
+    <CommandGroup>
+      {values.map((value: string) => (
+        <CommandItem
+          value={value}
+          key={value}
+          onSelect={() => {
+            setOpen(false);
+            field.onChange(value);
+          }}
+        >
+          <Check
+            className={cn(
+              "mr-2 h-4 w-4",
+              value === field.value ? "opacity-100" : "opacity-0",
+            )}
+          />
+          {value}
+        </CommandItem>
+      ))}
+    </CommandGroup>
+  );
+};
 
+const CommandValues = ({ field, values, setOpen }: CommandValuesProps) => {
   return (
     <CommandGroup>
       {values.map((value) => (
