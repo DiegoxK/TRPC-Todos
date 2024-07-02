@@ -213,13 +213,15 @@ export const ApiInputCommand = ({
           <Command>
             <CommandInput className="capitalize" placeholder={field.name} />
             <CommandList>
-              <ApiCommandValues
-                field={field}
-                setOpen={setOpen}
-                values={values}
-                isLoading={isLoading}
-                isError={isError}
-              />
+              <CommandGroup>
+                <ApiCommandValues
+                  field={field}
+                  setOpen={setOpen}
+                  values={values}
+                  isLoading={isLoading}
+                  isError={isError}
+                />
+              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -238,28 +240,24 @@ const ApiCommandValues = ({
 }: ApiCommandValuesProps) => {
   if (isLoading)
     return (
-      <CommandGroup>
-        <CommandItem className="flex items-center justify-center p-3">
-          <div className="loader" />
-        </CommandItem>
-      </CommandGroup>
+      <CommandItem className="flex items-center justify-center p-3">
+        <div className="loader" />
+      </CommandItem>
     );
 
   if (isError) {
     return (
-      <CommandGroup>
-        <CommandItem className="flex items-center justify-center p-3">
-          <span className="text-red-500">Error loading values</span>
-        </CommandItem>
-      </CommandGroup>
+      <CommandItem className="flex items-center justify-center p-3">
+        <span className="text-red-500">Error loading values</span>
+      </CommandItem>
     );
   }
 
   return (
-    <CommandGroup>
+    <>
       {values.map((value: { id: string; label: string }) => (
         <CommandItem
-          value={value.id}
+          value={value.label}
           key={value.id}
           onSelect={() => {
             setOpen(false);
@@ -275,6 +273,6 @@ const ApiCommandValues = ({
           {value.label}
         </CommandItem>
       ))}
-    </CommandGroup>
+    </>
   );
 };
