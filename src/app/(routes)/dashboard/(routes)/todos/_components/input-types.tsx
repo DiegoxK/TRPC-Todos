@@ -42,6 +42,32 @@ interface ApiCommandValuesProps extends CommandValues {
   isError: boolean;
 }
 
+export const InputText = ({ field }: InputProps) => {
+  return (
+    <FormItem>
+      <FormControl>
+        <Input
+          className={cn("h-9 border-input", !field.value && "border-border")}
+          type="text"
+          {...field}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  );
+};
+
+export const InputNumber = ({ field }: InputProps) => {
+  return (
+    <FormItem>
+      <FormControl>
+        <Input className="h-8 border-border" type="number" {...field} />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  );
+};
+
 export const InputDate = ({ field }: InputProps) => {
   return (
     <FormItem className="flex flex-col">
@@ -250,31 +276,5 @@ const ApiCommandValues = ({
         </CommandItem>
       ))}
     </CommandGroup>
-  );
-};
-
-export const InputText = ({ field }: InputProps) => {
-  return (
-    <FormItem>
-      <FormControl>
-        <Input
-          className={cn("h-9 border-input", !field.value && "border-border")}
-          type="text"
-          {...field}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  );
-};
-
-export const InputNumber = ({ field }: InputProps) => {
-  return (
-    <FormItem>
-      <FormControl>
-        <Input className="h-8 border-border" type="number" {...field} />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
   );
 };
