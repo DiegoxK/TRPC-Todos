@@ -31,6 +31,17 @@ interface InputProps {
   field: ControllerRenderProps<Record<string, any>, string>;
 }
 
+interface CommandValues {
+  field: ControllerRenderProps<Record<string, any>, string>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+interface ApiCommandValuesProps extends CommandValues {
+  values: { id: string; label: string }[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
 export const InputDate = ({ field }: InputProps) => {
   return (
     <FormItem className="flex flex-col">
@@ -77,7 +88,7 @@ export const InputDate = ({ field }: InputProps) => {
 export const InputCommand = ({
   field,
   values,
-}: InputProps & { values: string[] | (() => any) }) => {
+}: InputProps & { values: string[] }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -93,7 +104,7 @@ export const InputCommand = ({
                 !field.value && "border-border text-muted-foreground",
               )}
             >
-              {field.value ? field.value : "Search"}
+              {field.value || "Search"}
               <ChevronDown size={16} className="opacity-60" />
             </Button>
           </FormControl>
@@ -107,19 +118,26 @@ export const InputCommand = ({
           <Command>
             <CommandInput className="capitalize" placeholder={field.name} />
             <CommandList>
-              {values instanceof Function ? (
-                <CommandValuesFromApi
-                  field={field}
-                  hook={values}
-                  setOpen={setOpen}
-                />
-              ) : (
-                <CommandValues
-                  field={field}
-                  values={values}
-                  setOpen={setOpen}
-                />
-              )}
+              <CommandGroup>
+                {values.map((value) => (
+                  <CommandItem
+                    value={value}
+                    key={value}
+                    onSelect={() => {
+                      setOpen(false);
+                      field.onChange(value);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === field.value ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {value}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -129,26 +147,69 @@ export const InputCommand = ({
   );
 };
 
-interface CommandValues {
-  field: ControllerRenderProps<Record<string, any>, string>;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-interface CommandValuesProps extends CommandValues {
-  values: string[];
-}
-
-interface CommandValuesFromApiProps extends CommandValues {
-  hook: () => any;
-}
-
-const CommandValuesFromApi = ({
+export const ApiInputCommand = ({
   field,
   hook,
-  setOpen,
-}: CommandValuesFromApiProps) => {
-  const { data: values, isLoading } = hook();
+}: InputProps & { hook: () => any }) => {
+  const [open, setOpen] = useState(false);
+  const { data: values, isLoading, isError } = hook();
 
+  return (
+    <FormItem className="flex flex-col">
+      <Popover modal={false} open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <FormControl>
+            <Button
+              variant="outline"
+              role="combobox"
+              className={cn(
+                "flex h-9 justify-between overflow-hidden",
+                !field.value && "border-border text-muted-foreground",
+              )}
+            >
+              {field.value
+                ? values.find(
+                    (value: { id: string; label: string }) =>
+                      value.id === field.value,
+                  )?.label
+                : "Search"}
+
+              <ChevronDown size={16} className="opacity-60" />
+            </Button>
+          </FormControl>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-36 p-0"
+          sideOffset={8}
+          side="bottom"
+          align="end"
+        >
+          <Command>
+            <CommandInput className="capitalize" placeholder={field.name} />
+            <CommandList>
+              <ApiCommandValues
+                field={field}
+                setOpen={setOpen}
+                values={values}
+                isLoading={isLoading}
+                isError={isError}
+              />
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      <FormMessage />
+    </FormItem>
+  );
+};
+
+const ApiCommandValues = ({
+  field,
+  setOpen,
+  values,
+  isLoading,
+  isError,
+}: ApiCommandValuesProps) => {
   if (isLoading)
     return (
       <CommandGroup>
@@ -158,49 +219,34 @@ const CommandValuesFromApi = ({
       </CommandGroup>
     );
 
-  return (
-    <CommandGroup>
-      {values.map((value: string) => (
-        <CommandItem
-          value={value}
-          key={value}
-          onSelect={() => {
-            setOpen(false);
-            field.onChange(value);
-          }}
-        >
-          <Check
-            className={cn(
-              "mr-2 h-4 w-4",
-              value === field.value ? "opacity-100" : "opacity-0",
-            )}
-          />
-          {value}
+  if (isError) {
+    return (
+      <CommandGroup>
+        <CommandItem className="flex items-center justify-center p-3">
+          <span className="text-red-500">Error loading values</span>
         </CommandItem>
-      ))}
-    </CommandGroup>
-  );
-};
+      </CommandGroup>
+    );
+  }
 
-const CommandValues = ({ field, values, setOpen }: CommandValuesProps) => {
   return (
     <CommandGroup>
-      {values.map((value) => (
+      {values.map((value: { id: string; label: string }) => (
         <CommandItem
-          value={value}
-          key={value}
+          value={value.id}
+          key={value.id}
           onSelect={() => {
             setOpen(false);
-            field.onChange(value);
+            field.onChange(value.id);
           }}
         >
           <Check
             className={cn(
               "mr-2 h-4 w-4",
-              value === field.value ? "opacity-100" : "opacity-0",
+              value.id === field.value ? "opacity-100" : "opacity-0",
             )}
           />
-          {value}
+          {value.label}
         </CommandItem>
       ))}
     </CommandGroup>
