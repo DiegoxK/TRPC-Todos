@@ -83,8 +83,11 @@ export default function CreateTaskForm({
                 if (inputType === "date") {
                   return <InputDate field={field} />;
                 }
-                if (inputType instanceof Function) {
-                  return <InputCommand field={field} hook={inputType} />;
+                if (
+                  inputType instanceof Function ||
+                  inputType instanceof Array
+                ) {
+                  return <InputCommand field={field} values={inputType} />;
                 }
 
                 return <InputText field={field} />;
