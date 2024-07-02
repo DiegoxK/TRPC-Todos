@@ -27,6 +27,7 @@ import { z } from "zod";
 import { api } from "@/trpc/react";
 
 type InputTypes = "text" | "number" | "date" | "select";
+type SelectValue = string[] | (() => any);
 
 export type CustomMeta = {
   className?: string;
@@ -42,12 +43,14 @@ declare module "@tanstack/react-table" {
 
 const getProjectNames = api.project.getProjectNames.useQuery;
 
-const selectInput = (type: InputTypes, hook?: () => any) => {
+const selectInput = (type: InputTypes, value?: SelectValue) => {
   if (type === "select") {
-    if (hook) {
-      return hook;
+    if (value) {
+      return value;
     }
-    throw new Error('The "select" input type requires a "hook" function');
+    throw new Error(
+      'The "select" input type requires an "Array" or a "Hook" function',
+    );
   }
   return type;
 };
