@@ -3,7 +3,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
-import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormMessage,
+  TableFormItem,
+  TableFormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -44,7 +49,8 @@ interface ApiCommandValuesProps extends CommandValues {
 
 export const InputText = ({ field }: InputProps) => {
   return (
-    <FormItem>
+    <TableFormItem>
+      <TableFormMessage />
       <FormControl>
         <Input
           className={cn("h-9 border-input", !field.value && "border-border")}
@@ -52,25 +58,25 @@ export const InputText = ({ field }: InputProps) => {
           {...field}
         />
       </FormControl>
-      <FormMessage />
-    </FormItem>
+    </TableFormItem>
   );
 };
 
 export const InputNumber = ({ field }: InputProps) => {
   return (
-    <FormItem>
+    <TableFormItem>
+      <TableFormMessage />
       <FormControl>
         <Input className="h-8 border-border" type="number" {...field} />
       </FormControl>
-      <FormMessage />
-    </FormItem>
+    </TableFormItem>
   );
 };
 
 export const InputDate = ({ field }: InputProps) => {
   return (
-    <FormItem className="flex flex-col">
+    <TableFormItem className="flex flex-col">
+      <TableFormMessage />
       <Popover modal={false}>
         <PopoverTrigger asChild>
           <FormControl>
@@ -106,8 +112,7 @@ export const InputDate = ({ field }: InputProps) => {
           />
         </PopoverContent>
       </Popover>
-      <FormMessage />
-    </FormItem>
+    </TableFormItem>
   );
 };
 
@@ -118,7 +123,8 @@ export const InputCommand = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <FormItem className="flex flex-col">
+    <TableFormItem className="flex flex-col">
+      <TableFormMessage />
       <Popover modal={false} open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <FormControl>
@@ -168,8 +174,7 @@ export const InputCommand = ({
           </Command>
         </PopoverContent>
       </Popover>
-      <FormMessage />
-    </FormItem>
+    </TableFormItem>
   );
 };
 
@@ -181,7 +186,8 @@ export const ApiInputCommand = ({
   const { data: values, isLoading, isError } = hook();
 
   return (
-    <FormItem className="flex flex-col">
+    <TableFormItem className="flex flex-col">
+      <TableFormMessage />
       <Popover modal={false} open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <FormControl>
@@ -226,8 +232,7 @@ export const ApiInputCommand = ({
           </Command>
         </PopoverContent>
       </Popover>
-      <FormMessage />
-    </FormItem>
+    </TableFormItem>
   );
 };
 
