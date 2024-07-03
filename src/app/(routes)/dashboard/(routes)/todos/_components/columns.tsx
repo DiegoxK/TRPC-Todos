@@ -111,9 +111,14 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     meta: {
       default: "",
       inputType: selectInput("select", getProjectNames),
-      validation: z.string().uuid().min(1, {
-        message: "Project can't be empty",
-      }),
+      validation: z
+        .string()
+        .uuid({
+          message: "Project can't be empty",
+        })
+        .min(1, {
+          message: "Project can't be empty",
+        }),
     },
     minSize: 80,
     accessorKey: "project.name",
@@ -142,7 +147,9 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "due",
     meta: {
       inputType: "date",
-      validation: z.date(),
+      validation: z.date({
+        message: "Due date can't be empty",
+      }),
     },
     size: 200,
     minSize: 200,
