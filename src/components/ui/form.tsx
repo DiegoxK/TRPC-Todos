@@ -84,6 +84,20 @@ const FormItem = React.forwardRef<
 });
 FormItem.displayName = "FormItem";
 
+const TableFormItem = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const id = React.useId();
+
+  return (
+    <FormItemContext.Provider value={{ id }}>
+      <div ref={ref} className={cn("relative", className)} {...props} />
+    </FormItemContext.Provider>
+  );
+});
+TableFormItem.displayName = "TableFormItem";
+
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
@@ -165,13 +179,42 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
+const TableFormMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, ...props }, ref) => {
+  const { error, formMessageId } = useFormField();
+  const body = error ? String(error?.message) : children;
+
+  if (!body) {
+    return null;
+  }
+
+  return (
+    <p
+      ref={ref}
+      id={formMessageId}
+      className={cn(
+        "absolute bottom-[120%] left-0 right-0 ml-auto mr-auto w-fit shrink-0 overflow-clip rounded-md border border-destructive bg-background px-4 py-1 text-center text-sm font-medium text-destructive",
+        className,
+      )}
+      {...props}
+    >
+      {body}
+    </p>
+  );
+});
+TableFormMessage.displayName = "TableFormMessage";
+
 export {
   useFormField,
   Form,
   FormItem,
+  TableFormItem,
   FormLabel,
   FormControl,
   FormDescription,
   FormMessage,
+  TableFormMessage,
   FormField,
 };
