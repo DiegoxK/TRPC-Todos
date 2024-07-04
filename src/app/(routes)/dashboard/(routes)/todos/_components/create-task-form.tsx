@@ -34,9 +34,11 @@ export default function CreateTaskForm({
   columnValues,
   dismissForm,
 }: CreateTaskFormProps) {
+  console.log(form.getValues());
+
   return (
     <TableRow className="sticky top-[48px] z-[2] bg-accent">
-      {columnValues.map(({ id, inputType }, index) => {
+      {columnValues.map(({ id, inputType }) => {
         if (!id) {
           throw new Error(
             "A column id is required in CreateTaskForm component",
@@ -47,7 +49,7 @@ export default function CreateTaskForm({
           return (
             <TableCell
               className="sticky left-0 top-[48px] z-[1] bg-accent pl-[15px] pr-0"
-              key={index}
+              key={id}
             >
               <SquareMinus
                 onClick={() => {
@@ -65,7 +67,7 @@ export default function CreateTaskForm({
           return (
             <TableCell
               className="sticky right-0 top-[48px] border-l border-r-0 bg-accent"
-              key={index}
+              key={id}
             >
               <button
                 className="cursor-pointer text-green-400 transition-colors hover:text-green-500 disabled:cursor-not-allowed disabled:text-zinc-500"
@@ -83,7 +85,7 @@ export default function CreateTaskForm({
         }
 
         return (
-          <TableCell key={index}>
+          <TableCell key={id}>
             <FormField
               control={form.control}
               name={id}
