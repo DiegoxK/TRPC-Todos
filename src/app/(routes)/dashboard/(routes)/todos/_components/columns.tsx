@@ -33,7 +33,7 @@ export type CustomMeta = {
   className?: string;
   inputType?: string | string[] | (() => any);
   validation?: ZodTypeAny;
-  default?: string;
+  defaultValue?: string;
 };
 
 declare module "@tanstack/react-table" {
@@ -91,7 +91,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "task",
     meta: {
-      default: "",
+      defaultValue: "",
       inputType: selectInput("text"),
       validation: z
         .string()
@@ -109,7 +109,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "project",
     meta: {
-      default: "",
+      defaultValue: "",
       inputType: selectInput("select", getProjectNames),
       validation: z
         .string()
@@ -127,7 +127,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "description",
     meta: {
-      default: "",
+      defaultValue: "",
       inputType: selectInput("text"),
       validation: z
         .string()
@@ -165,7 +165,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "priority",
     meta: {
-      default: "MEDIUM",
+      defaultValue: "MEDIUM",
       inputType: selectInput("select", ["LOW", "MEDIUM", "HIGH"]),
       validation: z
         .string()
@@ -184,7 +184,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     id: "status",
     meta: {
       className: "border-r-0",
-      default: "TODO",
+      defaultValue: "TODO",
       inputType: selectInput(
         "select",
         statuses.map((status) => status.value),

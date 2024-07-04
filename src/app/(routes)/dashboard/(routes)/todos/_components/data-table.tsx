@@ -83,7 +83,7 @@ export function DataTable<TData extends Todo, TValue>({
   const columnValues = columns.map((column) => {
     return {
       id: column.id,
-      default: column.meta?.default,
+      defaultValue: column.meta?.defaultValue,
       validation: column.meta?.validation,
       inputType: column.meta?.inputType,
     };
@@ -97,7 +97,7 @@ export function DataTable<TData extends Todo, TValue>({
   }, {});
 
   const defaultValues = columnValues.reduce<DefaultValues>(
-    (acc, { id, default: defaultValue }) => {
+    (acc, { id, defaultValue }) => {
       if (id) {
         acc[id] = defaultValue ?? "";
       }
