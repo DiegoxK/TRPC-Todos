@@ -4,6 +4,7 @@
 import "@tanstack/react-table";
 
 import type { Todo } from "@/lib/definitions";
+import { format } from "date-fns";
 import { Bolt, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -158,7 +159,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     cell: ({ row }) => {
       const { due } = row.original;
       if (due) {
-        return new Date(due).toLocaleDateString();
+        return format(due, "PPP");
       }
     },
   },
