@@ -46,7 +46,7 @@ export default function CreateTaskForm({
         if (id === "checkbox") {
           return (
             <TableCell
-              className="sticky left-0 top-[48px] bg-accent pl-[15px] pr-0"
+              className="sticky left-0 top-[48px] z-[1] bg-accent pl-[15px] pr-0"
               key={index}
             >
               <SquareMinus
@@ -67,9 +67,14 @@ export default function CreateTaskForm({
               className="sticky right-0 top-[48px] border-l border-r-0 bg-accent"
               key={index}
             >
-              <button type="submit">
+              <button
+                className="cursor-pointer text-green-400 transition-colors hover:text-green-500 disabled:cursor-not-allowed disabled:text-zinc-500"
+                disabled={!form.formState.isValid}
+                title={form.formState.isValid ? "Add Task" : "Invalid Fields"}
+                type="submit"
+              >
                 <Send
-                  className="absolute bottom-[21px] right-[17px] cursor-pointer text-green-400 transition-colors hover:text-green-500"
+                  className=" absolute bottom-[21px]  right-[17px]"
                   size={20}
                 />
               </button>
