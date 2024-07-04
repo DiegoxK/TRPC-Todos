@@ -34,7 +34,17 @@ export default function CreateTaskForm({
   columnValues,
   dismissForm,
 }: CreateTaskFormProps) {
-  console.log(form.getValues());
+  const formValues = columnValues
+    .map(({ id, defaultValue }) => {
+      if (id !== "checkbox" && id !== "actions" && !defaultValue) {
+        return id;
+      }
+    })
+    .filter((value) => value !== undefined);
+
+  const isFilled = formValues.every((id) => {
+    return form.formState.dirtyFields[id];
+  });
 
   return (
     <TableRow className="sticky top-[48px] z-[2] bg-accent">
@@ -71,8 +81,8 @@ export default function CreateTaskForm({
             >
               <button
                 className="cursor-pointer text-green-400 transition-colors hover:text-green-500 disabled:cursor-not-allowed disabled:text-zinc-500"
-                disabled={!form.formState.isValid}
-                title={form.formState.isValid ? "Add Task" : "Invalid Fields"}
+                disabled={!isFilled}
+                title={isFilled ? "Add Task" : "Invalid Fields"}
                 type="submit"
               >
                 <Send
