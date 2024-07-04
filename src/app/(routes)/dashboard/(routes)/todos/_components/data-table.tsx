@@ -15,7 +15,7 @@ import {
   getFacetedUniqueValues,
 } from "@tanstack/react-table";
 
-import { useForm } from "react-hook-form";
+import { type FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ZodTypeAny, z } from "zod";
 
@@ -37,6 +37,7 @@ import { DataTableResizer } from "./data-table-resizer";
 import { cn } from "@/lib/utils";
 import type { Todo } from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
+import SubmitErrorDialog from "./submit-error-dialog";
 
 interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,6 +55,7 @@ export function DataTable<TData extends Todo, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [isError, setIsError] = useState(false);
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
   const table = useReactTable({
@@ -121,96 +123,104 @@ export function DataTable<TData extends Todo, TValue>({
     console.log(values);
   }
 
+  function onSubmitError(errors: FieldErrors<z.infer<typeof formSchema>>) {
+    setIsError(true);
+    console.log(errors);
+  }
+
   return (
-    <div className="space-y-4">
-      <DataTableToolbar
-        dismissForm={dismissForm}
-        table={table}
-        isAdding={isAdding}
-        setIsAdding={setIsAdding}
-      />
-      <div className="border bg-background">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Table
-              className="table-fixed border-separate border-spacing-0"
-              style={{ minWidth: table.getTotalSize() }}
-            >
-              <TableHeader className="sticky top-0 z-[2] bg-background">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead
-                          className={cn(
-                            "relative",
-                            header.column.columnDef.meta?.className,
-                          )}
-                          key={header.id}
-                          style={{
-                            width: header.getSize(),
-                          }}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                          <DataTableResizer header={header} />
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {isAdding && (
-                  <CreateTaskForm
-                    dismissForm={dismissForm}
-                    form={form}
-                    setIsAdding={setIsAdding}
-                    columnValues={columnValues}
-                  />
-                )}
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          className={cn(
-                            "truncate",
-                            cell.column.columnDef.meta?.className,
-                          )}
-                          key={cell.id}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
+    <>
+      <SubmitErrorDialog open={isError} onOpenChange={setIsError} />
+      <div className="space-y-4">
+        <DataTableToolbar
+          dismissForm={dismissForm}
+          table={table}
+          isAdding={isAdding}
+          setIsAdding={setIsAdding}
+        />
+        <div className="border bg-background">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit, onSubmitError)}>
+              <Table
+                className="table-fixed border-separate border-spacing-0"
+                style={{ minWidth: table.getTotalSize() }}
+              >
+                <TableHeader className="sticky top-0 z-[2] bg-background">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead
+                            className={cn(
+                              "relative",
+                              header.column.columnDef.meta?.className,
+                            )}
+                            key={header.id}
+                            style={{
+                              width: header.getSize(),
+                            }}
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                            <DataTableResizer header={header} />
+                          </TableHead>
+                        );
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </form>
-        </Form>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {isAdding && (
+                    <CreateTaskForm
+                      dismissForm={dismissForm}
+                      form={form}
+                      setIsAdding={setIsAdding}
+                      columnValues={columnValues}
+                    />
+                  )}
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            className={cn(
+                              "truncate",
+                              cell.column.columnDef.meta?.className,
+                            )}
+                            key={cell.id}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </form>
+          </Form>
+        </div>
+        <DataTablePagination table={table} />
       </div>
-      <DataTablePagination table={table} />
-    </div>
+    </>
   );
 }
