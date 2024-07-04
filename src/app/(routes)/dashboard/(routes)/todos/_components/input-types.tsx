@@ -99,7 +99,9 @@ export const InputDate = ({ field }: InputProps) => {
             mode="single"
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             selected={field.value}
-            onSelect={field.onChange}
+            onSelect={(date) => {
+              field.onChange(date ?? "");
+            }}
             disabled={(date) => date < new Date()}
             initialFocus
           />
