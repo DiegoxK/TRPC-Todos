@@ -114,10 +114,10 @@ export const columns: ColumnDef<Todo, unknown>[] = [
       validation: z
         .string()
         .uuid({
-          message: "Project can't be empty",
+          message: "Project is required",
         })
         .min(1, {
-          message: "Project can't be empty",
+          message: "Project is required",
         }),
     },
     minSize: 80,
@@ -148,7 +148,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     meta: {
       inputType: "date",
       validation: z.date({
-        message: "Due date can't be empty",
+        message: "Due can't be empty",
       }),
     },
     size: 200,
