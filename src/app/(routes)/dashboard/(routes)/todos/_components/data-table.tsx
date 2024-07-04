@@ -131,7 +131,7 @@ export function DataTable<TData extends Todo, TValue>({
       />
       <div className="border bg-background">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <Table
               className="table-fixed border-separate border-spacing-0"
               style={{ minWidth: table.getTotalSize() }}
