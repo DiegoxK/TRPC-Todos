@@ -56,6 +56,7 @@ export function DataTable<TData extends Todo, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isError, setIsError] = useState(false);
+  const [errors, setErrors] = useState<z.infer<typeof formSchema>>();
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
   const table = useReactTable({
@@ -125,12 +126,16 @@ export function DataTable<TData extends Todo, TValue>({
 
   function onSubmitError(errors: FieldErrors<z.infer<typeof formSchema>>) {
     setIsError(true);
-    console.log(errors);
+    setErrors(errors);
   }
 
   return (
     <>
-      <SubmitErrorDialog open={isError} onOpenChange={setIsError} />
+      <SubmitErrorDialog
+        errors={errors}
+        open={isError}
+        onOpenChange={setIsError}
+      />
       <div className="space-y-4">
         <DataTableToolbar
           dismissForm={dismissForm}
