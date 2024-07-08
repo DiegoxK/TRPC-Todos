@@ -1,4 +1,4 @@
-import { columns } from "./_components/columns";
+import { columns, createTodo } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
 import { api } from "@/trpc/server";
 import { Separator } from "@/components/ui/separator";
@@ -13,37 +13,7 @@ export default async function TodosPage() {
         <p className="text-sm">A list of all your todos</p>
       </div>
       <Separator className="mb-6 mt-5 bg-zinc-700" />
-      <DataTable
-        columns={columns}
-        data={[
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-          ...todos,
-        ]}
-      />
+      <DataTable mutation={createTodo} columns={columns} data={todos} />
     </div>
   );
 }
