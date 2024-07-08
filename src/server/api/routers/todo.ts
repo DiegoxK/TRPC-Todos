@@ -1,13 +1,8 @@
-import type { TodoColumnName } from "@/lib/definitions";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { todos } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 
-import { eq, getTableName, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 
 import { z } from "zod";
@@ -39,16 +34,15 @@ export const todoRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const tableName = getTableName(todos);
-      const columnName: TodoColumnName = "createdById";
-      const whereClause = `(${input.ids.map((id) => `'${id}'`).join(", ")})`;
-
-      const query = `delete from "${tableName}" where "${columnName}" = '${userId}' and id in ${whereClause}`;
-
-      console.log("SQL_QUERY:", query);
-
       try {
-        return await ctx.db.execute(sql`${query}`);
+        return await ctx.db
+          .delete(todos)
+          .where(
+            and(
+              eq(todos.createdById, userId),
+              sql`${todos.id} IN ${input.ids}`,
+            ),
+          );
       } catch (err) {
         console.error(err);
         throw new TRPCError({
