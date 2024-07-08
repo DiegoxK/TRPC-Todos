@@ -34,17 +34,21 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 import CreateTaskForm from "./create-task-form";
 import { DataTableResizer } from "./data-table-resizer";
-import { cn } from "@/lib/utils";
+import { cn, removeEmpty } from "@/lib/utils";
 import type { Todo } from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
 import SubmitErrorDialog from "./submit-error-dialog";
 import { useRouter } from "next/navigation";
+import { type CustomMeta } from "./columns";
+import { api } from "@/trpc/react";
 
 interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutation: () => any;
   data: TData[];
+}
+
+export interface ColumnValues extends CustomMeta {
+  id?: string;
 }
 
 type Schema = Record<string, ZodTypeAny>;
@@ -52,7 +56,6 @@ type DefaultValues = Record<string, string>;
 
 export function DataTable<TData extends Todo, TValue>({
   columns,
-  mutation,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -65,10 +68,10 @@ export function DataTable<TData extends Todo, TValue>({
 
   const router = useRouter();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { mutate: createTodo } = mutation({
+  const { mutate: createTodo } = api.todo.createTodo.useMutation({
     onSuccess: () => {
       setIsAdding(false);
+      dismissForm();
       router.refresh();
     },
     onError: (error) => {
@@ -100,9 +103,10 @@ export function DataTable<TData extends Todo, TValue>({
     },
   });
 
-  const columnValues = columns.map((column) => {
+  const columnValues: ColumnValues[] = columns.map((column) => {
     return {
       id: column.id,
+      optional: column.meta?.optional,
       defaultValue: column.meta?.defaultValue,
       validation: column.meta?.validation,
       inputType: column.meta?.inputType,
@@ -138,9 +142,7 @@ export function DataTable<TData extends Todo, TValue>({
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    createTodo(values);
+    createTodo(removeEmpty(values));
   }
 
   function onSubmitError(errors: FieldErrors<z.infer<typeof formSchema>>) {
