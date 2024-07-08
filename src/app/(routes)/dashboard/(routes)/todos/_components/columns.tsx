@@ -57,7 +57,7 @@ const selectInput = (type: InputTypes, value?: SelectValue) => {
   return type;
 };
 
-export const columns: ColumnDef<Todo, unknown>[] = [
+export const columns: ColumnDef<Todo>[] = [
   {
     id: "checkbox",
     size: 50,
