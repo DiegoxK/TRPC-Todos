@@ -31,6 +31,7 @@ type InputTypes = "text" | "number" | "date" | "select";
 type SelectValue = string[] | (() => any);
 
 export type CustomMeta = {
+  optional?: boolean;
   className?: string;
   inputType?: string | string[] | (() => any);
   validation?: ZodTypeAny;
@@ -41,8 +42,6 @@ declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface ColumnMeta<TData extends RowData, TValue> extends CustomMeta {}
 }
-
-export const createTodo = api.todo.createTodo.useMutation;
 
 const getProjectNames = api.project.getProjectNames.useQuery;
 
@@ -149,10 +148,13 @@ export const columns: ColumnDef<Todo, unknown>[] = [
   {
     id: "due",
     meta: {
+      optional: true,
       inputType: "date",
-      validation: z.date({
-        message: "Due can't be empty",
-      }),
+      validation: z
+        .date({
+          message: "Invalid date format",
+        })
+        .or(z.string().optional()),
     },
     size: 200,
     minSize: 200,
