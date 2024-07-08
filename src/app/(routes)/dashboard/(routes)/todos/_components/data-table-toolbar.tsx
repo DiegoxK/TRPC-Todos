@@ -28,6 +28,7 @@ import {
   useEffect,
 } from "react";
 import type { Todo } from "@/lib/definitions";
+import { useRouter } from "next/navigation";
 
 interface DataTableToolbarProps<TData extends Todo> {
   table: Table<TData>;
@@ -149,11 +150,12 @@ interface DeleteDalogProps<TData extends Todo> {
 const DeleteDalog = <TData extends Todo>({
   table,
 }: DeleteDalogProps<TData>) => {
+  const router = useRouter();
+
   const { mutate: deleteTodos } = api.todo.deleteTodos.useMutation({
     onSuccess: () => {
-      table.getFilteredSelectedRowModel().rows.forEach((row) => {
-        console.log(row.original.id);
-      });
+      table.resetRowSelection();
+      router.refresh();
     },
     onError: (error) => {
       console.error(error);
