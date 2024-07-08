@@ -5,13 +5,17 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { todos } from "@/server/db/schema";
+import { TRPCError } from "@trpc/server";
 
-import { eq, getTableName } from "drizzle-orm";
+import { eq, getTableName, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 
 import { z } from "zod";
 
-const createTodoSchema = createInsertSchema(todos);
+const createTodoSchema = createInsertSchema(todos, {
+  createdById: z.undefined(),
+  taskSlug: z.undefined(),
+});
 
 export const todoRouter = createTRPCRouter({
   getTodosWithProject: protectedProcedure.query(({ ctx }) => {
@@ -26,6 +30,7 @@ export const todoRouter = createTRPCRouter({
           },
         },
       },
+      orderBy: (todos, { desc }) => [desc(todos.createdAt)],
     });
   }),
 
@@ -38,29 +43,26 @@ export const todoRouter = createTRPCRouter({
       const columnName: TodoColumnName = "createdById";
       const whereClause = `(${input.ids.map((id) => `'${id}'`).join(", ")})`;
 
-      const query = `select * from "${tableName}" where "${columnName}" = '${userId}' and id in ${whereClause}`;
+      const query = `delete from "${tableName}" where "${columnName}" = '${userId}' and id in ${whereClause}`;
 
       console.log("SQL_QUERY:", query);
 
-      // try {
-      //   return await ctx.db
-      //     .delete(todos)
-      //     .where(
-      //       sql`select * from todos where created_by_id = ${userId} and id in (${whereClause})`,
-      //     );
-      // } catch (err) {
-      //   console.error(err);
-      //   throw new TRPCError({
-      //     code: "INTERNAL_SERVER_ERROR",
-      //     message: "INTERNAL_SERVER_ERROR",
-      //   });
-      // }
+      try {
+        return await ctx.db.execute(sql`${query}`);
+      } catch (err) {
+        console.error(err);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "INTERNAL_SERVER_ERROR",
+        });
+      }
     }),
 
   createTodo: protectedProcedure
     .input(createTodoSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
+      const taskSlug = input.task.toLowerCase().replace(/\s/g, "-");
 
       const project = await ctx.db.query.projects.findFirst({
         where: (table, funcs) =>
@@ -76,6 +78,7 @@ export const todoRouter = createTRPCRouter({
       if (project) {
         return ctx.db.insert(todos).values({
           ...input,
+          taskSlug,
           createdById: userId,
         });
       }
