@@ -142,6 +142,7 @@ export function DataTable<TData extends Todo, TValue>({
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    // @ts-expect-error - removeEmpty is unable to infer the returning object
     createTodo(removeEmpty(values));
   }
 
