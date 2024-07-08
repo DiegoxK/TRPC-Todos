@@ -38,9 +38,12 @@ import { cn } from "@/lib/utils";
 import type { Todo } from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
 import SubmitErrorDialog from "./submit-error-dialog";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mutation: () => any;
   data: TData[];
 }
 
@@ -49,6 +52,7 @@ type DefaultValues = Record<string, string>;
 
 export function DataTable<TData extends Todo, TValue>({
   columns,
+  mutation,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -58,6 +62,19 @@ export function DataTable<TData extends Todo, TValue>({
   const [isError, setIsError] = useState(false);
   const [errors, setErrors] = useState<z.infer<typeof formSchema>>();
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
+
+  const router = useRouter();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { mutate: createTodo } = mutation({
+    onSuccess: () => {
+      setIsAdding(false);
+      router.refresh();
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const table = useReactTable({
     data,
@@ -122,6 +139,8 @@ export function DataTable<TData extends Todo, TValue>({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    createTodo(values);
   }
 
   function onSubmitError(errors: FieldErrors<z.infer<typeof formSchema>>) {
