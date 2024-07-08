@@ -5,7 +5,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { FormField } from "@/components/ui/form";
 
 import type { UseFormReturn } from "react-hook-form";
-import { type CustomMeta } from "./columns";
+
 import {
   ApiInputCommand,
   InputCommand,
@@ -13,13 +13,10 @@ import {
   InputNumber,
   InputText,
 } from "./input-types";
+import { type ColumnValues } from "./data-table";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Form = UseFormReturn<Record<string, any>, any, undefined>;
-
-interface ColumnValues extends CustomMeta {
-  id?: string;
-}
 
 interface CreateTaskFormProps {
   setIsAdding: Dispatch<SetStateAction<boolean>>;
@@ -35,8 +32,8 @@ export default function CreateTaskForm({
   dismissForm,
 }: CreateTaskFormProps) {
   const formValues = columnValues
-    .map(({ id, defaultValue }) => {
-      if (id !== "checkbox" && id !== "actions" && !defaultValue) {
+    .map(({ id, defaultValue, optional }) => {
+      if (id !== "checkbox" && id !== "actions" && !defaultValue && !optional) {
         return id;
       }
     })
