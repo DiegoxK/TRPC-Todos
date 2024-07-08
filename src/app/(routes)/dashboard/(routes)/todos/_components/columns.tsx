@@ -42,6 +42,8 @@ declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> extends CustomMeta {}
 }
 
+export const createTodo = api.todo.createTodo.useMutation;
+
 const getProjectNames = api.project.getProjectNames.useQuery;
 
 const selectInput = (type: InputTypes, value?: SelectValue) => {
@@ -108,7 +110,7 @@ export const columns: ColumnDef<Todo, unknown>[] = [
     header: "Task",
   },
   {
-    id: "project",
+    id: "projectId",
     meta: {
       defaultValue: "",
       inputType: selectInput("select", getProjectNames),
