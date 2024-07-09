@@ -17,7 +17,6 @@ import {
 
 import { type FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ZodTypeAny, z } from "zod";
 
 import {
   Table,
@@ -34,7 +33,7 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 import CreateTaskForm from "./create-task-form";
 import { DataTableResizer } from "./data-table-resizer";
-import { cn, removeEmpty } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { Todo } from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
 import SubmitErrorDialog from "./submit-error-dialog";
@@ -42,17 +41,23 @@ import { useRouter } from "next/navigation";
 import { type CustomMeta } from "./columns";
 import { api } from "@/trpc/react";
 
+import {
+  type TodoValidationSchema,
+  todoValidationSchema,
+  type ValidationKeys,
+} from "./data";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Bolt } from "lucide-react";
+import TableActions from "./table-actions";
+
 interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
 export interface ColumnValues extends CustomMeta {
-  id?: string;
+  id: ValidationKeys;
 }
-
-type Schema = Record<string, ZodTypeAny>;
-type DefaultValues = Record<string, string>;
 
 export function DataTable<TData extends Todo, TValue>({
   columns,
@@ -63,7 +68,7 @@ export function DataTable<TData extends Todo, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isError, setIsError] = useState(false);
-  const [errors, setErrors] = useState<z.infer<typeof formSchema>>();
+  const [errors, setErrors] = useState<FieldErrors<TodoValidationSchema>>();
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
   const router = useRouter();
@@ -104,36 +109,28 @@ export function DataTable<TData extends Todo, TValue>({
   });
 
   const columnValues: ColumnValues[] = columns.map((column) => {
+    if (!column.meta)
+      throw new Error(`Column ${column.id} is missing meta property`);
+
     return {
-      id: column.id,
+      id: column.id as ValidationKeys,
+      defaultValue: column.meta.defaultValue,
+      inputType: column.meta.inputType,
       optional: column.meta?.optional,
-      defaultValue: column.meta?.defaultValue,
-      validation: column.meta?.validation,
-      inputType: column.meta?.inputType,
     };
   });
 
-  const schema = columnValues.reduce<Schema>((acc, { id, validation }) => {
-    if (id && validation) {
-      acc[id] = validation;
-    }
-    return acc;
-  }, {});
-
-  const defaultValues = columnValues.reduce<DefaultValues>(
+  const defaultValues = columnValues.reduce<TodoValidationSchema>(
     (acc, { id, defaultValue }) => {
-      if (id) {
-        acc[id] = defaultValue ?? "";
-      }
+      // @ts-expect-error - String is not assignable to type 'never'
+      acc[id] = defaultValue;
       return acc;
     },
-    {},
+    {} as TodoValidationSchema,
   );
 
-  const formSchema = z.object(schema);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<TodoValidationSchema>({
+    resolver: zodResolver(todoValidationSchema),
     defaultValues,
   });
 
@@ -141,12 +138,11 @@ export function DataTable<TData extends Todo, TValue>({
     form.reset();
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // @ts-expect-error - removeEmpty is unable to infer the returning object
-    createTodo(removeEmpty(values));
+  function onSubmit(values: TodoValidationSchema) {
+    createTodo(values);
   }
 
-  function onSubmitError(errors: FieldErrors<z.infer<typeof formSchema>>) {
+  function onSubmitError(errors: FieldErrors<TodoValidationSchema>) {
     setIsError(true);
     setErrors(errors);
   }
@@ -175,6 +171,27 @@ export function DataTable<TData extends Todo, TValue>({
                 <TableHeader className="sticky top-0 z-[2] bg-background">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
+                      <TableHead
+                        className="sticky left-0 top-0 z-[1] bg-background"
+                        style={{
+                          width: 50,
+                        }}
+                      >
+                        <Checkbox
+                          checked={
+                            table.getIsAllPageRowsSelected() ||
+                            (table.getIsSomePageRowsSelected() &&
+                              "indeterminate")
+                          }
+                          onCheckedChange={(value) => {
+                            table.toggleAllPageRowsSelected(!!value);
+                            if (value === false) {
+                              table.toggleAllRowsSelected(!!value);
+                            }
+                          }}
+                          aria-label="Select all"
+                        />
+                      </TableHead>
                       {headerGroup.headers.map((header) => {
                         return (
                           <TableHead
@@ -197,6 +214,17 @@ export function DataTable<TData extends Todo, TValue>({
                           </TableHead>
                         );
                       })}
+                      <TableHead
+                        className="sticky right-0 z-[1] border-l border-r-0 bg-background"
+                        style={{
+                          width: 53,
+                        }}
+                      >
+                        <Bolt
+                          className="absolute bottom-[14px] right-4"
+                          size={20}
+                        />
+                      </TableHead>
                     </TableRow>
                   ))}
                 </TableHeader>
@@ -215,6 +243,15 @@ export function DataTable<TData extends Todo, TValue>({
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
+                        <TableCell className="sticky left-0 top-0 z-[1] bg-background">
+                          <Checkbox
+                            checked={row.getIsSelected()}
+                            onCheckedChange={(value) =>
+                              row.toggleSelected(!!value)
+                            }
+                            aria-label="Select row"
+                          />
+                        </TableCell>
                         {row.getVisibleCells().map((cell) => (
                           <TableCell
                             className={cn(
@@ -229,6 +266,9 @@ export function DataTable<TData extends Todo, TValue>({
                             )}
                           </TableCell>
                         ))}
+                        <TableCell className="sticky right-0 z-[1] border-l border-r-0 bg-background">
+                          <TableActions todo={row.original} />
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
