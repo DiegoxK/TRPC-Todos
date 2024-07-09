@@ -52,10 +52,3 @@ export const cropImage = async (
 export const generateSlug = (index: string) => {
   return encodeURIComponent(index.toLowerCase().replace(/\s+/g, "-"));
 };
-
-export const removeEmpty = (obj: Record<string, unknown>) => {
-  return Object.entries(obj).reduce(
-    (acc, [k, v]) => (v ? { ...acc, [k]: v } : acc),
-    {},
-  );
-};
