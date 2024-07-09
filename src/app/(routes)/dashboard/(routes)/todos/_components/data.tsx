@@ -9,6 +9,49 @@ import {
   StopwatchIcon,
 } from "@radix-ui/react-icons";
 
+import { z } from "zod";
+
+export type TodoValidationSchema = z.infer<typeof todoValidationSchema>;
+export type ValidationKeys = keyof TodoValidationSchema;
+
+export const PRIORITIES = ["LOW", "MEDIUM", "HIGH"] as const;
+export const STATUSES = ["TODO", "DONE"] as const;
+
+export const todoValidationSchema = z.object({
+  task: z
+    .string()
+    .min(1, {
+      message: "Task can't be empty",
+    })
+    .max(20, {
+      message: "Task name must be at most 20 characters",
+    }),
+  projectId: z
+    .string()
+    .uuid({
+      message: "Project is required",
+    })
+    .min(1, {
+      message: "Project is required",
+    }),
+  description: z
+    .string()
+    .min(1, {
+      message: "Description can't be empty",
+    })
+    .max(400, {
+      message: "Description must be at most 400 characters",
+    }),
+  due: z
+    .date({
+      message: "Invalid date format",
+    })
+    .or(z.string().optional()),
+  priority: z.enum(PRIORITIES),
+
+  status: z.enum(STATUSES),
+});
+
 export const statuses = [
   {
     value: "TODO",
