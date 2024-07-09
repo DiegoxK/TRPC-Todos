@@ -5,37 +5,21 @@ import "@tanstack/react-table";
 
 import type { Todo } from "@/lib/definitions";
 import { format } from "date-fns";
-import { Bolt, MoreHorizontal } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
-import { statuses } from "./data";
+import { PRIORITIES, STATUSES, statuses } from "./data";
 import type { ColumnDef, RowData } from "@tanstack/react-table";
-import { type ZodTypeAny } from "zod";
 
-import { z } from "zod";
 import { api } from "@/trpc/react";
 
 type InputTypes = "text" | "number" | "date" | "select";
 type SelectValue = string[] | (() => any);
 
 export type CustomMeta = {
-  optional?: boolean;
+  inputType: string | string[] | (() => any);
+  defaultValue: string;
   className?: string;
-  inputType?: string | string[] | (() => any);
-  validation?: ZodTypeAny;
-  defaultValue?: string;
+  optional?: boolean;
 };
 
 declare module "@tanstack/react-table" {
@@ -59,50 +43,10 @@ const selectInput = (type: InputTypes, value?: SelectValue) => {
 
 export const columns: ColumnDef<Todo>[] = [
   {
-    id: "checkbox",
-    size: 50,
-    enableResizing: false,
-    meta: {
-      className: "sticky z-[1] left-0 top-0 bg-background",
-    },
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => {
-          table.toggleAllPageRowsSelected(!!value);
-          if (value === false) {
-            table.toggleAllRowsSelected(!!value);
-          }
-        }}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     id: "task",
     meta: {
       defaultValue: "",
       inputType: selectInput("text"),
-      validation: z
-        .string()
-        .min(1, {
-          message: "Task can't be empty",
-        })
-        .max(20, {
-          message: "Task name must be at most 20 characters",
-        }),
     },
     minSize: 70,
     accessorKey: "task",
@@ -113,14 +57,6 @@ export const columns: ColumnDef<Todo>[] = [
     meta: {
       defaultValue: "",
       inputType: selectInput("select", getProjectNames),
-      validation: z
-        .string()
-        .uuid({
-          message: "Project is required",
-        })
-        .min(1, {
-          message: "Project is required",
-        }),
     },
     minSize: 80,
     accessorKey: "project.name",
@@ -131,14 +67,6 @@ export const columns: ColumnDef<Todo>[] = [
     meta: {
       defaultValue: "",
       inputType: selectInput("text"),
-      validation: z
-        .string()
-        .min(1, {
-          message: "Description can't be empty",
-        })
-        .max(400, {
-          message: "Description must be at most 400 characters",
-        }),
     },
     size: 660,
     minSize: 120,
@@ -148,13 +76,9 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "due",
     meta: {
+      defaultValue: "",
       optional: true,
       inputType: "date",
-      validation: z
-        .date({
-          message: "Invalid date format",
-        })
-        .or(z.string().optional()),
     },
     size: 200,
     minSize: 200,
@@ -171,15 +95,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "priority",
     meta: {
       defaultValue: "MEDIUM",
-      inputType: selectInput("select", ["LOW", "MEDIUM", "HIGH"]),
-      validation: z
-        .string()
-        .min(1, {
-          message: "Priority can't be empty",
-        })
-        .max(12, {
-          message: "Priority must be at most 12 characters",
-        }),
+      inputType: selectInput("select", [...PRIORITIES]),
     },
     minSize: 150,
     accessorKey: "priority",
@@ -190,18 +106,7 @@ export const columns: ColumnDef<Todo>[] = [
     meta: {
       className: "border-r-0",
       defaultValue: "TODO",
-      inputType: selectInput(
-        "select",
-        statuses.map((status) => status.value),
-      ),
-      validation: z
-        .string()
-        .min(1, {
-          message: "Status can't be empty",
-        })
-        .max(6, {
-          message: "Status must be at most 6 characters",
-        }),
+      inputType: selectInput("select", [...STATUSES]),
     },
     minSize: 130,
     accessorKey: "status",
@@ -228,44 +133,6 @@ export const columns: ColumnDef<Todo>[] = [
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id));
-    },
-  },
-
-  {
-    id: "actions",
-    meta: {
-      className: "sticky border-l z-[1] border-r-0 right-0 bg-background",
-    },
-    size: 53,
-    enableResizing: false,
-    header: () => <Bolt className="absolute bottom-[14px] right-4" size={20} />,
-    cell: ({ row }) => {
-      const payment = row.original;
-      return (
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger className="" asChild>
-            <Button
-              className="absolute bottom-[18px] right-[18px] block h-4 w-4 rounded-none"
-              size="icon"
-              variant="ghost"
-            >
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal size={16} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
     },
   },
 ];
