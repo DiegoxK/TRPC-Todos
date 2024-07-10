@@ -22,6 +22,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import type { TodoValidationSchema, ValidationKeys } from "./data";
+import type { GetValuesQuery } from "./columns";
 
 interface InputProps {
   field: ControllerRenderProps<TodoValidationSchema, ValidationKeys>;
@@ -32,7 +33,7 @@ interface CommandValues extends InputProps {
 }
 
 interface ApiCommandValuesProps extends CommandValues {
-  values: { id: string; label: string }[];
+  values?: { id: string; label: string }[];
   isLoading: boolean;
   isError: boolean;
 }
@@ -167,12 +168,11 @@ export const InputCommand = ({
 
 export const ApiInputCommand = ({
   field,
-  hook,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}: InputProps & { hook: () => any }) => {
+  query,
+}: InputProps & { query: GetValuesQuery }) => {
   const [open, setOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { data: values, isLoading, isError } = hook();
+
+  const { data: values, isLoading, isError } = query();
 
   return (
     <FormTableItem className="flex flex-col">
@@ -187,12 +187,10 @@ export const ApiInputCommand = ({
                 !field.value && "border-border text-muted-foreground",
               )}
             >
-              {field.value
-                ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                  values.find(
+              {field.value && values
+                ? values.find(
                     (value: { id: string; label: string }) =>
                       value.id === field.value,
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                   )?.label
                 : "Search"}
 
@@ -213,11 +211,8 @@ export const ApiInputCommand = ({
                 <ApiCommandValues
                   field={field}
                   setOpen={setOpen}
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   values={values}
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   isLoading={isLoading}
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   isError={isError}
                 />
               </CommandGroup>
@@ -243,7 +238,7 @@ const ApiCommandValues = ({
       </CommandItem>
     );
 
-  if (isError) {
+  if (isError || !values) {
     return (
       <CommandItem className="flex items-center justify-center p-3">
         <span className="text-red-500">Error loading values</span>
