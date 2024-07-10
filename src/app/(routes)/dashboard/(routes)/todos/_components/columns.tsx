@@ -17,7 +17,7 @@ type SelectValue = string[] | (() => any);
 
 export type CustomMeta = {
   inputType: string | string[] | (() => any);
-  defaultValue: string;
+  defaultValue?: string;
   className?: string;
   optional?: boolean;
 };
@@ -76,7 +76,7 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "due",
     meta: {
-      defaultValue: "",
+      defaultValue: undefined,
       optional: true,
       inputType: "date",
     },
