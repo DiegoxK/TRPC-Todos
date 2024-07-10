@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { FormControl, FormTableItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -25,14 +21,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import type { TodoValidationSchema, ValidationKeys } from "./data";
 
 interface InputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  field: ControllerRenderProps<Record<string, any>, string>;
+  field: ControllerRenderProps<TodoValidationSchema, ValidationKeys>;
 }
 
-interface CommandValues {
-  field: ControllerRenderProps<Record<string, any>, string>;
+interface CommandValues extends InputProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -96,10 +91,9 @@ export const InputDate = ({ field }: InputProps) => {
         >
           <Calendar
             mode="single"
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            selected={field.value}
+            selected={new Date(field.value ?? new Date())}
             onSelect={(date) => {
-              field.onChange(date ?? "");
+              field.onChange(date?.toISOString());
             }}
             disabled={(date) => date < new Date()}
             initialFocus
@@ -129,7 +123,7 @@ export const InputCommand = ({
                 !field.value && "border-border text-muted-foreground",
               )}
             >
-              {field.value || "Search"}
+              {field.value ?? "Search"}
               <ChevronDown size={16} className="opacity-60" />
             </Button>
           </FormControl>
@@ -174,8 +168,10 @@ export const InputCommand = ({
 export const ApiInputCommand = ({
   field,
   hook,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: InputProps & { hook: () => any }) => {
   const [open, setOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data: values, isLoading, isError } = hook();
 
   return (
@@ -192,9 +188,11 @@ export const ApiInputCommand = ({
               )}
             >
               {field.value
-                ? values.find(
+                ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+                  values.find(
                     (value: { id: string; label: string }) =>
                       value.id === field.value,
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                   )?.label
                 : "Search"}
 
@@ -215,8 +213,11 @@ export const ApiInputCommand = ({
                 <ApiCommandValues
                   field={field}
                   setOpen={setOpen}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   values={values}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   isLoading={isLoading}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   isError={isError}
                 />
               </CommandGroup>
