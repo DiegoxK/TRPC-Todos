@@ -76,7 +76,7 @@ export default function CreateTaskForm({
                   return <InputCommand field={field} values={inputType} />;
                 }
                 if (inputType instanceof Function) {
-                  return <ApiInputCommand field={field} hook={inputType} />;
+                  return <ApiInputCommand field={field} query={inputType} />;
                 }
 
                 return <InputText field={field} />;
