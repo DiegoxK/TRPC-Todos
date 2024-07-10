@@ -8,7 +8,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 const createTodoSchema = createInsertSchema(todos, {
-  due: z.date().or(z.string()),
+  due: z.string().datetime().optional(),
   createdById: z.undefined(),
   taskSlug: z.undefined(),
 });
@@ -73,6 +73,7 @@ export const todoRouter = createTRPCRouter({
       if (project) {
         return ctx.db.insert(todos).values({
           ...input,
+          due: input.due ? new Date(input.due) : null,
           taskSlug,
           createdById: userId,
         });
