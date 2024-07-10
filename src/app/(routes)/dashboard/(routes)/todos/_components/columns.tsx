@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import "@tanstack/react-table";
@@ -11,12 +10,26 @@ import { PRIORITIES, STATUSES, statuses } from "./data";
 import type { ColumnDef, RowData } from "@tanstack/react-table";
 
 import { api } from "@/trpc/react";
+import type { ProcedureUseQuery } from "node_modules/@trpc/react-query/dist/createTRPCReact";
+
+type ResolverDef = {
+  input: void;
+  output: {
+    id: string;
+    label: string;
+  }[];
+  transformer: true;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errorShape: any;
+};
+
+export type GetValuesQuery = ProcedureUseQuery<ResolverDef>;
 
 type InputTypes = "text" | "number" | "date" | "select";
-type SelectValue = string[] | (() => any);
+type SelectValue = string[] | GetValuesQuery;
 
 export type CustomMeta = {
-  inputType: string | string[] | (() => any);
+  inputType: string | string[] | GetValuesQuery;
   defaultValue?: string;
   className?: string;
   optional?: boolean;
