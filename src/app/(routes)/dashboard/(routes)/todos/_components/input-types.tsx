@@ -240,7 +240,7 @@ export const ApiInputCommand = ({
               {inputValue && !alreadyExists && (
                 <>
                   <Separator />
-                  <div className="flex items-center gap-2 p-2">
+                  <div className="m-1 flex select-none items-center gap-2 rounded-sm p-2 hover:bg-[#18151e]">
                     <CirclePlus className="min-w-[18px] opacity-50" size={18} />
                     <p className="truncate text-sm capitalize">{inputValue}</p>
                   </div>
