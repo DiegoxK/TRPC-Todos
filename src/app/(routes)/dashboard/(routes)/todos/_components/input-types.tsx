@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown, CirclePlus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import {
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/command";
 import type { TodoValidationSchema, ValidationKeys } from "./data";
 import type { GetValuesQuery } from "./columns";
+import { Separator } from "@/components/ui/separator";
 
 interface InputProps {
   field: ControllerRenderProps<TodoValidationSchema, ValidationKeys>;
@@ -86,7 +87,7 @@ export const InputDate = ({ field }: InputProps) => {
         </PopoverTrigger>
         <PopoverContent
           side="bottom"
-          align="end"
+          align="start"
           sideOffset={8}
           className="w-auto p-0"
         >
@@ -130,10 +131,10 @@ export const InputCommand = ({
           </FormControl>
         </PopoverTrigger>
         <PopoverContent
-          className="w-36 p-0"
+          className="popover-content min-w-32 p-0"
           sideOffset={8}
           side="bottom"
-          align="end"
+          align="start"
         >
           <Command>
             <CommandInput className="capitalize" placeholder={field.name} />
@@ -158,6 +159,7 @@ export const InputCommand = ({
                   </CommandItem>
                 ))}
               </CommandGroup>
+              <CommandEmpty>No results found.</CommandEmpty>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -171,12 +173,24 @@ export const ApiInputCommand = ({
   query,
 }: InputProps & { query: GetValuesQuery }) => {
   const [open, setOpen] = useState(false);
+  const [inputValue, setinputValue] = useState<string>("");
 
   const { data: values, isLoading, isError } = query();
 
+  const alreadyExists = values?.some(
+    (value) => value.label.toLowerCase() === inputValue.toLowerCase(),
+  );
+
   return (
     <FormTableItem className="flex flex-col">
-      <Popover modal={false} open={open} onOpenChange={setOpen}>
+      <Popover
+        modal={false}
+        open={open}
+        onOpenChange={(openChange) => {
+          setOpen(openChange);
+          setinputValue("");
+        }}
+      >
         <PopoverTrigger asChild>
           <FormControl>
             <Button
@@ -198,14 +212,20 @@ export const ApiInputCommand = ({
             </Button>
           </FormControl>
         </PopoverTrigger>
+        {/* TODO: Fix Z-indexes */}
+        {/* TODO: Prevent scrolling when modal is open */}
         <PopoverContent
-          className="w-36 p-0"
+          className="popover-content min-w-56 p-0"
           sideOffset={8}
           side="bottom"
-          align="end"
+          align="start"
         >
           <Command>
-            <CommandInput className="capitalize" placeholder={field.name} />
+            <CommandInput
+              onChangeCapture={(e) => setinputValue(e.currentTarget.value)}
+              className="capitalize"
+              placeholder={field.name}
+            />
             <CommandList>
               <CommandGroup>
                 <ApiCommandValues
@@ -216,6 +236,16 @@ export const ApiInputCommand = ({
                   isError={isError}
                 />
               </CommandGroup>
+
+              {inputValue && !alreadyExists && (
+                <>
+                  <Separator />
+                  <div className="flex items-center gap-2 p-2">
+                    <CirclePlus className="min-w-[18px] opacity-50" size={18} />
+                    <p className="truncate text-sm capitalize">{inputValue}</p>
+                  </div>
+                </>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>
