@@ -15,7 +15,7 @@ import {
 import { type AdapterAccount } from "next-auth/adapters";
 
 export const UserRole = pgEnum("userRole", ["ADMIN", "USER"]);
-export const Status = pgEnum("status", ["TODO", "IN PROGRESS", "DONE"]);
+export const Status = pgEnum("status", ["TODO", "IN_PROGRESS", "DONE"]);
 export const Priority = pgEnum("priority", ["LOW", "MEDIUM", "HIGH"]);
 
 /**
