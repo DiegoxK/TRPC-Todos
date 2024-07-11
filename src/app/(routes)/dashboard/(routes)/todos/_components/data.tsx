@@ -16,7 +16,7 @@ export type TodoValidationSchema = z.infer<typeof todoValidationSchema>;
 export type ValidationKeys = keyof TodoValidationSchema;
 
 export const PRIORITIES = ["LOW", "MEDIUM", "HIGH"] as const;
-export const STATUSES = ["TODO", "IN_PROGRESS", "DONE"] as const;
+export const STATUSES = ["TODO", "IN PROGRESS", "DONE"] as const;
 
 export const todoValidationSchema = z.object({
   task: z
