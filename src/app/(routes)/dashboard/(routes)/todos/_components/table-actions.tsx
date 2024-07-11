@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input";
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { todoValidationSchema } from "./data";
+import { todoValidationSchema, type TodoValidationSchema } from "./data";
 
 interface TableActionsProps {
   todo: Todo;
@@ -73,23 +73,15 @@ export default function TableActions({ todo }: TableActionsProps) {
   );
 }
 
-const EditTodoForm = ({
-  todo: { id, task, projectId, description, due, priority, status },
-}: TableActionsProps) => {
-  const form = useForm<z.infer<typeof todoValidationSchema>>({
+const EditTodoForm = ({ todo }: TableActionsProps) => {
+  const form = useForm<TodoValidationSchema>({
     resolver: zodResolver(todoValidationSchema),
     defaultValues: {
-      id,
-      task,
-      projectId,
-      description: description ?? "",
-      due,
-      priority,
-      status,
+      ...todo,
     },
   });
 
-  function onSubmit(values: z.infer<typeof todoValidationSchema>) {
+  function onSubmit(values: TodoValidationSchema) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
