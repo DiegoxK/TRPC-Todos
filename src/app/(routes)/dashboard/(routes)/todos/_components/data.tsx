@@ -12,10 +12,11 @@ import {
 import { z } from "zod";
 
 export type TodoValidationSchema = z.infer<typeof todoValidationSchema>;
+
 export type ValidationKeys = keyof TodoValidationSchema;
 
 export const PRIORITIES = ["LOW", "MEDIUM", "HIGH"] as const;
-export const STATUSES = ["TODO", "DONE"] as const;
+export const STATUSES = ["TODO", "IN_PROGRESS", "DONE"] as const;
 
 export const todoValidationSchema = z.object({
   task: z
@@ -41,7 +42,8 @@ export const todoValidationSchema = z.object({
     })
     .max(400, {
       message: "Description must be at most 400 characters",
-    }),
+    })
+    .optional(),
   due: z.string().datetime().optional(),
   priority: z.enum(PRIORITIES),
 
