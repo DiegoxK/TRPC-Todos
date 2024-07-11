@@ -1,3 +1,10 @@
-import { type todos } from "@/server/db/schema";
+import type { z } from "zod";
+import type { createTodoSchema } from "@/server/api/routers/todo";
 
-export type Todo = typeof todos.$inferSelect;
+type NoNullFields<T> = {
+  [P in keyof T]: NoNullFields<Exclude<T[P], null>>;
+};
+
+type CreateTodoSchema = z.infer<typeof createTodoSchema>;
+
+export type Todo = NoNullFields<CreateTodoSchema>;
