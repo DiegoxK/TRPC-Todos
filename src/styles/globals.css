@@ -116,3 +116,7 @@ html {
 .glassy-container:hover::before {
   left: 125%; /* Move the line across the container */
 }
+
+.popover-content {
+  width: var(--radix-popover-trigger-width);
+}
