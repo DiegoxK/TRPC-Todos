@@ -7,7 +7,7 @@ import { createInsertSchema } from "drizzle-zod";
 
 import { z } from "zod";
 
-const createTodoSchema = createInsertSchema(todos, {
+export const createTodoSchema = createInsertSchema(todos, {
   due: z.string().datetime().optional(),
   createdById: z.undefined(),
   taskSlug: z.undefined(),
