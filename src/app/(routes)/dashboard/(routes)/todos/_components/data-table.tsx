@@ -36,7 +36,7 @@ import { DataTableResizer } from "./data-table-resizer";
 import { cn } from "@/lib/utils";
 import type { Todo } from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
-import SubmitErrorDialog from "./submit-error-dialog";
+import DataTableDialog from "./data-table-dialog";
 import { useRouter } from "next/navigation";
 import { type CustomMeta } from "./columns";
 import { api } from "@/trpc/react";
@@ -67,7 +67,8 @@ export function DataTable<TData extends Todo, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const [isError, setIsError] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [todo, setTodo] = useState<Todo>();
   const [errors, setErrors] = useState<FieldErrors<TodoValidationSchema>>();
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
@@ -143,16 +144,19 @@ export function DataTable<TData extends Todo, TValue>({
   }
 
   function onSubmitError(errors: FieldErrors<TodoValidationSchema>) {
-    setIsError(true);
+    setIsDialogOpen(true);
     setErrors(errors);
   }
 
   return (
     <>
-      <SubmitErrorDialog
+      <DataTableDialog
         errors={errors}
-        open={isError}
-        onOpenChange={setIsError}
+        setErrors={setErrors}
+        todo={todo}
+        setTodo={setTodo}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
       />
       <div className="space-y-4">
         <DataTableToolbar
@@ -267,7 +271,11 @@ export function DataTable<TData extends Todo, TValue>({
                           </TableCell>
                         ))}
                         <TableCell className="sticky right-0 z-[1] border-l border-r-0 bg-background">
-                          <TableActions todo={row.original} />
+                          <TableActions
+                            todo={row.original}
+                            setTodo={setTodo}
+                            setIsDialogOpen={setIsDialogOpen}
+                          />
                         </TableCell>
                       </TableRow>
                     ))
