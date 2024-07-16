@@ -25,11 +25,17 @@ type ResolverDef = {
 
 export type Query = ProcedureUseQuery<ResolverDef>;
 
-type InputTypes = "text" | "textarea" | "number" | "date";
 type SelectionInput = string[] | Query;
 
+export type InputTypes =
+  | "text"
+  | "textarea"
+  | "number"
+  | "date"
+  | SelectionInput;
+
 export type CustomMeta = {
-  inputType: InputTypes | SelectionInput;
+  inputType: InputTypes;
   defaultValue?: string;
   className?: string;
   optional?: boolean;
