@@ -33,9 +33,6 @@ export const todoValidationSchema = z.object({
     }),
   description: z
     .string()
-    .min(1, {
-      message: "Description can't be empty",
-    })
     .max(400, {
       message: "Description must be at most 400 characters",
     })

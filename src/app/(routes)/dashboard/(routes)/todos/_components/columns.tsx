@@ -73,6 +73,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "description",
     meta: {
       defaultValue: "",
+      optional: true,
       inputType: "textarea",
     },
     size: 660,
