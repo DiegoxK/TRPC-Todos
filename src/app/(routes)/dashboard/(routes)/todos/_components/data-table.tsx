@@ -161,7 +161,7 @@ export function DataTable<TData extends Todo, TValue>({
         {errors ? (
           <CreateTaskErrors errors={errors} />
         ) : todo ? (
-          <EditTaskForm todo={todo} />
+          <EditTaskForm todo={todo} columnValues={columnValues} />
         ) : null}
       </DataTableDialog>
       <div className="space-y-4">
