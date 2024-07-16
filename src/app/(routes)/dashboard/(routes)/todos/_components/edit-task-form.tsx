@@ -1,24 +1,12 @@
-import type {
-  Todo,
-  TodoValidationSchema,
-  TodoValidationKeys,
-} from "@/lib/definitions";
+import type { Todo, TodoValidationSchema } from "@/lib/definitions";
 import { type ColumnValues } from "./data-table";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { todoValidationSchema } from "./data";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import {
-  ApiInputCommand,
-  InputCommand,
-  InputDate,
-  InputNumber,
-  InputText,
-  InputTextArea,
-} from "./input-types";
-import { type InputTypes } from "./columns";
 import { DialogTitle } from "@/components/ui/dialog";
+import { TodoFormField } from "./todo-form-field";
 
 interface EditTaskFormProps {
   todo: Todo;
@@ -31,7 +19,8 @@ export default function EditTaskForm({
 }: EditTaskFormProps) {
   const defaultValues = {
     ...todo,
-    due: todo.due ? todo.due.toString() : undefined,
+    description: todo.description ?? "",
+    due: todo.due ? todo.due.toISOString() : undefined,
   };
 
   const form = useForm<TodoValidationSchema>({
@@ -51,28 +40,39 @@ export default function EditTaskForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-2 gap-4"
         >
-          {columnValues.map(({ id, inputType }) => {
-            if (id === "priority" || id === "status") {
-              return (
-                <EditFormField
-                  key={id}
-                  id={id}
-                  form={form}
-                  inputType={inputType}
-                />
-              );
-            }
+          <FormItem>
+            <FormLabel />
+            <FormControl>
+              {columnValues.map(({ id, inputType }) => {
+                if (!id) {
+                  throw new Error(
+                    "A column id is required to create a Form component",
+                  );
+                }
 
-            return (
-              <EditFormField
-                className="col-span-2"
-                key={id}
-                id={id}
-                form={form}
-                inputType={inputType}
-              />
-            );
-          })}
+                if (id === "priority" || id === "status") {
+                  return (
+                    <TodoFormField
+                      key={id}
+                      id={id}
+                      form={form}
+                      inputType={inputType}
+                    />
+                  );
+                }
+
+                return (
+                  <TodoFormField
+                    className="col-span-2"
+                    key={id}
+                    id={id}
+                    form={form}
+                    inputType={inputType}
+                  />
+                );
+              })}
+            </FormControl>
+          </FormItem>
           <Button className="col-span-2 mt-2" type="submit">
             Submit
           </Button>
@@ -81,46 +81,3 @@ export default function EditTaskForm({
     </>
   );
 }
-
-interface EditFormFieldProps {
-  id: TodoValidationKeys;
-  className?: string;
-  form: UseFormReturn<TodoValidationSchema>;
-  inputType: InputTypes;
-}
-
-const EditFormField = ({
-  id,
-  inputType,
-  form,
-  className,
-}: EditFormFieldProps) => {
-  return (
-    <div className={className}>
-      <FormField
-        key={id}
-        control={form.control}
-        name={id}
-        render={({ field }) => {
-          if (inputType === "number") {
-            return <InputNumber field={field} />;
-          }
-          if (inputType === "date") {
-            return <InputDate field={field} />;
-          }
-          if (inputType === "textarea") {
-            return <InputTextArea field={field} />;
-          }
-          if (inputType instanceof Array) {
-            return <InputCommand field={field} values={inputType} />;
-          }
-          if (inputType instanceof Function) {
-            return <ApiInputCommand field={field} query={inputType} />;
-          }
-
-          return <InputText field={field} />;
-        }}
-      />
-    </div>
-  );
-};

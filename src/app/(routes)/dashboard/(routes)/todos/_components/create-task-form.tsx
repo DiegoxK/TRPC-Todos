@@ -2,19 +2,13 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Send, SquareMinus } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { FormField } from "@/components/ui/form";
+import { FormControl, FormTableItem } from "@/components/ui/form";
 
 import type { UseFormReturn } from "react-hook-form";
 
-import {
-  ApiInputCommand,
-  InputCommand,
-  InputDate,
-  InputNumber,
-  InputText,
-} from "./input-types";
 import { type ColumnValues } from "./data-table";
 import type { TodoValidationSchema } from "@/lib/definitions";
+import { TodoFormField } from "./todo-form-field";
 
 interface CreateTaskFormProps {
   setIsAdding: Dispatch<SetStateAction<boolean>>;
@@ -60,26 +54,11 @@ export default function CreateTaskForm({
 
         return (
           <TableCell key={id}>
-            <FormField
-              control={form.control}
-              name={id}
-              render={({ field }) => {
-                if (inputType === "number") {
-                  return <InputNumber field={field} />;
-                }
-                if (inputType === "date") {
-                  return <InputDate field={field} />;
-                }
-                if (inputType instanceof Array) {
-                  return <InputCommand field={field} values={inputType} />;
-                }
-                if (inputType instanceof Function) {
-                  return <ApiInputCommand field={field} query={inputType} />;
-                }
-
-                return <InputText field={field} />;
-              }}
-            />
+            <FormTableItem>
+              <FormControl>
+                <TodoFormField id={id} form={form} inputType={inputType} />
+              </FormControl>
+            </FormTableItem>
           </TableCell>
         );
       })}
