@@ -23,13 +23,13 @@ type ResolverDef = {
   errorShape: any;
 };
 
-export type GetValuesQuery = ProcedureUseQuery<ResolverDef>;
+export type Query = ProcedureUseQuery<ResolverDef>;
 
-type InputTypes = "text" | "number" | "date" | "select";
-type SelectValue = string[] | GetValuesQuery;
+type InputTypes = "text" | "textarea" | "number" | "date";
+type SelectionInput = string[] | Query;
 
 export type CustomMeta = {
-  inputType: string | string[] | GetValuesQuery;
+  inputType: InputTypes | SelectionInput;
   defaultValue?: string;
   className?: string;
   optional?: boolean;
@@ -42,24 +42,12 @@ declare module "@tanstack/react-table" {
 
 const getProjectNames = api.project.getProjectNames.useQuery;
 
-const selectInput = (type: InputTypes, value?: SelectValue) => {
-  if (type === "select") {
-    if (value) {
-      return value;
-    }
-    throw new Error(
-      'The "select" input type requires an "Array" or a "Hook" function',
-    );
-  }
-  return type;
-};
-
 export const columns: ColumnDef<Todo>[] = [
   {
     id: "task",
     meta: {
       defaultValue: "",
-      inputType: selectInput("text"),
+      inputType: "text",
     },
     minSize: 70,
     accessorKey: "task",
@@ -69,7 +57,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "projectId",
     meta: {
       defaultValue: "",
-      inputType: selectInput("select", getProjectNames),
+      inputType: getProjectNames,
     },
     minSize: 80,
     accessorKey: "project.name",
@@ -79,7 +67,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "description",
     meta: {
       defaultValue: "",
-      inputType: selectInput("text"),
+      inputType: "textarea",
     },
     size: 660,
     minSize: 120,
@@ -108,7 +96,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "priority",
     meta: {
       defaultValue: "MEDIUM",
-      inputType: selectInput("select", [...PRIORITIES]),
+      inputType: [...PRIORITIES],
     },
     minSize: 150,
     accessorKey: "priority",
@@ -119,7 +107,7 @@ export const columns: ColumnDef<Todo>[] = [
     meta: {
       className: "border-r-0",
       defaultValue: "TODO",
-      inputType: selectInput("select", [...STATUSES]),
+      inputType: [...STATUSES],
     },
     minSize: 130,
     accessorKey: "status",
