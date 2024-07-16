@@ -22,8 +22,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import type { TodoValidationSchema, ValidationKeys } from "./data";
-import type { GetValuesQuery } from "./columns";
+import type { Query } from "./columns";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
 interface InputProps {
   field: ControllerRenderProps<TodoValidationSchema, ValidationKeys>;
@@ -46,6 +47,19 @@ export const InputText = ({ field }: InputProps) => {
         <Input
           className={cn("h-9 border-input", !field.value && "border-border")}
           type="text"
+          {...field}
+        />
+      </FormControl>
+    </FormTableItem>
+  );
+};
+
+export const InputTextArea = ({ field }: InputProps) => {
+  return (
+    <FormTableItem>
+      <FormControl>
+        <Textarea
+          className={cn("h-9 border-input", !field.value && "border-border")}
           {...field}
         />
       </FormControl>
@@ -171,7 +185,7 @@ export const InputCommand = ({
 export const ApiInputCommand = ({
   field,
   query,
-}: InputProps & { query: GetValuesQuery }) => {
+}: InputProps & { query: Query }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setinputValue] = useState<string>("");
 
