@@ -18,6 +18,7 @@ import {
   InputTextArea,
 } from "./input-types";
 import { type InputTypes } from "./columns";
+import { DialogTitle } from "@/components/ui/dialog";
 
 interface EditTaskFormProps {
   todo: Todo;
@@ -42,38 +43,41 @@ export default function EditTaskForm({
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-2 gap-4"
-      >
-        {columnValues.map(({ id, inputType }) => {
-          if (id === "priority" || id === "status") {
+    <>
+      <DialogTitle className="mb-2">Edit Task</DialogTitle>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-4"
+        >
+          {columnValues.map(({ id, inputType }) => {
+            if (id === "priority" || id === "status") {
+              return (
+                <EditFormField
+                  key={id}
+                  id={id}
+                  form={form}
+                  inputType={inputType}
+                />
+              );
+            }
+
             return (
               <EditFormField
+                className="col-span-2"
                 key={id}
                 id={id}
                 form={form}
                 inputType={inputType}
               />
             );
-          }
-
-          return (
-            <EditFormField
-              className="col-span-2"
-              key={id}
-              id={id}
-              form={form}
-              inputType={inputType}
-            />
-          );
-        })}
-        <Button className="col-span-2 my-2" type="submit">
-          Submit
-        </Button>
-      </form>
-    </Form>
+          })}
+          <Button className="col-span-2 mt-2" type="submit">
+            Submit
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }
 
