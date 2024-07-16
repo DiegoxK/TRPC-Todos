@@ -45,81 +45,59 @@ interface ApiCommandValuesProps extends CommandValues {
 
 export const InputText = ({ field }: InputProps) => {
   return (
-    <FormTableItem>
-      <FormControl>
-        <Input
-          className={cn("h-9 border-input", !field.value && "border-border")}
-          type="text"
-          {...field}
-        />
-      </FormControl>
-    </FormTableItem>
+    <Input
+      className={cn("h-9 border-input", !field.value && "border-border")}
+      type="text"
+      {...field}
+    />
   );
 };
 
 export const InputTextArea = ({ field }: InputProps) => {
   return (
-    <FormTableItem>
-      <FormControl>
-        <Textarea
-          className={cn("h-9 border-input", !field.value && "border-border")}
-          {...field}
-        />
-      </FormControl>
-    </FormTableItem>
+    <Textarea
+      className={cn("h-9 border-input", !field.value && "border-border")}
+      {...field}
+    />
   );
 };
 
 export const InputNumber = ({ field }: InputProps) => {
-  return (
-    <FormTableItem>
-      <FormControl>
-        <Input className="h-8 border-border" type="number" {...field} />
-      </FormControl>
-    </FormTableItem>
-  );
+  return <Input className="h-8 border-border" type="number" {...field} />;
 };
 
 export const InputDate = ({ field }: InputProps) => {
   return (
-    <FormTableItem className="flex flex-col">
-      <Popover modal={false}>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "h-[37px] w-full border-input pl-3 text-left font-normal",
-                !field.value && "border-border text-muted-foreground",
-              )}
-            >
-              {field.value ? (
-                format(field.value, "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
-              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent
-          side="bottom"
-          align="start"
-          sideOffset={8}
-          className="w-auto p-0"
+    <Popover modal={false}>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "h-[37px] w-full border-input pl-3 text-left font-normal",
+            !field.value && "border-border text-muted-foreground",
+          )}
         >
-          <Calendar
-            mode="single"
-            selected={new Date(field.value ?? new Date())}
-            onSelect={(date) => {
-              field.onChange(date?.toISOString());
-            }}
-            disabled={(date) => date < new Date()}
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
-    </FormTableItem>
+          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        className="w-auto p-0"
+      >
+        <Calendar
+          mode="single"
+          selected={new Date(field.value ?? new Date())}
+          onSelect={(date) => {
+            field.onChange(date?.toISOString());
+          }}
+          disabled={(date) => date < new Date()}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -130,58 +108,54 @@ export const InputCommand = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <FormTableItem className="flex flex-col">
-      <Popover modal={false} open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                "flex h-9 justify-between",
-                !field.value && "border-border text-muted-foreground",
-              )}
-            >
-              {field.value ?? "Search"}
-              <ChevronDown size={16} className="opacity-60" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent
-          className="popover-content min-w-32 p-0"
-          sideOffset={8}
-          side="bottom"
-          align="start"
+    <Popover modal={false} open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className={cn(
+            "flex h-9 justify-between",
+            !field.value && "border-border text-muted-foreground",
+          )}
         >
-          <Command>
-            <CommandInput className="capitalize" placeholder={field.name} />
-            <CommandList>
-              <CommandGroup>
-                {values.map((value) => (
-                  <CommandItem
-                    value={value}
-                    key={value}
-                    onSelect={() => {
-                      setOpen(false);
-                      field.onChange(value);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === field.value ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {value}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-              <CommandEmpty>No results found.</CommandEmpty>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </FormTableItem>
+          {field.value ?? "Search"}
+          <ChevronDown size={16} className="opacity-60" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="popover-content min-w-32 p-0"
+        sideOffset={8}
+        side="bottom"
+        align="start"
+      >
+        <Command>
+          <CommandInput className="capitalize" placeholder={field.name} />
+          <CommandList>
+            <CommandGroup>
+              {values.map((value) => (
+                <CommandItem
+                  value={value}
+                  key={value}
+                  onSelect={() => {
+                    setOpen(false);
+                    field.onChange(value);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === field.value ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {value}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            <CommandEmpty>No results found.</CommandEmpty>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -199,75 +173,71 @@ export const ApiInputCommand = ({
   );
 
   return (
-    <FormTableItem className="flex flex-col">
-      <Popover
-        modal={false}
-        open={open}
-        onOpenChange={(openChange) => {
-          setOpen(openChange);
-          setinputValue("");
-        }}
-      >
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                "flex h-9 justify-between overflow-hidden",
-                !field.value && "border-border text-muted-foreground",
-              )}
-            >
-              {field.value && values
-                ? values.find(
-                    (value: { id: string; label: string }) =>
-                      value.id === field.value,
-                  )?.label
-                : "Search"}
-
-              <ChevronDown size={16} className="opacity-60" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        {/* TODO: Fix Z-indexes */}
-        {/* TODO: Prevent scrolling when modal is open */}
-        <PopoverContent
-          className="popover-content min-w-56 p-0"
-          sideOffset={8}
-          side="bottom"
-          align="start"
+    <Popover
+      modal={false}
+      open={open}
+      onOpenChange={(openChange) => {
+        setOpen(openChange);
+        setinputValue("");
+      }}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className={cn(
+            "flex h-9 justify-between overflow-hidden",
+            !field.value && "border-border text-muted-foreground",
+          )}
         >
-          <Command>
-            <CommandInput
-              onChangeCapture={(e) => setinputValue(e.currentTarget.value)}
-              className="capitalize"
-              placeholder={field.name}
-            />
-            <CommandList>
-              <CommandGroup>
-                <ApiCommandValues
-                  field={field}
-                  setOpen={setOpen}
-                  values={values}
-                  isLoading={isLoading}
-                  isError={isError}
-                />
-              </CommandGroup>
+          {field.value && values
+            ? values.find(
+                (value: { id: string; label: string }) =>
+                  value.id === field.value,
+              )?.label
+            : "Search"}
 
-              {inputValue && !alreadyExists && (
-                <>
-                  <Separator />
-                  <div className="m-1 flex select-none items-center gap-2 rounded-sm p-2 hover:bg-[#18151e]">
-                    <CirclePlus className="min-w-[18px] opacity-50" size={18} />
-                    <p className="truncate text-sm capitalize">{inputValue}</p>
-                  </div>
-                </>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </FormTableItem>
+          <ChevronDown size={16} className="opacity-60" />
+        </Button>
+      </PopoverTrigger>
+      {/* TODO: Fix Z-indexes */}
+      {/* TODO: Prevent scrolling when modal is open */}
+      <PopoverContent
+        className="popover-content min-w-56 p-0"
+        sideOffset={8}
+        side="bottom"
+        align="start"
+      >
+        <Command>
+          <CommandInput
+            onChangeCapture={(e) => setinputValue(e.currentTarget.value)}
+            className="capitalize"
+            placeholder={field.name}
+          />
+          <CommandList>
+            <CommandGroup>
+              <ApiCommandValues
+                field={field}
+                setOpen={setOpen}
+                values={values}
+                isLoading={isLoading}
+                isError={isError}
+              />
+            </CommandGroup>
+
+            {inputValue && !alreadyExists && (
+              <>
+                <Separator />
+                <div className="m-1 flex select-none items-center gap-2 rounded-sm p-2 hover:bg-[#18151e]">
+                  <CirclePlus className="min-w-[18px] opacity-50" size={18} />
+                  <p className="truncate text-sm capitalize">{inputValue}</p>
+                </div>
+              </>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };
 
