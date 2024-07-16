@@ -55,9 +55,7 @@ export default function CreateTaskForm({
       </TableCell>
       {columnValues.map(({ id, inputType }) => {
         if (!id) {
-          throw new Error(
-            "A column id is required in CreateTaskForm component",
-          );
+          throw new Error("A column id is required to create a Form component");
         }
 
         return (
