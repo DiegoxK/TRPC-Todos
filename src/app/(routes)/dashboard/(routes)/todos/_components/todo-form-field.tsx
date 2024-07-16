@@ -16,7 +16,7 @@ import {
 
 interface TodoFormFieldProps {
   id: TodoValidationKeys;
-  className?: string;
+  isTable?: boolean;
   form: UseFormReturn<TodoValidationSchema>;
   inputType: InputTypes;
 }
@@ -25,34 +25,32 @@ export const TodoFormField = ({
   id,
   inputType,
   form,
-  className,
+  isTable,
 }: TodoFormFieldProps) => {
   return (
-    <div className={className}>
-      <FormField
-        key={id}
-        control={form.control}
-        name={id}
-        render={({ field }) => {
-          if (inputType === "number") {
-            return <InputNumber field={field} />;
-          }
-          if (inputType === "date") {
-            return <InputDate field={field} />;
-          }
-          if (inputType === "textarea") {
-            return <InputTextArea field={field} />;
-          }
-          if (inputType instanceof Array) {
-            return <InputCommand field={field} values={inputType} />;
-          }
-          if (inputType instanceof Function) {
-            return <ApiInputCommand field={field} query={inputType} />;
-          }
+    <FormField
+      key={id}
+      control={form.control}
+      name={id}
+      render={({ field }) => {
+        if (inputType === "number") {
+          return <InputNumber field={field} />;
+        }
+        if (inputType === "date") {
+          return <InputDate field={field} />;
+        }
+        if (inputType === "textarea" && !isTable) {
+          return <InputTextArea field={field} />;
+        }
+        if (inputType instanceof Array) {
+          return <InputCommand field={field} values={inputType} />;
+        }
+        if (inputType instanceof Function) {
+          return <ApiInputCommand field={field} query={inputType} />;
+        }
 
-          return <InputText field={field} />;
-        }}
-      />
-    </div>
+        return <InputText field={field} />;
+      }}
+    />
   );
 };

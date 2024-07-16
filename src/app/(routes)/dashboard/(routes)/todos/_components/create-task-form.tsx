@@ -56,7 +56,12 @@ export default function CreateTaskForm({
           <TableCell key={id}>
             <FormTableItem>
               <FormControl>
-                <TodoFormField id={id} form={form} inputType={inputType} />
+                <TodoFormField
+                  isTable
+                  id={id}
+                  form={form}
+                  inputType={inputType}
+                />
               </FormControl>
             </FormTableItem>
           </TableCell>

@@ -1,6 +1,6 @@
 import type { Todo, TodoValidationSchema } from "@/lib/definitions";
 import { type ColumnValues } from "./data-table";
-import { useForm, type UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { todoValidationSchema } from "./data";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
@@ -40,39 +40,39 @@ export default function EditTaskForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-2 gap-4"
         >
-          <FormItem>
-            <FormLabel />
-            <FormControl>
-              {columnValues.map(({ id, inputType }) => {
-                if (!id) {
-                  throw new Error(
-                    "A column id is required to create a Form component",
-                  );
-                }
+          {columnValues.map(({ id, inputType, formHeader }) => {
+            if (!id) {
+              throw new Error(
+                "A column id is required to create a Form component",
+              );
+            }
 
-                if (id === "priority" || id === "status") {
-                  return (
-                    <TodoFormField
-                      key={id}
-                      id={id}
-                      form={form}
-                      inputType={inputType}
-                    />
-                  );
-                }
+            if (id === "priority" || id === "status") {
+              return (
+                <FormItem key={id}>
+                  <FormLabel>{formHeader}</FormLabel>
+                  <FormControl>
+                    <TodoFormField id={id} form={form} inputType={inputType} />
+                  </FormControl>
+                </FormItem>
+              );
+            }
 
-                return (
+            return (
+              <FormItem className="col-span-2" key={id}>
+                <FormLabel className="capitalize">{formHeader}</FormLabel>
+                <FormControl>
                   <TodoFormField
-                    className="col-span-2"
                     key={id}
                     id={id}
                     form={form}
                     inputType={inputType}
                   />
-                );
-              })}
-            </FormControl>
-          </FormItem>
+                </FormControl>
+              </FormItem>
+            );
+          })}
+
           <Button className="col-span-2 mt-2" type="submit">
             Submit
           </Button>

@@ -36,6 +36,7 @@ export type InputTypes =
 
 export type CustomMeta = {
   inputType: InputTypes;
+  formHeader: string;
   defaultValue?: string;
   className?: string;
   optional?: boolean;
@@ -52,6 +53,7 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "task",
     meta: {
+      formHeader: "Task",
       defaultValue: "",
       inputType: "text",
     },
@@ -62,6 +64,7 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "projectId",
     meta: {
+      formHeader: "Project",
       defaultValue: "",
       inputType: getProjectNames,
     },
@@ -72,6 +75,7 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "description",
     meta: {
+      formHeader: "Description",
       defaultValue: "",
       optional: true,
       inputType: "textarea",
@@ -84,6 +88,7 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "due",
     meta: {
+      formHeader: "Due date",
       defaultValue: undefined,
       optional: true,
       inputType: "date",
@@ -99,20 +104,11 @@ export const columns: ColumnDef<Todo>[] = [
       }
     },
   },
-  {
-    id: "priority",
-    meta: {
-      defaultValue: "MEDIUM",
-      inputType: [...PRIORITIES],
-    },
-    minSize: 150,
-    accessorKey: "priority",
-    header: "Priority",
-  },
+
   {
     id: "status",
     meta: {
-      className: "border-r-0",
+      formHeader: "Status",
       defaultValue: "TODO",
       inputType: [...STATUSES],
     },
@@ -142,5 +138,17 @@ export const columns: ColumnDef<Todo>[] = [
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id));
     },
+  },
+  {
+    id: "priority",
+    meta: {
+      formHeader: "Priority",
+      className: "border-r-0",
+      defaultValue: "MEDIUM",
+      inputType: [...PRIORITIES],
+    },
+    minSize: 150,
+    accessorKey: "priority",
+    header: "Priority",
   },
 ];

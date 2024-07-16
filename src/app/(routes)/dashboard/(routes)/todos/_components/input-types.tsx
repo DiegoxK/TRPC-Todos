@@ -108,13 +108,14 @@ export const InputCommand = ({
   const [open, setOpen] = useState(false);
 
   return (
+    // TODO: Add label/value
     <Popover modal={false} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           className={cn(
-            "flex h-9 justify-between",
+            "flex h-9 w-full justify-between overflow-hidden",
             !field.value && "border-border text-muted-foreground",
           )}
         >
@@ -186,7 +187,7 @@ export const ApiInputCommand = ({
           variant="outline"
           role="combobox"
           className={cn(
-            "flex h-9 justify-between overflow-hidden",
+            "flex h-9 w-full justify-between overflow-hidden",
             !field.value && "border-border text-muted-foreground",
           )}
         >

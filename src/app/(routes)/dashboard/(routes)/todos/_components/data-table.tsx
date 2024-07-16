@@ -117,6 +117,7 @@ export function DataTable<TData extends Todo, TValue>({
 
     return {
       id: column.id as TodoValidationKeys,
+      formHeader: column.meta.formHeader,
       defaultValue: column.meta.defaultValue,
       inputType: column.meta.inputType,
       optional: column.meta?.optional,
