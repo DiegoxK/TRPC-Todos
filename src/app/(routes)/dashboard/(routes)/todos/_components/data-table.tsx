@@ -49,6 +49,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Bolt } from "lucide-react";
 import TableActions from "./table-actions";
+import CreateTaskErrors from "./create-task-errors";
+import EditTaskForm from "./edit-task-form";
 
 interface DataTableProps<TData extends Todo, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -151,13 +153,17 @@ export function DataTable<TData extends Todo, TValue>({
   return (
     <>
       <DataTableDialog
-        errors={errors}
-        setErrors={setErrors}
-        todo={todo}
-        setTodo={setTodo}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-      />
+        setErrors={setErrors}
+        setTodo={setTodo}
+      >
+        {errors ? (
+          <CreateTaskErrors errors={errors} />
+        ) : todo ? (
+          <EditTaskForm todo={todo} />
+        ) : null}
+      </DataTableDialog>
       <div className="space-y-4">
         <DataTableToolbar
           dismissForm={dismissForm}
@@ -237,8 +243,8 @@ export function DataTable<TData extends Todo, TValue>({
                     <CreateTaskForm
                       dismissForm={dismissForm}
                       form={form}
-                      setIsAdding={setIsAdding}
                       columnValues={columnValues}
+                      setIsAdding={setIsAdding}
                     />
                   )}
                   {table.getRowModel().rows?.length ? (
