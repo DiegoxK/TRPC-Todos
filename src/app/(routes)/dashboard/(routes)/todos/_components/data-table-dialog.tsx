@@ -1,9 +1,9 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Todo } from "@/lib/definitions";
-import { type Dispatch, type SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { FieldErrors } from "react-hook-form";
 
-import { type TodoValidationSchema } from "./data";
+import type { TodoValidationSchema } from "@/lib/definitions";
 
 interface DataTableDialogProps {
   open: boolean;

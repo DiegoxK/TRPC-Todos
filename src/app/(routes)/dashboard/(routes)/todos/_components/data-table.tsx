@@ -34,18 +34,18 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import CreateTaskForm from "./create-task-form";
 import { DataTableResizer } from "./data-table-resizer";
 import { cn } from "@/lib/utils";
-import type { Todo } from "@/lib/definitions";
+import type {
+  Todo,
+  TodoValidationSchema,
+  TodoValidationKeys,
+} from "@/lib/definitions";
 import { Form } from "@/components/ui/form";
 import DataTableDialog from "./data-table-dialog";
 import { useRouter } from "next/navigation";
 import { type CustomMeta } from "./columns";
 import { api } from "@/trpc/react";
 
-import {
-  type TodoValidationSchema,
-  todoValidationSchema,
-  type ValidationKeys,
-} from "./data";
+import { todoValidationSchema } from "./data";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Bolt } from "lucide-react";
 import TableActions from "./table-actions";
@@ -58,7 +58,7 @@ interface DataTableProps<TData extends Todo, TValue> {
 }
 
 export interface ColumnValues extends CustomMeta {
-  id: ValidationKeys;
+  id: TodoValidationKeys;
 }
 
 export function DataTable<TData extends Todo, TValue>({
@@ -83,7 +83,7 @@ export function DataTable<TData extends Todo, TValue>({
       router.refresh();
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -116,7 +116,7 @@ export function DataTable<TData extends Todo, TValue>({
       throw new Error(`Column ${column.id} is missing meta property`);
 
     return {
-      id: column.id as ValidationKeys,
+      id: column.id as TodoValidationKeys,
       defaultValue: column.meta.defaultValue,
       inputType: column.meta.inputType,
       optional: column.meta?.optional,

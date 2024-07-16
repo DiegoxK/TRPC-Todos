@@ -1,11 +1,11 @@
-import type { Todo } from "@/lib/definitions";
+import type {
+  Todo,
+  TodoValidationSchema,
+  TodoValidationKeys,
+} from "@/lib/definitions";
 import { type ColumnValues } from "./data-table";
 import { useForm, type UseFormReturn } from "react-hook-form";
-import {
-  todoValidationSchema,
-  type ValidationKeys,
-  type TodoValidationSchema,
-} from "./data";
+import { todoValidationSchema } from "./data";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ export default function EditTaskForm({
 }: EditTaskFormProps) {
   const defaultValues = {
     ...todo,
+    due: todo.due ? todo.due.toString() : undefined,
   };
 
   const form = useForm<TodoValidationSchema>({
@@ -82,7 +83,7 @@ export default function EditTaskForm({
 }
 
 interface EditFormFieldProps {
-  id: ValidationKeys;
+  id: TodoValidationKeys;
   className?: string;
   form: UseFormReturn<TodoValidationSchema>;
   inputType: InputTypes;

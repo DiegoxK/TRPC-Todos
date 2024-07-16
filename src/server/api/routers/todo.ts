@@ -3,11 +3,13 @@ import { todos } from "@/server/db/schema";
 import { TRPCError } from "@trpc/server";
 
 import { and, eq, sql } from "drizzle-orm";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { z } from "zod";
 
-export const createTodoSchema = createInsertSchema(todos, {
+export const todoSchema = createSelectSchema(todos);
+
+const createTodoSchema = createInsertSchema(todos, {
   due: z.string().datetime().optional(),
   createdById: z.undefined(),
   taskSlug: z.undefined(),

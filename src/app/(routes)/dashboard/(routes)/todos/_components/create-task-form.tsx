@@ -14,7 +14,7 @@ import {
   InputText,
 } from "./input-types";
 import { type ColumnValues } from "./data-table";
-import type { TodoValidationSchema } from "./data";
+import type { TodoValidationSchema } from "@/lib/definitions";
 
 interface CreateTaskFormProps {
   setIsAdding: Dispatch<SetStateAction<boolean>>;

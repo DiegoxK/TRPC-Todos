@@ -21,13 +21,16 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import type { TodoValidationSchema, ValidationKeys } from "./data";
+import type {
+  TodoValidationSchema,
+  TodoValidationKeys,
+} from "@/lib/definitions";
 import type { Query } from "./columns";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
 interface InputProps {
-  field: ControllerRenderProps<TodoValidationSchema, ValidationKeys>;
+  field: ControllerRenderProps<TodoValidationSchema, TodoValidationKeys>;
 }
 
 interface CommandValues extends InputProps {

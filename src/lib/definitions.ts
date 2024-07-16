@@ -1,10 +1,10 @@
 import type { z } from "zod";
-import type { createTodoSchema } from "@/server/api/routers/todo";
+import type { todoSchema } from "@/server/api/routers/todo";
+import type { todoValidationSchema } from "@/app/(routes)/dashboard/(routes)/todos/_components/data";
 
-type NoNullFields<T> = {
-  [P in keyof T]: NoNullFields<Exclude<T[P], null>>;
-};
+//Server types
+export type Todo = z.infer<typeof todoSchema>;
 
-type CreateTodoSchema = z.infer<typeof createTodoSchema>;
-
-export type Todo = NoNullFields<CreateTodoSchema>;
+//Client types
+export type TodoValidationSchema = z.infer<typeof todoValidationSchema>;
+export type TodoValidationKeys = keyof TodoValidationSchema;
