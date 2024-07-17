@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { FormControl, FormTableItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -46,9 +45,10 @@ interface ApiCommandValuesProps extends CommandValues {
 export const InputText = ({ field }: InputProps) => {
   return (
     <Input
+      {...field}
       className={cn("h-9 border-input", !field.value && "border-border")}
       type="text"
-      {...field}
+      value={field.value ?? undefined}
     />
   );
 };
@@ -56,17 +56,26 @@ export const InputText = ({ field }: InputProps) => {
 export const InputTextArea = ({ field }: InputProps) => {
   return (
     <Textarea
-      className={cn("h-9 border-input", !field.value && "border-border")}
       {...field}
+      className={cn("h-9 border-input", !field.value && "border-border")}
+      value={field.value ?? undefined}
     />
   );
 };
 
 export const InputNumber = ({ field }: InputProps) => {
-  return <Input className="h-8 border-border" type="number" {...field} />;
+  return (
+    <Input
+      {...field}
+      className="h-8 border-border"
+      type="number"
+      value={field.value ?? undefined}
+    />
+  );
 };
 
 export const InputDate = ({ field }: InputProps) => {
+  console.log(field.value);
   return (
     <Popover modal={false}>
       <PopoverTrigger asChild>
@@ -89,12 +98,11 @@ export const InputDate = ({ field }: InputProps) => {
       >
         <Calendar
           mode="single"
-          selected={new Date(field.value ?? new Date())}
+          selected={field.value ? new Date(field.value) : undefined}
           onSelect={(date) => {
-            field.onChange(date?.toISOString());
+            field.onChange(date?.toISOString() ?? null);
           }}
           disabled={(date) => date < new Date()}
-          initialFocus
         />
       </PopoverContent>
     </Popover>
@@ -115,7 +123,7 @@ export const InputCommand = ({
           variant="outline"
           role="combobox"
           className={cn(
-            "flex h-9 w-full justify-between overflow-hidden",
+            "flex h-9 w-full justify-between overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             !field.value && "border-border text-muted-foreground",
           )}
         >
@@ -191,14 +199,12 @@ export const ApiInputCommand = ({
             !field.value && "border-border text-muted-foreground",
           )}
         >
-          {field.value && !values
-            ? "Searching..."
-            : values
-              ? values.find(
-                  (value: { id: string; label: string }) =>
-                    value.id === field.value,
-                )?.label
-              : "Search"}
+          {field.value && values
+            ? values.find(
+                (value: { id: string; label: string }) =>
+                  value.id === field.value,
+              )?.label
+            : "Search"}
 
           <ChevronDown size={16} className="opacity-60" />
         </Button>
