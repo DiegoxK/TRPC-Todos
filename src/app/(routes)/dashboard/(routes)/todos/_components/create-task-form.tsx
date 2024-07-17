@@ -2,7 +2,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Send, SquareMinus } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { FormControl, FormTableItem } from "@/components/ui/form";
+import { FormControl, FormField, FormTableItem } from "@/components/ui/form";
 
 import type { UseFormReturn } from "react-hook-form";
 
@@ -54,16 +54,21 @@ export default function CreateTaskForm({
 
         return (
           <TableCell key={id}>
-            <FormTableItem>
-              <FormControl>
-                <TodoFormField
-                  isTable
-                  id={id}
-                  form={form}
-                  inputType={inputType}
-                />
-              </FormControl>
-            </FormTableItem>
+            <FormField
+              control={form.control}
+              name={id}
+              render={({ field }) => (
+                <FormTableItem>
+                  <FormControl>
+                    <TodoFormField
+                      isTable
+                      field={field}
+                      inputType={inputType}
+                    />
+                  </FormControl>
+                </FormTableItem>
+              )}
+            />
           </TableCell>
         );
       })}

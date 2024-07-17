@@ -3,7 +3,15 @@ import { type ColumnValues } from "./data-table";
 import { useForm } from "react-hook-form";
 import { todoValidationSchema } from "./data";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormTableItem,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
 import { TodoFormField } from "./todo-form-field";
@@ -55,7 +63,6 @@ export default function EditTaskForm({
 
   return (
     <>
-      {/* TODO: Show errors */}
       <DialogTitle>Edit Task</DialogTitle>
       <Form {...form}>
         <ScrollArea className="max-h-[60vh] rounded-lg pr-4">
@@ -70,31 +77,43 @@ export default function EditTaskForm({
 
                 if (id === "priority" || id === "status") {
                   return (
-                    <FormItem key={id}>
-                      <FormLabel>{formHeader}</FormLabel>
-                      <FormControl>
-                        <TodoFormField
-                          id={id}
-                          form={form}
-                          inputType={inputType}
-                        />
-                      </FormControl>
-                    </FormItem>
+                    <FormField
+                      key={id}
+                      control={form.control}
+                      name={id}
+                      render={({ field }) => (
+                        <FormItem className="col-span-1" key={id}>
+                          <FormLabel>
+                            {formHeader} <FormMessage />
+                          </FormLabel>
+                          <FormControl>
+                            <TodoFormField
+                              field={field}
+                              inputType={inputType}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   );
                 }
 
                 return (
-                  <FormItem className="col-span-2" key={id}>
-                    <FormLabel className="capitalize">{formHeader}</FormLabel>
-                    <FormControl>
-                      <TodoFormField
-                        key={id}
-                        id={id}
-                        form={form}
-                        inputType={inputType}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <FormField
+                    key={id}
+                    control={form.control}
+                    name={id}
+                    render={({ field }) => (
+                      <FormTableItem className="col-span-2" key={id}>
+                        <FormLabel>
+                          {formHeader} <FormMessage />
+                        </FormLabel>
+                        <FormControl>
+                          <TodoFormField field={field} inputType={inputType} />
+                        </FormControl>
+                      </FormTableItem>
+                    )}
+                  />
                 );
               })}
             </div>
@@ -105,7 +124,6 @@ export default function EditTaskForm({
             formRef.current?.requestSubmit();
           }}
           className="w-full"
-          type="submit"
         >
           Submit
         </Button>
