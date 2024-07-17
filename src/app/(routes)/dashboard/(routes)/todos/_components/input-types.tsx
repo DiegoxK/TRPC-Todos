@@ -191,12 +191,14 @@ export const ApiInputCommand = ({
             !field.value && "border-border text-muted-foreground",
           )}
         >
-          {field.value && values
-            ? values.find(
-                (value: { id: string; label: string }) =>
-                  value.id === field.value,
-              )?.label
-            : "Search"}
+          {field.value && !values
+            ? "Searching..."
+            : values
+              ? values.find(
+                  (value: { id: string; label: string }) =>
+                    value.id === field.value,
+                )?.label
+              : "Search"}
 
           <ChevronDown size={16} className="opacity-60" />
         </Button>
@@ -213,6 +215,7 @@ export const ApiInputCommand = ({
           <CommandInput
             onChangeCapture={(e) => setinputValue(e.currentTarget.value)}
             className="capitalize"
+            // TODO: Use formHeader
             placeholder={field.name}
           />
           <CommandList>

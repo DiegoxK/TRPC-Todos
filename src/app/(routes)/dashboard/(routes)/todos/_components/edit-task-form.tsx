@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
 import { TodoFormField } from "./todo-form-field";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { api } from "@/trpc/react";
+import { useRef } from "react";
 
 interface EditTaskFormProps {
   todo: Todo;
@@ -18,6 +20,17 @@ export default function EditTaskForm({
   todo,
   columnValues,
 }: EditTaskFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const { mutate: editTodo } = api.todo.editTodo.useMutation({
+    onSuccess: () => {
+      console.log("Todo edited");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const defaultValues = {
     ...todo,
     description: todo.description ?? "",
@@ -30,15 +43,23 @@ export default function EditTaskForm({
   });
 
   function onSubmit(values: TodoValidationSchema) {
-    console.log(values);
+    console.log({
+      id: todo.id,
+      ...values,
+    });
+    editTodo({
+      id: todo.id,
+      ...values,
+    });
   }
 
   return (
     <>
-      <DialogTitle className="mb-2">Edit Task</DialogTitle>
+      {/* TODO: Show errors */}
+      <DialogTitle>Edit Task</DialogTitle>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <ScrollArea className="h-[60vh] rounded-lg pr-4">
+        <ScrollArea className="max-h-[60vh] rounded-lg pr-4">
+          <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
             <div className="m-1 grid grid-cols-2 gap-4">
               {columnValues.map(({ id, inputType, formHeader }) => {
                 if (!id) {
@@ -77,11 +98,17 @@ export default function EditTaskForm({
                 );
               })}
             </div>
-          </ScrollArea>
-          <Button className="mt-4 w-full" type="submit">
-            Submit
-          </Button>
-        </form>
+          </form>
+        </ScrollArea>
+        <Button
+          onClick={() => {
+            formRef.current?.requestSubmit();
+          }}
+          className="w-full"
+          type="submit"
+        >
+          Submit
+        </Button>
       </Form>
     </>
   );

@@ -83,4 +83,38 @@ export const todoRouter = createTRPCRouter({
 
       throw new Error("Project not found");
     }),
+  editTodo: protectedProcedure
+    .input(createTodoSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const taskSlug = input.task.toLowerCase().replace(/\s/g, "-");
+
+      if (!input.id) {
+        throw new Error("Todo id is required");
+      }
+
+      const project = await ctx.db.query.projects.findFirst({
+        where: (table, funcs) =>
+          funcs.and(
+            funcs.eq(table.id, input.projectId),
+            funcs.eq(table.createdById, userId),
+          ),
+        columns: {
+          id: true,
+        },
+      });
+
+      if (project) {
+        return ctx.db
+          .update(todos)
+          .set({
+            ...input,
+            due: input.due ? new Date(input.due) : null,
+            taskSlug,
+          })
+          .where(and(eq(todos.id, input.id), eq(todos.createdById, userId)));
+      }
+
+      throw new Error("Project not found");
+    }),
 });
