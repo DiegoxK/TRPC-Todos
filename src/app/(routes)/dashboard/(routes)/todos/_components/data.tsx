@@ -37,7 +37,7 @@ export const todoValidationSchema = z.object({
       message: "Description must be at most 400 characters",
     })
     .optional(),
-  due: z.string().datetime().optional(),
+  due: z.string().datetime().nullable(),
   priority: z.enum(PRIORITIES),
 
   status: z.enum(STATUSES),
