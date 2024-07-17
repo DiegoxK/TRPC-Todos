@@ -18,6 +18,7 @@ import { TodoFormField } from "./todo-form-field";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/trpc/react";
 import { type Dispatch, type SetStateAction, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 interface EditTaskFormProps {
   todo: Todo;
@@ -31,9 +32,11 @@ export default function EditTaskForm({
   columnValues,
 }: EditTaskFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
   const { mutate: editTodo } = api.todo.editTodo.useMutation({
     onSuccess: () => {
+      router.refresh();
       setOpen(false);
     },
     onError: (error) => {
@@ -52,11 +55,9 @@ export default function EditTaskForm({
     defaultValues,
   });
 
+  console.log(form.formState.isDirty);
+
   function onSubmit(values: TodoValidationSchema) {
-    console.log({
-      id: todo.id,
-      ...values,
-    });
     editTodo({
       id: todo.id,
       ...values,
@@ -122,6 +123,7 @@ export default function EditTaskForm({
           </form>
         </ScrollArea>
         <Button
+          disabled={!form.formState.isDirty}
           onClick={() => {
             formRef.current?.requestSubmit();
           }}
