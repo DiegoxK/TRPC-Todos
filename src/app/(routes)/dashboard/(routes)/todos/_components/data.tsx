@@ -20,8 +20,8 @@ export const todoValidationSchema = z.object({
     .min(1, {
       message: "Task can't be empty",
     })
-    .max(20, {
-      message: "Task name must be at most 20 characters",
+    .max(40, {
+      message: "Task name must be at most 40 characters",
     }),
   projectId: z
     .string()
