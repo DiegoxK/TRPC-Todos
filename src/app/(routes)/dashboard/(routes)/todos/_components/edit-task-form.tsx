@@ -17,22 +17,24 @@ import { DialogTitle } from "@/components/ui/dialog";
 import { TodoFormField } from "./todo-form-field";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/trpc/react";
-import { useRef } from "react";
+import { type Dispatch, type SetStateAction, useRef } from "react";
 
 interface EditTaskFormProps {
   todo: Todo;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   columnValues: ColumnValues[];
 }
 
 export default function EditTaskForm({
   todo,
+  setOpen,
   columnValues,
 }: EditTaskFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
 
   const { mutate: editTodo } = api.todo.editTodo.useMutation({
     onSuccess: () => {
-      console.log("Todo edited");
+      setOpen(false);
     },
     onError: (error) => {
       console.log(error);
