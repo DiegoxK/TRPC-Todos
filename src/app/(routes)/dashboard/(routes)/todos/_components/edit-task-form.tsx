@@ -7,6 +7,7 @@ import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
 import { TodoFormField } from "./todo-form-field";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditTaskFormProps {
   todo: Todo;
@@ -36,44 +37,48 @@ export default function EditTaskForm({
     <>
       <DialogTitle className="mb-2">Edit Task</DialogTitle>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-4"
-        >
-          {columnValues.map(({ id, inputType, formHeader }) => {
-            if (!id) {
-              throw new Error(
-                "A column id is required to create a Form component",
-              );
-            }
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <ScrollArea className="h-[60vh] rounded-lg pr-4">
+            <div className="m-1 grid grid-cols-2 gap-4">
+              {columnValues.map(({ id, inputType, formHeader }) => {
+                if (!id) {
+                  throw new Error(
+                    "A column id is required to create a Form component",
+                  );
+                }
 
-            if (id === "priority" || id === "status") {
-              return (
-                <FormItem key={id}>
-                  <FormLabel>{formHeader}</FormLabel>
-                  <FormControl>
-                    <TodoFormField id={id} form={form} inputType={inputType} />
-                  </FormControl>
-                </FormItem>
-              );
-            }
+                if (id === "priority" || id === "status") {
+                  return (
+                    <FormItem key={id}>
+                      <FormLabel>{formHeader}</FormLabel>
+                      <FormControl>
+                        <TodoFormField
+                          id={id}
+                          form={form}
+                          inputType={inputType}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }
 
-            return (
-              <FormItem className="col-span-2" key={id}>
-                <FormLabel className="capitalize">{formHeader}</FormLabel>
-                <FormControl>
-                  <TodoFormField
-                    key={id}
-                    id={id}
-                    form={form}
-                    inputType={inputType}
-                  />
-                </FormControl>
-              </FormItem>
-            );
-          })}
-
-          <Button className="col-span-2 mt-2" type="submit">
+                return (
+                  <FormItem className="col-span-2" key={id}>
+                    <FormLabel className="capitalize">{formHeader}</FormLabel>
+                    <FormControl>
+                      <TodoFormField
+                        key={id}
+                        id={id}
+                        form={form}
+                        inputType={inputType}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              })}
+            </div>
+          </ScrollArea>
+          <Button className="mt-4 w-full" type="submit">
             Submit
           </Button>
         </form>

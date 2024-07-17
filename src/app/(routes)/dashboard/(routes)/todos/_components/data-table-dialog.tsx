@@ -31,7 +31,7 @@ export default function DataTableDialog({
         setTodo(undefined);
       }}
     >
-      <DialogContent className="pr-8 pt-7">{children}</DialogContent>
+      <DialogContent className="max-h-[90vh] pt-7">{children}</DialogContent>
     </Dialog>
   );
 }
