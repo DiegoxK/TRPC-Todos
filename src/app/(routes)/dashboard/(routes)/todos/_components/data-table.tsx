@@ -199,9 +199,10 @@ export function DataTable<TData extends Todo, TValue>({
                               "indeterminate")
                           }
                           onCheckedChange={(value) => {
-                            table.toggleAllPageRowsSelected(!!value);
-                            if (value === false) {
-                              table.toggleAllRowsSelected(!!value);
+                            if (table.getIsSomePageRowsSelected()) {
+                              table.toggleAllPageRowsSelected(!!!value);
+                            } else {
+                              table.toggleAllPageRowsSelected(!!value);
                             }
                           }}
                           aria-label="Select all"
@@ -255,6 +256,10 @@ export function DataTable<TData extends Todo, TValue>({
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
                       <TableRow
+                        className={cn(
+                          row.original.status === "DONE" &&
+                            "text-accent-foreground line-through",
+                        )}
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
