@@ -96,7 +96,10 @@ export const columns: ColumnDef<Todo>[] = [
     size: 200,
     minSize: 200,
     accessorKey: "due",
-    header: "Due date",
+    sortingFn: "datetime",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Due date" />
+    ),
     cell: ({ row }) => {
       const { due } = row.original;
       if (due) {
@@ -114,6 +117,17 @@ export const columns: ColumnDef<Todo>[] = [
     },
     minSize: 130,
     accessorKey: "status",
+    // IN_PROGRESS > TODO > DONE
+    sortingFn: (rowA, rowB) => {
+      const statusOrder = { DONE: 2, TODO: 1, IN_PROGRESS: 0 };
+      return (
+        statusOrder[rowB.original.status] - statusOrder[rowA.original.status]
+      );
+    },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id));
+    },
+
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
@@ -135,9 +149,6 @@ export const columns: ColumnDef<Todo>[] = [
         </div>
       );
     },
-    filterFn: (row, id, value: string) => {
-      return value.includes(row.getValue(id));
-    },
   },
   {
     id: "priority",
@@ -149,6 +160,16 @@ export const columns: ColumnDef<Todo>[] = [
     },
     minSize: 150,
     accessorKey: "priority",
-    header: "Priority",
+    // HIGH > MEDIUM > LOW
+    sortingFn: (rowA, rowB) => {
+      const priorityOrder = { LOW: 2, MEDIUM: 1, HIGH: 0 };
+      return (
+        priorityOrder[rowB.original.priority] -
+        priorityOrder[rowA.original.priority]
+      );
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Priority" />
+    ),
   },
 ];
