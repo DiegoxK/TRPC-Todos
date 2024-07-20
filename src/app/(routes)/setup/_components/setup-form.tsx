@@ -33,8 +33,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserRoundPlus } from "lucide-react";
 import { api } from "@/trpc/react";
-import { uploadImage } from "@/lib/utils";
 import ImageField from "@/components/form/image-field";
+import { uploadFiles } from "@/utils/uploadthing";
 
 const formSchema = z.object({
   username: z
@@ -47,6 +47,30 @@ const formSchema = z.object({
     }),
   img: z.instanceof(Blob).optional(),
 });
+
+// TODO: Figure out how to to export this function outside this component
+const uploadImage = async (username: string, userImg: Blob) => {
+  try {
+    const file = new File([userImg], `${username}-picture.webp`, {
+      type: "image/webp",
+    });
+    const files = [file];
+
+    const res = await uploadFiles("imageUploader", {
+      files,
+    });
+
+    const imageInfo = res[0];
+
+    if (imageInfo) {
+      return imageInfo.url;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return undefined;
+};
 
 export default function SetupForm({ email }: { email: string }) {
   const router = useRouter();
