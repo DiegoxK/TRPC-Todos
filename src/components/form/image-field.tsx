@@ -17,7 +17,7 @@ interface FileFieldProps<T extends FieldValues> {
   name: Path<T>;
 }
 
-export default function FileField<T extends FieldValues>({
+export default function ImageField<T extends FieldValues>({
   setCroppedImage,
   control,
   name,
