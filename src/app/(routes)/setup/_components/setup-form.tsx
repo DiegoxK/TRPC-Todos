@@ -5,8 +5,6 @@ import "react-image-crop/dist/ReactCrop.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { uploadFiles } from "@/utils/uploadthing";
-
 import { z } from "zod";
 
 import {
@@ -34,9 +32,9 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserRoundPlus } from "lucide-react";
-import FileField from "./file-field";
 import { api } from "@/trpc/react";
 import { uploadImage } from "@/lib/utils";
+import ImageField from "@/components/form/image-field";
 
 const formSchema = z.object({
   username: z
@@ -135,14 +133,14 @@ export default function SetupForm({ email }: { email: string }) {
                 <DialogDescription>
                   You can select a profile picture to use for your account!
                 </DialogDescription>
-                <ScrollArea className="max-h-[74vh] rounded-lg pr-4">
-                  <FileField<z.infer<typeof formSchema>>
-                    control={form.control}
-                    name="img"
-                    setCroppedImage={setCroppedImage}
-                  />
-                </ScrollArea>
               </DialogHeader>
+              <ScrollArea className="max-h-[74vh] rounded-lg pr-4">
+                <ImageField<z.infer<typeof formSchema>>
+                  control={form.control}
+                  name="img"
+                  setCroppedImage={setCroppedImage}
+                />
+              </ScrollArea>
             </DialogContent>
           </Dialog>
 
