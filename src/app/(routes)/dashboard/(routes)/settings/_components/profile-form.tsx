@@ -9,8 +9,6 @@ import "react-image-crop/dist/ReactCrop.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { uploadFiles } from "@/utils/uploadthing";
-
 import { z } from "zod";
 
 import {
@@ -68,9 +66,14 @@ export default function ProfileForm({ user }: ProfileFormProps) {
           <p className="text-sm text-gray-500">{user.email}</p>
         </div>
       </div>
-      <div className="w-full space-y-6">
+      {/* TODO: Responsive Inputs */}
+      <div className="w-1/2 space-y-6">
         <UserNameForm user={user} />
-        <UserImageForm setCroppedImage={setCroppedImage} user={user} />
+        <UserImageForm
+          setCroppedImage={setCroppedImage}
+          croppedImage={croppedImage}
+          user={user}
+        />
       </div>
     </div>
   );
@@ -107,34 +110,47 @@ const UserNameForm = ({ user }: ProfileFormProps) => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>
+                Username <FormMessage />
+              </FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="shadcn" {...field} />
+                <Input
+                  className="w-full"
+                  placeholder="xXGamerProXx"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          disabled={!form.formState.isValid || !form.formState.isDirty}
+          type="submit"
+        >
+          Submit
+        </Button>
       </form>
     </Form>
   );
 };
 
 interface UserImageFormProps extends ProfileFormProps {
+  croppedImage: string | undefined;
   setCroppedImage: Dispatch<SetStateAction<string | undefined>>;
 }
 
-const UserImageForm = ({ user, setCroppedImage }: UserImageFormProps) => {
+const UserImageForm = ({
+  user,
+  croppedImage,
+  setCroppedImage,
+}: UserImageFormProps) => {
   const userImageSchema = z.object({
-    img: z.string().url(),
+    img: z.instanceof(Blob).optional(),
   });
 
   const form = useForm({
     resolver: zodResolver(userImageSchema),
-    defaultValues: {
-      img: user.image ?? "",
-    },
+    defaultValues: {},
   });
 
   function onSubmit(values: z.infer<typeof userImageSchema>) {
@@ -145,12 +161,14 @@ const UserImageForm = ({ user, setCroppedImage }: UserImageFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <Dialog>
-          <FormLabel>Profile picture</FormLabel>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="w-full">
-              Select Image
-            </Button>
-          </DialogTrigger>
+          <div className="space-y-1">
+            <FormLabel>Profile picture</FormLabel>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="w-full">
+                Select Image
+              </Button>
+            </DialogTrigger>
+          </div>
           <DialogContent className="max-h-[90vh]">
             <DialogHeader>
               <DialogTitle>Select a profile picture.</DialogTitle>
@@ -170,6 +188,22 @@ const UserImageForm = ({ user, setCroppedImage }: UserImageFormProps) => {
             </DialogClose>
           </DialogContent>
         </Dialog>
+        <div className="space-x-2">
+          <Button disabled={!croppedImage} type="submit">
+            Submit
+          </Button>
+          {croppedImage && (
+            <Button
+              onClick={() => {
+                setCroppedImage(undefined);
+                form.reset();
+              }}
+              variant="destructive"
+            >
+              Discard
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );
