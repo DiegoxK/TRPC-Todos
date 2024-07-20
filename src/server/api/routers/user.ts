@@ -56,6 +56,8 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
+      // TODO: Delete previous image
+
       return await ctx.db
         .update(users)
         .set({
