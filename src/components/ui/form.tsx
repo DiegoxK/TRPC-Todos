@@ -74,11 +74,21 @@ const FormItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
+  const { error } = useFormField();
   const id = React.useId();
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn("space-y-2", className)} {...props} />
+      <div
+        ref={ref}
+        className={cn(
+          "space-y-1",
+          error &&
+            "[&_*]:border-destructive [&_*]:text-destructive [&_*]:focus-within:ring-destructive",
+          className,
+        )}
+        {...props}
+      />
     </FormItemContext.Provider>
   );
 });
@@ -160,30 +170,6 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
-const FormTableItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const { error } = useFormField();
-  const id = React.useId();
-
-  return (
-    <FormItemContext.Provider value={{ id }}>
-      <div
-        ref={ref}
-        className={cn(
-          "space-y-1",
-          error &&
-            "[&_*]:border-destructive [&_*]:text-destructive [&_*]:focus-within:ring-destructive",
-          className,
-        )}
-        {...props}
-      />
-    </FormItemContext.Provider>
-  );
-});
-FormTableItem.displayName = "FormTableItem";
-
 export {
   useFormField,
   Form,
@@ -193,5 +179,4 @@ export {
   FormDescription,
   FormMessage,
   FormField,
-  FormTableItem,
 };

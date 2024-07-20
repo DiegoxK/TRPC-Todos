@@ -10,7 +10,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormTableItem,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
@@ -107,14 +106,14 @@ export default function EditTaskForm({
                     control={form.control}
                     name={id}
                     render={({ field }) => (
-                      <FormTableItem className="col-span-2" key={id}>
+                      <FormItem className="col-span-2" key={id}>
                         <FormLabel>
                           {formHeader} <FormMessage />
                         </FormLabel>
                         <FormControl>
                           <TodoFormField field={field} inputType={inputType} />
                         </FormControl>
-                      </FormTableItem>
+                      </FormItem>
                     )}
                   />
                 );
