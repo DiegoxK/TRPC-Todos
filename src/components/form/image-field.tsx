@@ -54,6 +54,12 @@ export default function ImageField<T extends FieldValues>({
             <Input
               className="cursor-pointer file:text-accent-foreground"
               type="file"
+              accept="
+                image/jpeg,
+                image/png,
+                image/webp,
+                image/gif,
+              "
               multiple={false}
               onChange={(e) => {
                 const file = e.target.files![0];
