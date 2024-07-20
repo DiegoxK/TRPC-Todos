@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import { UserRoundPlus } from "lucide-react";
 import FileField from "./file-field";
 import { api } from "@/trpc/react";
+import { uploadImage } from "@/lib/utils";
 
 const formSchema = z.object({
   username: z
@@ -70,29 +71,6 @@ export default function SetupForm({ email }: { email: string }) {
       username: "",
     },
   });
-
-  const uploadImage = async (username: string, userImg: Blob) => {
-    try {
-      const file = new File([userImg], `${username}-picture.webp`, {
-        type: "image/webp",
-      });
-      const files = [file];
-
-      const res = await uploadFiles("imageUploader", {
-        files,
-      });
-
-      const imageInfo = res[0];
-
-      if (imageInfo) {
-        return imageInfo.url;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-    return undefined;
-  };
 
   //Cropped image
   const [croppedImage, setCroppedImage] = useState<string>();

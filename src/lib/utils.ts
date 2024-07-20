@@ -1,3 +1,4 @@
+import { uploadFiles } from "@/utils/uploadthing";
 import { type ClassValue, clsx } from "clsx";
 import type { RefObject } from "react";
 import type { Crop } from "react-image-crop";
@@ -47,6 +48,29 @@ export const cropImage = async (
   );
 
   return await offscreen.convertToBlob();
+};
+
+export const uploadImage = async (username: string, userImg: Blob) => {
+  try {
+    const file = new File([userImg], `${username}-picture.webp`, {
+      type: "image/webp",
+    });
+    const files = [file];
+
+    const res = await uploadFiles("imageUploader", {
+      files,
+    });
+
+    const imageInfo = res[0];
+
+    if (imageInfo) {
+      return imageInfo.url;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return undefined;
 };
 
 export const generateSlug = (index: string) => {
