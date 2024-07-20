@@ -30,6 +30,40 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
+  updateUserName: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return await ctx.db
+        .update(users)
+        .set({
+          name: input.name,
+        })
+        .where(eq(users.id, userId));
+    }),
+
+  updateImage: protectedProcedure
+    .input(
+      z.object({
+        img: z.string().url(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return await ctx.db
+        .update(users)
+        .set({
+          image: input.img,
+        })
+        .where(eq(users.id, userId));
+    }),
+
   updateUser: protectedProcedure
     .input(
       z.object({
