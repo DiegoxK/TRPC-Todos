@@ -35,6 +35,7 @@ import { UserRoundPlus } from "lucide-react";
 import { api } from "@/trpc/react";
 import ImageField from "@/components/form/image-field";
 import { uploadFiles } from "@/utils/uploadthing";
+import type { User } from "@/lib/definitions";
 
 const formSchema = z.object({
   username: z
@@ -72,7 +73,11 @@ const uploadImage = async (username: string, userImg: Blob) => {
   return undefined;
 };
 
-export default function SetupForm({ email }: { email: string }) {
+interface SetupFormProps {
+  user: User;
+}
+
+export default function SetupForm({ user }: SetupFormProps) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -103,12 +108,12 @@ export default function SetupForm({ email }: { email: string }) {
     let profileUrl: string | undefined;
 
     if (values.img) {
-      profileUrl = await uploadImage(values.username, values.img);
+      profileUrl = await uploadImage(user.id, values.img);
       console.log(profileUrl);
     }
 
     updateUser({
-      email,
+      email: user.email,
       name: values.username,
       img: profileUrl,
     });
