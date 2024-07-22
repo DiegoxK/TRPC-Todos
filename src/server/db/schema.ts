@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { relations, sql } from "drizzle-orm";
 import {
   index,
@@ -14,7 +15,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
-export const UserRole = pgEnum("userRole", ["ADMIN", "USER"]);
+const USER = env.USER_ROLE;
+const ADMIN = env.ADMIN_ROLE;
+
+export const UserRole = pgEnum("userRole", [USER, ADMIN]);
 export const Status = pgEnum("status", ["TODO", "IN_PROGRESS", "DONE"]);
 export const Priority = pgEnum("priority", ["LOW", "MEDIUM", "HIGH"]);
 
@@ -119,7 +123,7 @@ export const users = createTable(
       withTimezone: true,
     }).default(sql`CURRENT_TIMESTAMP`),
     image: varchar("image", { length: 255 }),
-    userRole: UserRole("userRole").default("USER").notNull(),
+    userRole: UserRole("userRole").default(USER).notNull(),
   },
   (table) => {
     return {
