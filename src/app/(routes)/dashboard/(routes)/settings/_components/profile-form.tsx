@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { UserRound, UserRoundPlus } from "lucide-react";
+import { UserRound } from "lucide-react";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -47,6 +47,8 @@ interface ProfileFormProps {
 
 export default function ProfileForm({ user }: ProfileFormProps) {
   const [croppedImage, setCroppedImage] = useState<string>();
+
+  // TODO: Add toast alerts
 
   return (
     <div className="flex gap-8">
@@ -154,23 +156,19 @@ interface UserImageFormProps extends ProfileFormProps {
 }
 
 const uploadImage = async (username: string, userImg: Blob) => {
-  try {
-    const file = new File([userImg], `${username}-picture.webp`, {
-      type: "image/webp",
-    });
-    const files = [file];
+  const file = new File([userImg], `${username}-picture.webp`, {
+    type: "image/webp",
+  });
+  const files = [file];
 
-    const res = await uploadFiles("imageUploader", {
-      files,
-    });
+  const res = await uploadFiles("imageUploader", {
+    files,
+  });
 
-    const imageInfo = res[0];
+  const imageInfo = res[0];
 
-    if (imageInfo) {
-      return imageInfo.url;
-    }
-  } catch (error) {
-    console.error(error);
+  if (imageInfo) {
+    return imageInfo.url;
   }
 
   return undefined;
@@ -213,7 +211,18 @@ const UserImageForm = ({
     let profileUrl: string | undefined;
 
     if (values.img) {
-      profileUrl = await uploadImage(user.id, values.img);
+      try {
+        profileUrl = await uploadImage(user.id, values.img);
+      } catch (error) {
+        if (error instanceof UploadThingError) {
+          if (error.message === "Invalid config: FileSizeMismatch") {
+            setLoading(false);
+            return alert("File size can't be more than 4MB");
+          }
+          setLoading(false);
+          return alert("Failed to upload image");
+        }
+      }
     }
 
     if (!profileUrl) {
