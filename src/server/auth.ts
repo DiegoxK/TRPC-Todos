@@ -38,6 +38,10 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/adapters" {
+  interface AdapterUser extends User {}
+}
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -88,6 +92,7 @@ export const authOptions: NextAuthOptions = {
       ...session,
       user: {
         ...session.user,
+        userRole: user.userRole,
         id: user.id,
       },
     }),

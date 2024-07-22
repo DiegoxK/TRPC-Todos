@@ -43,7 +43,6 @@ export type CustomMeta = {
 };
 
 declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface ColumnMeta<TData extends RowData, TValue> extends CustomMeta {}
 }
 
