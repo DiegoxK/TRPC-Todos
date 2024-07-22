@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { UserRoundPlus } from "lucide-react";
+import { UserRound, UserRoundPlus } from "lucide-react";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -32,19 +32,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import type { User } from "@/lib/definitions";
 import { Input } from "@/components/ui/input";
 import ImageField from "@/components/form/image-field";
 import { type Dispatch, type SetStateAction, useState } from "react";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { uploadFiles } from "@/utils/uploadthing";
+import { UploadThingError } from "uploadthing/server";
 
 interface ProfileFormProps {
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    emailVerified: Date | null;
-    image: string | null;
-    userRole: "ADMIN" | "USER";
-  };
+  user: User;
 }
 
 export default function ProfileForm({ user }: ProfileFormProps) {
@@ -56,7 +54,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
         <Avatar className="h-44 w-44">
           <AvatarImage src={croppedImage ?? user.image ?? undefined} />
           <AvatarFallback>
-            <UserRoundPlus className="h-20 w-20" />
+            <UserRound className="h-24 w-24" />
           </AvatarFallback>
         </Avatar>
         <Separator />
@@ -78,17 +76,19 @@ export default function ProfileForm({ user }: ProfileFormProps) {
   );
 }
 
+const userNameSchema = z.object({
+  username: z
+    .string()
+    .max(18, {
+      message: "Username must be less than 18 characters",
+    })
+    .min(1, {
+      message: "Username can't be empty",
+    }),
+});
+
 const UserNameForm = ({ user }: ProfileFormProps) => {
-  const userNameSchema = z.object({
-    username: z
-      .string()
-      .max(18, {
-        message: "Username must be less than 18 characters",
-      })
-      .min(1, {
-        message: "Username can't be empty",
-      }),
-  });
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(userNameSchema),
@@ -97,8 +97,20 @@ const UserNameForm = ({ user }: ProfileFormProps) => {
     },
   });
 
+  const { mutate: updateUserName, isPending } =
+    api.user.updateUserName.useMutation({
+      onSuccess: () => {
+        form.control._defaultValues.username = form.getValues("username");
+        form.reset();
+        router.refresh();
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
+
   function onSubmit(values: z.infer<typeof userNameSchema>) {
-    console.log(values);
+    updateUserName(values);
   }
 
   return (
@@ -123,10 +135,13 @@ const UserNameForm = ({ user }: ProfileFormProps) => {
           )}
         />
         <Button
-          disabled={!form.formState.isValid || !form.formState.isDirty}
+          disabled={
+            !form.formState.isValid || !form.formState.isDirty || isPending
+          }
+          className="w-28"
           type="submit"
         >
-          Submit
+          {isPending ? <div className="loader"></div> : <span>Submit</span>}
         </Button>
       </form>
     </Form>
@@ -138,13 +153,53 @@ interface UserImageFormProps extends ProfileFormProps {
   setCroppedImage: Dispatch<SetStateAction<string | undefined>>;
 }
 
+const uploadImage = async (username: string, userImg: Blob) => {
+  try {
+    const file = new File([userImg], `${username}-picture.webp`, {
+      type: "image/webp",
+    });
+    const files = [file];
+
+    const res = await uploadFiles("imageUploader", {
+      files,
+    });
+
+    const imageInfo = res[0];
+
+    if (imageInfo) {
+      return imageInfo.url;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return undefined;
+};
+
+const userImageSchema = z.object({
+  img: z.instanceof(Blob).optional(),
+});
+
 const UserImageForm = ({
-  user,
   croppedImage,
   setCroppedImage,
+  user,
 }: UserImageFormProps) => {
-  const userImageSchema = z.object({
-    img: z.instanceof(Blob).optional(),
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+
+  const { mutate: updateImage } = api.user.updateImage.useMutation({
+    onSuccess: () => {
+      setLoading(false);
+      setCroppedImage(undefined);
+      form.reset();
+      router.refresh();
+    },
+    onError: (error) => {
+      setLoading(false);
+      console.error(error);
+    },
   });
 
   const form = useForm({
@@ -152,8 +207,21 @@ const UserImageForm = ({
     defaultValues: {},
   });
 
-  function onSubmit(values: z.infer<typeof userImageSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof userImageSchema>) {
+    setLoading(true);
+
+    let profileUrl: string | undefined;
+
+    if (values.img) {
+      profileUrl = await uploadImage(user.id, values.img);
+    }
+
+    if (!profileUrl) {
+      setLoading(false);
+      return alert("Failed to upload image");
+    }
+
+    updateImage({ img: profileUrl });
   }
 
   return (
@@ -188,8 +256,12 @@ const UserImageForm = ({
           </DialogContent>
         </Dialog>
         <div className="space-x-2">
-          <Button disabled={!croppedImage} type="submit">
-            Submit
+          <Button
+            disabled={!form.formState.isValid || !croppedImage || loading}
+            className="w-28"
+            type="submit"
+          >
+            {loading ? <div className="loader"></div> : <span>Submit</span>}
           </Button>
           {croppedImage && (
             <Button
