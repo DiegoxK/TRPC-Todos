@@ -19,7 +19,7 @@ export default async function SetupAccount() {
   // This page should allow the user to setup their username and profile picture if they don't have one
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      <SetupForm email={session.user.email} />
+      <SetupForm user={session.user} />
     </main>
   );
 }
