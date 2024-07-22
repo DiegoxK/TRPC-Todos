@@ -5,7 +5,10 @@ import {
 } from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+
+export const userSchema = createSelectSchema(users);
 
 export const userRouter = createTRPCRouter({
   createUser: publicProcedure
@@ -33,7 +36,7 @@ export const userRouter = createTRPCRouter({
   updateUserName: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
+        username: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -42,7 +45,7 @@ export const userRouter = createTRPCRouter({
       return await ctx.db
         .update(users)
         .set({
-          name: input.name,
+          name: input.username,
         })
         .where(eq(users.id, userId));
     }),
