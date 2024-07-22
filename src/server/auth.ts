@@ -17,14 +17,14 @@ import {
   verificationTokens,
 } from "@/server/db/schema";
 
-type user = typeof users.$inferSelect;
-
 import {
   sendVerificationRequest,
   generateVerificationToken,
 } from "@/lib/email-config";
 
 import { cookies } from "next/headers";
+
+import type { User } from "@/lib/definitions";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -34,7 +34,7 @@ import { cookies } from "next/headers";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: user & DefaultSession["user"];
+    user: User & DefaultSession["user"];
   }
 }
 
