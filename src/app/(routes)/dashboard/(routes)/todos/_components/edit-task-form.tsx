@@ -54,8 +54,6 @@ export default function EditTaskForm({
     defaultValues,
   });
 
-  console.log(form.formState.isDirty);
-
   function onSubmit(values: TodoValidationSchema) {
     editTodo({
       id: todo.id,
