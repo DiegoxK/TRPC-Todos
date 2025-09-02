@@ -25,15 +25,12 @@ export default async function SettingPage({
           <p className="text-sm">Profile configuration</p>
         </div>
         {session.user.userRole === env.ADMIN_ROLE && (
-          <Button>
-            <Link
-              className="flex items-center gap-2"
-              href="/dashboard/settings/admin"
-            >
+          <Link href="/dashboard/settings/admin">
+            <Button className="flex items-center gap-2">
               <UserCog className="h-4 w-4" />
               Admin
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         )}
       </div>
       <Separator className="mb-6 mt-5 bg-zinc-700" />

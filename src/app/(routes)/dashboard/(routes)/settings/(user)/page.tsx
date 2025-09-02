@@ -1,5 +1,5 @@
 import { getServerAuthSession } from "@/server/auth";
-import ProfileForm from "../_components/profile-form";
+import ProfileForm from "./_components/profile-form";
 import { redirect } from "next/navigation";
 
 export default async function UserSettings() {

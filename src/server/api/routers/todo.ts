@@ -83,6 +83,7 @@ export const todoRouter = createTRPCRouter({
 
       throw new Error("Project not found");
     }),
+    
   editTodo: protectedProcedure
     .input(createTodoSchema)
     .mutation(async ({ ctx, input }) => {
