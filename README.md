@@ -1,6 +1,6 @@
 # TRPC Todo App
 
-This is a full-stack Todo application built with the T3 Stack, featuring a comprehensive suite of tools designed to showcase a modern web development workflow.
+A full-stack Todo application built with the T3 Stack, featuring a comprehensive suite of tools designed to showcase a modern web development workflow.
     
 <div>
   <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"/>
@@ -119,3 +119,4 @@ To get a local copy up and running, follow these simple steps.
     ```sh
     pnpm dev
     ```
+
