@@ -10,18 +10,10 @@ interface HeaderProps {
 export default function Header({ session }: HeaderProps) {
   return (
     <div className="sticky top-0 z-[3]">
-      <header className="flex items-center justify-between bg-background px-7 py-4">
+      <header className="flex items-center justify-between bg-background px-5 py-4">
         <h1 className="text-xl font-medium text-primary">
           <MobileSideNav />
-          <div className="hidden items-center gap-2 md:flex">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt="Bacavailando"
-              src="https://media.tenor.com/9egJp0qwy_UAAAAi/polish-cow-polish.gif"
-              width={36}
-            />
-            Bacavailando
-          </div>
+          Todo&apos;s Dashboard
         </h1>
         <UserButton session={session} />
       </header>
